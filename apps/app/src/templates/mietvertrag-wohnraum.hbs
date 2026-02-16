@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Mietvertrag Wohnraum</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 11pt; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .section { margin: 20px 0; }
+        .signature { margin-top: 60px; display: flex; justify-content: space-between; }
+        .signature-box { border-top: 1px solid #000; padding-top: 10px; width: 45%; }
+    </style>
+</head>
+<body>
+    <h1>Wohnraum-Mietvertrag</h1>
+    <div class="section">
+        <strong>Vermieter:</strong> {{tenant.name}}<br>
+        <strong>Mieter:</strong> {{#if mieter.vorname}}{{mieter.vorname}} {{/if}}{{mieter.nachname}}
+    </div>
+    <div class="section">
+        <strong>Mietobjekt:</strong><br>
+        {{objekt.bezeichnung}}, Einheit {{einheit.einheitNr}}<br>
+        {{objekt.strasse}}, {{objekt.plz}} {{objekt.ort}}
+    </div>
+    <div class="section">
+        <strong>Mietbeginn:</strong> {{formatDate mietverhaeltnis.einzugsdatum}}<br>
+        <strong>Kaltmiete:</strong> {{formatCurrency mietverhaeltnis.kaltmiete}}<br>
+        <strong>Nebenkosten:</strong> {{formatCurrency mietverhaeltnis.bkVorauszahlung}}<br>
+        <strong>Heizkosten:</strong> {{formatCurrency mietverhaeltnis.hkVorauszahlung}}<br>
+        <strong>Kaution:</strong> {{formatCurrency mietverhaeltnis.kaution}}
+    </div>
+    <p><em>Hinweis: Dies ist ein Platzhalter. Bitte verwenden Sie einen vollständigen Mietvertrag mit allen rechtlichen Bestimmungen.</em></p>
+    <div class="signature">
+        <div class="signature-box">Ort, Datum<br><br>Vermieter</div>
+        <div class="signature-box">Ort, Datum<br><br>Mieter</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>3. und letzte Mahnung</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 11pt; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .subject { font-weight: bold; font-size: 14pt; margin: 30px 0 20px 0; color: #c00; }
+        .warning { background-color: #f2dede; border: 2px solid #d9534f; padding: 20px; margin: 20px 0; color: #a94442; }
+        .total { font-size: 14pt; font-weight: bold; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>{{tenant.name}}</h1>
+    <div>{{#if mieter.firma}}{{mieter.firma}}{{else}}{{mieter.nachname}}{{/if}}</div>
+    <div class="subject">3. und LETZTE MAHNUNG - Einheit {{einheit.einheitNr}}</div>
+    <p>Sehr geehrte{{#if mieter.anrede}}r{{/if}} {{mieter.nachname}},</p>
+    <p>trotz mehrfacher Aufforderung ist der fällige Betrag nicht eingegangen.</p>
+    <div class="total">GESAMTFORDERUNG: {{formatCurrency gesamt.gesamt}}</div>
+    <div class="warning">
+        <strong>LETZTE FRIST: 3 Tage</strong><br><br>
+        Dies ist die letzte Zahlungsaufforderung vor gerichtlichen Schritten.<br>
+        Bei Nichtzahlung erfolgt die Übergabe an unseren Rechtsbeistand.
+    </div>
+    <p>Mit freundlichen Grüßen<br>{{tenant.name}}</p>
+</body>
+</html>

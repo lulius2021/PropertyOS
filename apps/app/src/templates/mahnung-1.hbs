@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Mahnung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 0;
+        }
+        .sender {
+            font-size: 8pt;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .recipient {
+            margin-bottom: 30px;
+        }
+        .meta {
+            text-align: right;
+            margin-bottom: 30px;
+            font-size: 10pt;
+        }
+        .subject {
+            font-weight: bold;
+            font-size: 12pt;
+            margin: 30px 0 20px 0;
+            color: #d9534f;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .warning {
+            background-color: #fcf8e3;
+            border-left: 4px solid #f0ad4e;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background-color: #f5f5f5;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            font-weight: bold;
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .amount {
+            text-align: right;
+        }
+        .total {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+        .highlight {
+            background-color: #ffffcc;
+        }
+        .footer {
+            margin-top: 50px;
+            font-size: 9pt;
+            color: #666;
+        }
+        .signature {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{tenant.name}}</h1>
+        <div class="sender">
+            Musterstraße 1 • 12345 Musterstadt
+        </div>
+    </div>
+
+    <div class="recipient">
+        {{#if mieter.firma}}
+        {{mieter.firma}}<br>
+        {{#if mieter.vorname}}{{mieter.vorname}} {{/if}}{{mieter.nachname}}<br>
+        {{else}}
+        {{#if mieter.anrede}}{{mieter.anrede}} {{/if}}{{#if mieter.vorname}}{{mieter.vorname}} {{/if}}{{mieter.nachname}}<br>
+        {{/if}}
+        {{#if mieter.strasse}}{{mieter.strasse}}<br>{{/if}}
+        {{#if mieter.plz}}{{mieter.plz}} {{/if}}{{#if mieter.ort}}{{mieter.ort}}{{/if}}
+    </div>
+
+    <div class="meta">
+        Datum: {{formatDate mahnung.mahnDatum}}
+    </div>
+
+    <div class="subject">
+        1. MAHNUNG - Mietobjekt {{objekt.bezeichnung}}, Einheit {{einheit.einheitNr}}
+    </div>
+
+    <div class="content">
+        <p>Sehr geehrte{{#if mieter.anrede}}r{{/if}} {{#if mieter.anrede}}{{mieter.anrede}} {{/if}}{{mieter.nachname}},</p>
+
+        <p>
+            trotz unserer Zahlungserinnerung haben wir bisher keinen Zahlungseingang feststellen können.
+            Folgende Beträge sind weiterhin offen:
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Bezeichnung</th>
+                    <th>Fällig am</th>
+                    <th class="amount">Betrag</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each sollstellungen}}
+                <tr>
+                    <td>{{this.titel}}</td>
+                    <td>{{formatDate this.faelligkeitsdatum}}</td>
+                    <td class="amount">{{formatCurrency this.offen}}</td>
+                </tr>
+                {{/each}}
+                {{#if mahnung.mahngebuehr}}
+                <tr class="highlight">
+                    <td colspan="2"><strong>Mahngebühr</strong></td>
+                    <td class="amount"><strong>{{formatCurrency mahnung.mahngebuehr}}</strong></td>
+                </tr>
+                {{/if}}
+                {{#if mahnung.verzugszinsen}}
+                <tr class="highlight">
+                    <td colspan="2"><strong>Verzugszinsen</strong></td>
+                    <td class="amount"><strong>{{formatCurrency mahnung.verzugszinsen}}</strong></td>
+                </tr>
+                {{/if}}
+                <tr class="total">
+                    <td colspan="2"><strong>GESAMT FÄLLIG</strong></td>
+                    <td class="amount"><strong>{{formatCurrency gesamt.gesamt}}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="warning">
+            <strong>Zahlungsfrist:</strong><br>
+            Wir fordern Sie hiermit auf, den Gesamtbetrag von <strong>{{formatCurrency gesamt.gesamt}}</strong>
+            innerhalb von <strong>7 Tagen</strong> nach Erhalt dieses Schreibens auf folgendes Konto zu überweisen.
+        </div>
+
+        <p>
+            <strong>Bankverbindung:</strong><br>
+            IBAN: DE89 1234 5678 9012 3456 78<br>
+            Verwendungszweck: Miete Einheit {{einheit.einheitNr}} - 1. Mahnung
+        </p>
+
+        <p>
+            Sollten Sie bis zum Ablauf der Frist nicht zahlen, behalten wir uns vor, weitere rechtliche Schritte einzuleiten.
+        </p>
+
+        <p>
+            Sollte die Zahlung bereits erfolgt sein, betrachten Sie dieses Schreiben bitte als gegenstandslos.
+        </p>
+    </div>
+
+    <div class="signature">
+        <p>Mit freundlichen Grüßen</p>
+        <p>{{tenant.name}}</p>
+    </div>
+
+    <div class="footer">
+        <hr>
+        <p>
+            {{tenant.name}} • Musterstraße 1 • 12345 Musterstadt<br>
+            Telefon: 0123 / 456789 • E-Mail: info@example.com
+        </p>
+    </div>
+</body>
+</html>
