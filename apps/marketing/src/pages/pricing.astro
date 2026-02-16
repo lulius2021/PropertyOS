@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Preise - PropertyOS | Transparente Preisgestaltung"
+  description="Transparente Preisgestaltung für Hausverwaltungen jeder Größe. Unbegrenzte Objekte, alle Features inklusive, Premium Support."
+>
+  <Header />
+
+  <main class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="mb-8 text-4xl font-bold text-gray-900">Preise</h1>
+        <p class="mb-12 text-xl text-gray-600">
+          Transparente Preisgestaltung für Hausverwaltungen jeder Größe
+        </p>
+
+        <div class="rounded-lg border bg-white p-8 shadow-lg">
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Professional</h2>
+          <div class="mb-6">
+            <span class="text-5xl font-bold text-gray-900">Auf Anfrage</span>
+          </div>
+          <ul class="mb-8 space-y-3 text-left text-gray-600">
+            <li class="flex items-start">
+              <svg
+                class="mr-2 mt-1 h-5 w-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              Unbegrenzte Objekte und Einheiten
+            </li>
+            <li class="flex items-start">
+              <svg
+                class="mr-2 mt-1 h-5 w-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              Alle Features inklusive
+            </li>
+            <li class="flex items-start">
+              <svg
+                class="mr-2 mt-1 h-5 w-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              Premium Support
+            </li>
+            <li class="flex items-start">
+              <svg
+                class="mr-2 mt-1 h-5 w-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
+              </svg>
+              DSGVO-konform & sicher
+            </li>
+          </ul>
+          <a
+            href="https://app.propertyos.de/login"
+            class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-medium text-white hover:bg-blue-700"
+          >
+            Jetzt starten
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

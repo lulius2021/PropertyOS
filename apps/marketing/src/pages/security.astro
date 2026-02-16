@@ -1,0 +1,74 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Sicherheit & Datenschutz - PropertyOS | DSGVO-konform"
+  description="PropertyOS ist vollständig DSGVO-konform mit strikter Mandantentrennung, verschlüsselter Speicherung, Audit-Logs und EU-Hosting. Ihre Daten sind sicher."
+>
+  <Header />
+
+  <main class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <h1 class="mb-8 text-4xl font-bold text-gray-900">Sicherheit & Datenschutz</h1>
+
+        <div class="space-y-8">
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">DSGVO-Konformität</h2>
+            <p class="text-gray-600">
+              PropertyOS ist vollständig DSGVO-konform entwickelt. Alle personenbezogenen Daten
+              werden verschlüsselt gespeichert und mit strikter Mandantentrennung verwaltet. Jede
+              Änderung wird in einem Audit-Log protokolliert.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Verschlüsselung</h2>
+            <p class="text-gray-600">
+              Alle Datenübertragungen erfolgen über verschlüsselte HTTPS-Verbindungen. Passwörter
+              werden mit modernen Hashing-Algorithmen gesichert. Session-Cookies sind httpOnly und
+              CSRF-geschützt.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Hosting & Infrastruktur</h2>
+            <p class="text-gray-600">
+              PropertyOS wird auf Vercel gehostet, mit PostgreSQL-Datenbanken in EU-Rechenzentren.
+              File-Storage erfolgt über CloudFlare R2 mit automatischer Versionierung.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Backups</h2>
+            <p class="text-gray-600">
+              Automatische tägliche Backups Ihrer Datenbank und Dokumente. Point-in-Time-Recovery
+              für maximale Datensicherheit.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Zugriffskontrolle</h2>
+            <p class="text-gray-600">
+              Rollenbasierte Zugriffskontrolle (Admin, Sachbearbeiter, ReadOnly) mit
+              Session-Verwaltung und automatischem Logout bei Inaktivität.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Audit-Logs</h2>
+            <p class="text-gray-600">
+              Alle kritischen Operationen werden mit Zeitstempel, Benutzer und Änderungsdetails
+              protokolliert. Vollständige Nachvollziehbarkeit aller Vorgänge.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

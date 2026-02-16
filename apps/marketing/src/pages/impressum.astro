@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Impressum - PropertyOS">
+  <Header />
+
+  <main class="py-20">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <h1 class="mb-8 text-4xl font-bold text-gray-900">Impressum</h1>
+
+        <div class="space-y-6 text-gray-600">
+          <section>
+            <h2 class="mb-2 text-xl font-semibold text-gray-900">Angaben gemäß § 5 TMG</h2>
+            <p>
+              [Firmenname]<br />
+              [Straße und Hausnummer]<br />
+              [PLZ und Ort]
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-2 text-xl font-semibold text-gray-900">Kontakt</h2>
+            <p>
+              Telefon: [Telefonnummer]<br />
+              E-Mail: [E-Mail-Adresse]
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-2 text-xl font-semibold text-gray-900">Vertretungsberechtigter</h2>
+            <p>[Name des Geschäftsführers]</p>
+          </section>
+
+          <section>
+            <h2 class="mb-2 text-xl font-semibold text-gray-900">Registereintrag</h2>
+            <p>
+              Eintragung im Handelsregister<br />
+              Registergericht: [Registergericht]<br />
+              Registernummer: [Registernummer]
+            </p>
+          </section>
+
+          <section>
+            <h2 class="mb-2 text-xl font-semibold text-gray-900">Umsatzsteuer-ID</h2>
+            <p>
+              Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br />
+              [USt-IdNr.]
+            </p>
+          </section>
+
+          <section class="mt-8 border-t pt-8">
+            <p class="text-sm italic">
+              Hinweis: Dies ist ein Platzhalter-Impressum. Bitte ersetzen Sie die Daten vor dem
+              produktiven Einsatz durch Ihre tatsächlichen Angaben.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

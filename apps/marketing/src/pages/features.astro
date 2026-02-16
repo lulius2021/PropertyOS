@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Features - PropertyOS | Alle Funktionen im Überblick"
+  description="Objektverwaltung, Mietverwaltung, Bankimport, Mahnwesen, Ticketsystem, Zählerverwaltung und mehr. Alle Features von PropertyOS im Detail."
+>
+  <Header />
+
+  <main class="py-20">
+    <div class="container mx-auto px-4">
+      <h1 class="mb-8 text-4xl font-bold text-gray-900">Alle Features im Detail</h1>
+
+      <div class="space-y-12">
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Objektverwaltung</h2>
+          <p class="text-gray-600">
+            Verwalten Sie Ihre Immobilien mit allen Details: Adressen, Einheiten, Statushistorie
+            und mehr. Behalten Sie den Überblick über Ihr gesamtes Portfolio.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Mietverwaltung</h2>
+          <p class="text-gray-600">
+            Vollständige Mieterverwaltung mit automatischer Sollstellungserstellung,
+            Warmmiete-Berechnung und Kautionsverwaltung.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Bankimport & Auto-Matching</h2>
+          <p class="text-gray-600">
+            Importieren Sie Kontoauszüge per CSV und lassen Sie Zahlungen automatisch zuordnen.
+            Intelligente Deckungslogik berücksichtigt Betriebskosten und Heizkosten vorrangig.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Mahnwesen</h2>
+          <p class="text-gray-600">
+            Automatische Mahnvorschläge basierend auf Zahlungsverzug. Berechnung von Mahngebühren
+            und Verzugszinsen. Generierung von Mahnschreiben als PDF oder DOCX.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Ticketsystem</h2>
+          <p class="text-gray-600">
+            Erfassen und bearbeiten Sie Schadensmeldungen, Wartungsanfragen und Beschwerden
+            strukturiert. Mit Status-Workflow und Verantwortlichkeiten.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Kosten & Zeiterfassung</h2>
+          <p class="text-gray-600">
+            Erfassen Sie alle Kosten mit BK/HK-Relevanz für die Nebenkostenabrechnung.
+            Zeiterfassung für interne Dienstleistungen.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Zählerverwaltung</h2>
+          <p class="text-gray-600">
+            Verwalten Sie Strom-, Gas-, Wasser- und Wärmezähler. Erfassen Sie Zählerstände mit
+            Foto-Upload bei Ein- und Auszug.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Reporting & Auswertungen</h2>
+          <p class="text-gray-600">
+            Dashboard mit KPIs, Statusquoten, Soll/Ist-Vergleich und Portfolio-Exporte als CSV
+            oder Excel.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
