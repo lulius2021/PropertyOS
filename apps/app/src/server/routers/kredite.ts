@@ -27,7 +27,6 @@ export const krediteRouter = router({
       ...k,
       rate: k.rate.toString(),
       zinssatz: k.zinssatz.toString(),
-      tilgung: k.tilgung.toString(),
       ursprungsbetrag: k.ursprungsbetrag.toString(),
       sondertilgungen: k.sondertilgungen.map((st) => ({
         ...st,
@@ -75,7 +74,6 @@ export const krediteRouter = router({
         ...kredit,
         rate: kredit.rate.toString(),
         zinssatz: kredit.zinssatz.toString(),
-        tilgung: kredit.tilgung.toString(),
         ursprungsbetrag: kredit.ursprungsbetrag.toString(),
         restschuld: aktuelleRestschuld.toFixed(2),
         sondertilgungen: kredit.sondertilgungen.map((st) => ({
@@ -99,7 +97,6 @@ export const krediteRouter = router({
         ursprungsbetrag: z.number().min(0),
         rate: z.number().min(0),
         zinssatz: z.number().min(0).max(1), // z.B. 0.0325 = 3.25%
-        tilgung: z.number().min(0),
         laufzeitMonate: z.number().min(1),
         zinsbindungBis: z.date().optional(),
         laufzeitEnde: z.date().optional(),
@@ -123,7 +120,6 @@ export const krediteRouter = router({
           ursprungsbetrag: new Decimal(input.ursprungsbetrag),
           rate: new Decimal(input.rate),
           zinssatz: new Decimal(input.zinssatz),
-          tilgung: new Decimal(input.tilgung),
           laufzeitMonate: input.laufzeitMonate,
           zinsbindungBis: input.zinsbindungBis,
           laufzeitEnde: input.laufzeitEnde,
@@ -147,7 +143,6 @@ export const krediteRouter = router({
         bank: z.string().min(1).optional(),
         rate: z.number().min(0).optional(),
         zinssatz: z.number().min(0).max(1).optional(),
-        tilgung: z.number().min(0).optional(),
         zinsbindungBis: z.date().optional().nullable(),
         notizen: z.string().optional().nullable(),
       })
@@ -162,9 +157,6 @@ export const krediteRouter = router({
           ...(input.rate !== undefined && { rate: new Decimal(input.rate) }),
           ...(input.zinssatz !== undefined && {
             zinssatz: new Decimal(input.zinssatz),
-          }),
-          ...(input.tilgung !== undefined && {
-            tilgung: new Decimal(input.tilgung),
           }),
           ...(input.zinsbindungBis !== undefined && {
             zinsbindungBis: input.zinsbindungBis,

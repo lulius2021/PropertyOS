@@ -126,9 +126,6 @@ export default function KreditDetailPage() {
             })}{" "}
             €
           </div>
-          <div className="text-xs text-gray-500">
-            davon Tilgung: {parseFloat(kredit.tilgung).toFixed(2)} €
-          </div>
         </Card>
         <Card className="p-4">
           <div className="text-sm text-gray-500">Zinssatz</div>

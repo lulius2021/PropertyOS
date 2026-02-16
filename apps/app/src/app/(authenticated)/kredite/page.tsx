@@ -19,7 +19,6 @@ export default function KreditePage() {
     ursprungsbetrag: "",
     rate: "",
     zinssatz: "",
-    tilgung: "",
     laufzeitMonate: "",
     zinsbindungBis: "",
     laufzeitEnde: "",
@@ -43,7 +42,6 @@ export default function KreditePage() {
         ursprungsbetrag: "",
         rate: "",
         zinssatz: "",
-        tilgung: "",
         laufzeitMonate: "",
         zinsbindungBis: "",
         laufzeitEnde: "",
@@ -67,7 +65,6 @@ export default function KreditePage() {
         ursprungsbetrag: parseFloat(formData.ursprungsbetrag),
         rate: parseFloat(formData.rate),
         zinssatz: parseFloat(formData.zinssatz) / 100, // Convert % to decimal
-        tilgung: parseFloat(formData.tilgung),
         laufzeitMonate: parseInt(formData.laufzeitMonate),
         zinsbindungBis: formData.zinsbindungBis
           ? new Date(formData.zinsbindungBis)
@@ -271,21 +268,6 @@ export default function KreditePage() {
                         setFormData({ ...formData, zinssatz: e.target.value })
                       }
                       placeholder="z.B. 3.25"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Monatliche Tilgung * (€)
-                    </label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      required
-                      value={formData.tilgung}
-                      onChange={(e) =>
-                        setFormData({ ...formData, tilgung: e.target.value })
-                      }
-                      placeholder="z.B. 800"
                     />
                   </div>
                 </div>

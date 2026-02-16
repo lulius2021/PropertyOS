@@ -19,8 +19,8 @@ export default function EinheitenPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const { data: einheiten, isLoading } = trpc.einheiten.list.useQuery();
-  const { data: stats } = trpc.einheiten.stats.useQuery();
+  const { data: einheiten, isLoading } = trpc.einheiten.list.useQuery({});
+  const { data: stats } = trpc.einheiten.stats.useQuery(undefined);
 
   const filteredEinheiten = einheiten?.filter((einheit) => {
     const matchesSearch =

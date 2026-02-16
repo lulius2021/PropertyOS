@@ -33,17 +33,21 @@ export function createTenantMiddleware(tenantId: string) {
             }
             return query(args);
           },
-          async create({ args, query }) {
-            if (!args.data.tenantId) {
-              args.data = { ...args.data, tenantId };
+          async create({ args, query, model }) {
+            const modelName = model;
+            if (hasTenantIdField(modelName)) {
+              args.data = { ...args.data, tenantId } as any;
             }
             return query(args);
           },
-          async createMany({ args, query }) {
-            if (Array.isArray(args.data)) {
-              args.data = args.data.map((item) => ({ ...item, tenantId }));
-            } else {
-              args.data = { ...args.data, tenantId };
+          async createMany({ args, query, model }) {
+            const modelName = model;
+            if (hasTenantIdField(modelName)) {
+              if (Array.isArray(args.data)) {
+                args.data = args.data.map((item) => ({ ...item, tenantId })) as any;
+              } else {
+                args.data = { ...args.data, tenantId } as any;
+              }
             }
             return query(args);
           },
