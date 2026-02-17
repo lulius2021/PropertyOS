@@ -43,7 +43,7 @@ function LoginForm() {
         setError("Ungültige E-Mail oder Passwort");
       } else if (result?.ok) {
         // Redirect to dashboard or callback URL
-        const callbackUrl = searchParams.get("callbackUrl") || "/";
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
         router.push(callbackUrl);
         router.refresh();
       }

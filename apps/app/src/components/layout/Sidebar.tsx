@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navigation = [
-  { name: "Dashboard", href: "/" },
+  { name: "Dashboard", href: "/dashboard" },
   { name: "Objekte", href: "/objekte" },
   { name: "Einheiten", href: "/einheiten" },
   { name: "Mieter", href: "/mieter" },
@@ -27,9 +27,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    // Exact match for root
-    if (href === "/") {
-      return pathname === "/";
+    // Exact match for dashboard
+    if (href === "/dashboard") {
+      return pathname === "/dashboard";
     }
     // For other routes, check if pathname starts with href
     return pathname.startsWith(href);
