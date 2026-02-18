@@ -86,8 +86,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Auth paths (Login, API Auth)
-  const isAuthPath = pathname.startsWith("/login") || pathname.startsWith("/api/auth");
+  // Auth paths (Login, Register, API Auth)
+  const isAuthPath =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
+    pathname.startsWith("/api/auth");
 
   // Rate Limiting anwenden
   const ip = getIP(request);

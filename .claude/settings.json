@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(git *)",
+      "Bash(curl *)",
+      "Bash(open *)",
+      "Bash(mkdir *)",
+      "Bash(rm *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(touch *)",
+      "Bash(chmod *)",
+      "Bash(cat *)",
+      "Bash(echo *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(tail *)",
+      "Bash(head *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(uniq *)",
+      "Bash(python3 *)",
+      "Bash(sleep *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(lsof *)",
+      "Bash(ps *)",
+      "Bash(which *)",
+      "Bash(brew *)"
+    ]
+  }
+}
