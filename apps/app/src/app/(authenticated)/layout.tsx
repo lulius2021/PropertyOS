@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { LogoutButton } from "@/components/layout/LogoutButton";
 
 export default async function AuthenticatedLayout({
   children,
@@ -33,14 +34,7 @@ export default async function AuthenticatedLayout({
                 <p className="text-sm font-medium text-gray-900">{session.user?.name || session.user?.email}</p>
                 <p className="text-xs text-gray-500">{(session.user as any)?.role || "User"}</p>
               </div>
-              <form action="/api/auth/signout" method="post">
-                <button
-                  type="submit"
-                  className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Abmelden
-                </button>
-              </form>
+              <LogoutButton />
             </div>
           </div>
         </header>
