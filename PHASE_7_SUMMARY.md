@@ -2,7 +2,7 @@
 
 ## Summary
 
-Phase 7 has been successfully implemented! The PropertyOS application now has:
+Phase 7 has been successfully implemented! The PropGate application now has:
 - ✅ Extended Prisma schema with 6 new models (Ticket, TicketKommentar, Kosten, Zeiterfassung, Zaehler, Zaehlerstand)
 - ✅ Tickets system with comments and status workflow
 - ✅ Kosten & Zeiterfassung (cost and time tracking)
@@ -554,7 +554,7 @@ Next major phase tasks:
 
 ## Summary
 
-Phase 7 successfully establishes **operational tools** for PropertyOS:
+Phase 7 successfully establishes **operational tools** for PropGate:
 
 ✅ **Ticket System**: Complete workflow from ERFASST → ABGESCHLOSSEN with comments
 ✅ **Cost Tracking**: BK/HK flagging for annual operating cost statements

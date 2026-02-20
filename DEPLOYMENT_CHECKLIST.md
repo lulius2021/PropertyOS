@@ -1,6 +1,6 @@
-# PropertyOS - Deployment Checklist
+# PropGate - Deployment Checklist
 
-Use this checklist to verify successful deployment of PropertyOS to Vercel.
+Use this checklist to verify successful deployment of PropGate to Vercel.
 
 ## Pre-Deployment
 
@@ -12,7 +12,7 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
 
 ## Vercel Setup
 
-### Marketing Project (propertyos.de)
+### Marketing Project (propgate.de)
 
 - [ ] Project created in Vercel
 - [ ] GitHub repository connected
@@ -26,11 +26,11 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
   ```bash
   cd ../.. && pnpm install --frozen-lockfile
   ```
-- [ ] Domain `propertyos.de` added
+- [ ] Domain `propgate.de` added
 - [ ] DNS configured (CNAME to Vercel)
 - [ ] SSL certificate active (automatic via Vercel)
 
-### Web App Project (app.propertyos.de)
+### Web App Project (app.propgate.de)
 
 - [ ] Project created in Vercel
 - [ ] GitHub repository connected
@@ -44,36 +44,36 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
   ```bash
   cd ../.. && pnpm install --frozen-lockfile
   ```
-- [ ] Domain `app.propertyos.de` added
+- [ ] Domain `app.propgate.de` added
 - [ ] DNS configured (CNAME to Vercel)
 - [ ] SSL certificate active (automatic via Vercel)
 
 ## Post-Deployment Verification
 
-### Marketing Site (propertyos.de)
+### Marketing Site (propgate.de)
 
 **All Pages Load**:
-- [ ] https://propertyos.de (Homepage with Hero, Features, Trust)
-- [ ] https://propertyos.de/features (8 feature sections)
-- [ ] https://propertyos.de/pricing (Professional package)
-- [ ] https://propertyos.de/security (6 security sections)
-- [ ] https://propertyos.de/impressum (Legal placeholder)
-- [ ] https://propertyos.de/datenschutz (Privacy placeholder)
+- [ ] https://propgate.de (Homepage with Hero, Features, Trust)
+- [ ] https://propgate.de/features (8 feature sections)
+- [ ] https://propgate.de/pricing (Professional package)
+- [ ] https://propgate.de/security (6 security sections)
+- [ ] https://propgate.de/impressum (Legal placeholder)
+- [ ] https://propgate.de/datenschutz (Privacy placeholder)
 
 **Navigation & CTAs**:
 - [ ] Header navigation works (Features, Pricing, Security)
 - [ ] Footer navigation works (all links)
-- [ ] "Login" button → redirects to `https://app.propertyos.de/login`
-- [ ] Hero "Zum Dashboard" → redirects to `https://app.propertyos.de/login`
+- [ ] "Login" button → redirects to `https://app.propgate.de/login`
+- [ ] Hero "Zum Dashboard" → redirects to `https://app.propgate.de/login`
 - [ ] Hero "Mehr erfahren" → redirects to `/features`
-- [ ] Pricing "Jetzt starten" → redirects to `https://app.propertyos.de/login`
+- [ ] Pricing "Jetzt starten" → redirects to `https://app.propgate.de/login`
 
 **SEO & Assets**:
-- [ ] https://propertyos.de/robots.txt accessible
-- [ ] https://propertyos.de/sitemap-index.xml accessible
-- [ ] https://propertyos.de/sitemap-0.xml accessible (lists all 6 pages)
-- [ ] https://propertyos.de/og-image.png accessible
-- [ ] https://propertyos.de/favicon.svg accessible
+- [ ] https://propgate.de/robots.txt accessible
+- [ ] https://propgate.de/sitemap-index.xml accessible
+- [ ] https://propgate.de/sitemap-0.xml accessible (lists all 6 pages)
+- [ ] https://propgate.de/og-image.png accessible
+- [ ] https://propgate.de/favicon.svg accessible
 - [ ] Meta tags present (View Page Source → check `<head>`)
 - [ ] Open Graph tags present
 - [ ] Twitter Card tags present
@@ -86,10 +86,10 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
 - [ ] All text is readable
 - [ ] Buttons are tappable
 
-### Web App (app.propertyos.de)
+### Web App (app.propgate.de)
 
-- [ ] https://app.propertyos.de loads
-- [ ] Shows "PropertyOS Dashboard - Coming Soon" placeholder
+- [ ] https://app.propgate.de loads
+- [ ] Shows "PropGate Dashboard - Coming Soon" placeholder
 - [ ] Gradient background displays correctly
 - [ ] No console errors (open DevTools)
 
@@ -97,30 +97,30 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
 
 **Google Search Console** (After indexing):
 - [ ] Site submitted to Google Search Console
-- [ ] Sitemap submitted: `https://propertyos.de/sitemap-index.xml`
+- [ ] Sitemap submitted: `https://propgate.de/sitemap-index.xml`
 - [ ] No crawl errors
 
 **Rich Results Test**:
 - [ ] Visit: https://search.google.com/test/rich-results
-- [ ] Test URL: `https://propertyos.de`
+- [ ] Test URL: `https://propgate.de`
 - [ ] Verify SoftwareApplication schema detected
 - [ ] Verify Organization schema detected
 
 **Facebook Sharing Debugger**:
 - [ ] Visit: https://developers.facebook.com/tools/debug/
-- [ ] Test URL: `https://propertyos.de`
+- [ ] Test URL: `https://propgate.de`
 - [ ] OG image displays correctly
 - [ ] Title and description correct
 
 **Twitter Card Validator**:
 - [ ] Visit: https://cards-dev.twitter.com/validator
-- [ ] Test URL: `https://propertyos.de`
+- [ ] Test URL: `https://propgate.de`
 - [ ] Card preview displays correctly
 
 ### Performance Audit
 
 **Lighthouse (Chrome DevTools)**:
-- [ ] Open `https://propertyos.de` in Chrome
+- [ ] Open `https://propgate.de` in Chrome
 - [ ] Open DevTools (F12) → Lighthouse tab
 - [ ] Run audit for "Desktop" mode
 - [ ] Performance Score: ____ (Target: >90)
@@ -130,7 +130,7 @@ Use this checklist to verify successful deployment of PropertyOS to Vercel.
 
 **PageSpeed Insights**:
 - [ ] Visit: https://pagespeed.web.dev/
-- [ ] Test URL: `https://propertyos.de`
+- [ ] Test URL: `https://propgate.de`
 - [ ] Mobile Performance: ____ (Target: >80)
 - [ ] Desktop Performance: ____ (Target: >90)
 - [ ] Core Web Vitals: All Green
@@ -171,7 +171,7 @@ Current Vercel defaults provide:
 
 **DNS propagation**:
 - **Wait**: Up to 48 hours for full propagation
-- **Check**: Use `nslookup propertyos.de` to verify DNS
+- **Check**: Use `nslookup propgate.de` to verify DNS
 - **Verify**: CNAME record points to `cname.vercel-dns.com`
 
 **SSL Certificate Issues**:

@@ -22,7 +22,7 @@ export default function SicherheitPage() {
                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
               />
             </svg>
-            <span className="text-xl font-bold text-gray-900">PropertyOS</span>
+            <span className="text-xl font-bold text-gray-900">PropGate</span>
           </Link>
           <Link
             href="/login"
@@ -44,7 +44,7 @@ export default function SicherheitPage() {
             Sicherheit & Datenschutz
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            PropertyOS setzt auf moderne Sicherheitsstandards und
+            PropGate setzt auf moderne Sicherheitsstandards und
             EU-Rechenzentren für maximalen Datenschutz Ihrer Immobiliendaten.
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function SicherheitPage() {
                   Hohe Verfügbarkeit
                 </h2>
                 <p className="text-gray-600 mb-3">
-                  PropertyOS läuft auf Vercel Edge Network mit globaler
+                  PropGate läuft auf Vercel Edge Network mit globaler
                   Redundanz und automatischem Failover.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1">
@@ -182,7 +182,7 @@ export default function SicherheitPage() {
                   DSGVO-Compliance
                 </h2>
                 <p className="text-gray-600 mb-3">
-                  PropertyOS erfüllt alle Anforderungen der DSGVO. Sie haben
+                  PropGate erfüllt alle Anforderungen der DSGVO. Sie haben
                   jederzeit volle Kontrolle über Ihre Daten.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-1">
@@ -289,7 +289,7 @@ export default function SicherheitPage() {
               </h3>
               <p className="text-gray-600 text-sm">
                 Nur Sie und die Nutzer Ihres Mandanten haben Zugriff auf Ihre
-                Daten. PropertyOS-Mitarbeiter haben keinen Zugriff auf
+                Daten. PropGate-Mitarbeiter haben keinen Zugriff auf
                 Mandantendaten. Strikte Mandantentrennung auf Datenbankebene
                 verhindert Cross-Tenant-Zugriffe.
               </p>
@@ -297,10 +297,10 @@ export default function SicherheitPage() {
 
             <Card className="border border-gray-200 shadow-sm p-6">
               <h3 className="font-semibold text-gray-900 mb-2">
-                Ist PropertyOS DSGVO-konform?
+                Ist PropGate DSGVO-konform?
               </h3>
               <p className="text-gray-600 text-sm">
-                Ja, PropertyOS erfüllt alle Anforderungen der DSGVO. Wir bieten
+                Ja, PropGate erfüllt alle Anforderungen der DSGVO. Wir bieten
                 Datenexport, Löschung, Audit-Logs und einen
                 Auftragsverarbeitungsvertrag (AVV) an. Alle Daten verbleiben in
                 der EU.
@@ -341,7 +341,7 @@ export default function SicherheitPage() {
         <div className="max-w-5xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500">
-              © 2026 PropertyOS. Alle Rechte vorbehalten.
+              © 2026 PropGate. Alle Rechte vorbehalten.
             </p>
             <div className="flex items-center gap-6">
               <Link

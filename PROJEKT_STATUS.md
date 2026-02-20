@@ -1,4 +1,4 @@
-# PropertyOS - Projekt-Status & Fortschrittsdokumentation
+# PropGate - Projekt-Status & Fortschrittsdokumentation
 **Stand:** 16. Februar 2026
 **Version:** V1 MVP (in aktiver Entwicklung)
 
@@ -6,7 +6,7 @@
 
 ## 🎯 Projekt-Übersicht
 
-**PropertyOS** ist eine moderne, cloudbasierte B2B-SaaS-Plattform für professionelle Hausverwaltungen. Die Anwendung ermöglicht die vollständige Verwaltung von Immobilienportfolios, Mietverhältnissen, Finanzen, Mahnwesen und operativen Prozessen.
+**PropGate** ist eine moderne, cloudbasierte B2B-SaaS-Plattform für professionelle Hausverwaltungen. Die Anwendung ermöglicht die vollständige Verwaltung von Immobilienportfolios, Mietverhältnissen, Finanzen, Mahnwesen und operativen Prozessen.
 
 ### Kernziele
 - **Moderne Alternative** zu veralteten Verwaltungssystemen
@@ -91,7 +91,7 @@
 │       ├── .env.local                # ✅ Environment Variables
 │       └── package.json
 ├── .claude/
-│   ├── teams/propertyos-dev/         # ✅ Team-Konfiguration
+│   ├── teams/propgate-dev/           # ✅ Team-Konfiguration
 │   └── plans/                        # Implementierungspläne
 └── PROJEKT_STATUS.md                 # ← Diese Datei
 ```
@@ -117,7 +117,7 @@
 - ✅ User-Rollen System (ADMIN, SACHBEARBEITER, READONLY)
 
 #### Database & ORM
-- ✅ PostgreSQL Datenbank (lokal)
+- ✅ PostgreSQL Datenbank (Neon Frankfurt)
 - ✅ Prisma Schema vollständig definiert (20+ Models)
 - ✅ Alle Relations korrekt konfiguriert
 - ✅ Indexes für Performance-kritische Queries
@@ -689,20 +689,20 @@ model Sondertilgung {
 
 ### Lokale Entwicklung ✅
 - **Dev-Server:** Läuft auf `http://localhost:3000`
-- **Database:** PostgreSQL lokal (`localhost:5432/propertyos`)
+- **Database:** Neon Postgres (Frankfurt, Deutschland)
 - **Hot Reload:** Funktioniert (Next.js Fast Refresh)
 
 ### Environment Variables ✅
 Datei: `apps/app/.env.local`
 ```
-DATABASE_URL="postgresql://propertyos:propertyos@localhost:5432/propertyos"
+DATABASE_URL="[Neon Connection String]"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="[generiert]"
 ```
 
 ### Production-Deployment 🔴 Noch nicht durchgeführt
 - Vercel-Projekte noch nicht angelegt
-- Domain `propertyos.de` noch nicht konfiguriert
+- Domain `propgate.de` noch nicht konfiguriert
 - CloudFlare R2 Bucket angelegt, aber nicht aktiv genutzt
 
 ---
@@ -1000,13 +1000,13 @@ NEXTAUTH_SECRET="[generiert]"
 **Priorität:** 🔴 HOCH (vor Live-Gang)
 
 1. **Vercel Setup**
-   - Projekt anlegen für `app.propertyos.de`
+   - Projekt anlegen für `app.propgate.de`
    - Environment Variables setzen (Production)
    - PostgreSQL Vercel Postgres provisionieren
    - Build testen
 
 2. **Domain-Konfiguration**
-   - DNS-Einträge für `propertyos.de` und `app.propertyos.de`
+   - DNS-Einträge für `propgate.de` und `app.propgate.de`
    - SSL-Zertifikate (automatisch via Vercel)
 
 3. **CloudFlare R2 aktivieren**
@@ -1235,7 +1235,7 @@ const { data } = trpc.beispiel.list.useQuery();
 ## 👥 Team & Rollen
 
 ### Aktuelles Team
-- **Team Name:** propertyos-dev
+- **Team Name:** propgate-dev
 - **Team Lead:** team-lead (Haupt-Entwickler)
 - **Assistant:** assistant-2 (Unterstützung, bereit für Tasks) ⭐ NEU
 
@@ -1315,11 +1315,11 @@ const { data } = trpc.beispiel.list.useQuery();
 
 Für Fragen zur Weiterentwicklung:
 - Entwickler: Julius
-- Team: propertyos-dev
+- Team: propgate-dev
 - Repository: Lokal (/Users/julius/Documents/DomOs.de)
 
 ---
 
-**Letzte Aktualisierung:** 16. Februar 2026, 20:00 Uhr
-**Erstellt von:** team-lead (PropertyOS Development Team)
+**Letzte Aktualisierung:** 20. Februar 2026
+**Erstellt von:** team-lead (PropGate Development Team)
 **Version:** 1.0

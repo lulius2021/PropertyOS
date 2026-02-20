@@ -198,36 +198,118 @@ export default function VertraegePage() {
         </div>
       )}
 
+      {/* Objekt Filter */}
+      {objekte && objekte.length > 0 && (
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h3 className="text-sm font-semibold text-gray-900">Nach Objekt filtern</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex flex-wrap gap-2">
+              {objekte.map((objekt) => {
+                const isSelected = selectedObjekte.includes(objekt.id);
+                const vertraegeCount = vertraege?.filter((v) => v.einheit?.objektId === objekt.id).length || 0;
+
+                return (
+                  <button
+                    key={objekt.id}
+                    onClick={() => toggleObjekt(objekt.id)}
+                    className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
+                      isSelected
+                        ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    <FileText className="h-4 w-4" />
+                    <span>{objekt.bezeichnung}</span>
+                    <span
+                      className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
+                        isSelected
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {vertraegeCount}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {selectedObjekte.length > 0 && (
+              <button
+                onClick={() => setSelectedObjekte([])}
+                className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Alle Filter zurücksetzen
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-4">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
                 placeholder="Suche nach Mieter, Einheit oder Objekt..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-[200px]">
-                <SelectValue placeholder="Status filtern" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alle Status</SelectItem>
-                <SelectItem value="ENTWURF">Entwurf</SelectItem>
-                <SelectItem value="GENERIERT">Generiert</SelectItem>
-                <SelectItem value="VERSANDT">Versandt</SelectItem>
-                <SelectItem value="UNTERSCHRIEBEN">Unterschrieben</SelectItem>
-                <SelectItem value="AKTIV">Aktiv</SelectItem>
-                <SelectItem value="BEENDET">Beendet</SelectItem>
-              </SelectContent>
-            </Select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full md:w-[200px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="all">Alle Status</option>
+              <option value="ENTWURF">Entwurf</option>
+              <option value="GENERIERT">Generiert</option>
+              <option value="VERSANDT">Versandt</option>
+              <option value="UNTERSCHRIEBEN">Unterschrieben</option>
+              <option value="AKTIV">Aktiv</option>
+              <option value="BEENDET">Beendet</option>
+            </select>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <select
+              value={laufendFilter}
+              onChange={(e) => setLaufendFilter(e.target.value)}
+              className="w-full md:w-[200px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="all">Alle Verträge</option>
+              <option value="laufend">Laufend</option>
+              <option value="beendet">Beendet</option>
+            </select>
+
+            <select
+              value={mieterTypFilter}
+              onChange={(e) => setMieterTypFilter(e.target.value)}
+              className="w-full md:w-[200px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="all">Alle Mietertypen</option>
+              <option value="privat">Privat</option>
+              <option value="geschaeftlich">Geschäftlich</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full md:w-[200px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="einzug">Neueste zuerst</option>
+              <option value="einzug-alt">Älteste zuerst</option>
+              <option value="miete-hoch">Höchste Miete</option>
+              <option value="miete-niedrig">Niedrigste Miete</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       {/* Vertraege List */}
       <div className="space-y-4">
@@ -238,70 +320,69 @@ export default function VertraegePage() {
             parseFloat(v.hkVorauszahlung);
 
           return (
-            <Card key={v.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
+            <div key={v.id} className="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <CardTitle className="text-lg">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {getMieterName(v.mieter)}
-                      </CardTitle>
-                      <Badge className={getStatusColor(v.vertragStatus)}>
+                      </h3>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(v.vertragStatus)}`}>
                         {getStatusLabel(v.vertragStatus)}
-                      </Badge>
+                      </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-gray-500 mt-1">
                       {v.einheit?.objekt?.bezeichnung} • Einheit{" "}
                       {v.einheit?.einheitNr}
                     </p>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold">
+                    <div className="text-2xl font-bold text-gray-900">
                       {warmmiete.toFixed(2)} €
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-gray-500">
                       Warmmiete
                     </div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
-                    <div className="text-muted-foreground mb-1">Kaltmiete</div>
-                    <div className="font-medium">{v.kaltmiete} €</div>
+                    <div className="text-gray-600 mb-1">Kaltmiete</div>
+                    <div className="font-medium text-gray-900">{v.kaltmiete} €</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground mb-1">
+                    <div className="text-gray-600 mb-1">
                       BK-Vorauszahlung
                     </div>
-                    <div className="font-medium">{v.bkVorauszahlung} €</div>
+                    <div className="font-medium text-gray-900">{v.bkVorauszahlung} €</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground mb-1">
+                    <div className="text-gray-600 mb-1">
                       HK-Vorauszahlung
                     </div>
-                    <div className="font-medium">{v.hkVorauszahlung} €</div>
+                    <div className="font-medium text-gray-900">{v.hkVorauszahlung} €</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground mb-1">Kaution</div>
-                    <div className="font-medium">
+                    <div className="text-gray-600 mb-1">Kaution</div>
+                    <div className="font-medium text-gray-900">
                       {v.kaution ? `${v.kaution} €` : "-"}
                     </div>
                     {v.kaution && (
-                      <div className="text-xs text-muted-foreground mt-1">
+                      <div className="text-xs text-gray-500 mt-1">
                         {getKautionStatusLabel(v.kautionStatus)}
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t text-sm">
+                <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200 text-sm">
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <Calendar className="h-4 w-4 text-gray-400" />
                     <div>
-                      <div className="text-muted-foreground">Einzug</div>
-                      <div className="font-medium">
+                      <div className="text-gray-600">Einzug</div>
+                      <div className="font-medium text-gray-900">
                         {format(new Date(v.einzugsdatum), "dd.MM.yyyy", {
                           locale: de,
                         })}
@@ -310,10 +391,10 @@ export default function VertraegePage() {
                   </div>
                   {v.auszugsdatum && (
                     <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <Calendar className="h-4 w-4 text-gray-400" />
                       <div>
-                        <div className="text-muted-foreground">Auszug</div>
-                        <div className="font-medium">
+                        <div className="text-gray-600">Auszug</div>
+                        <div className="font-medium text-gray-900">
                           {format(new Date(v.auszugsdatum), "dd.MM.yyyy", {
                             locale: de,
                           })}
@@ -323,28 +404,26 @@ export default function VertraegePage() {
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t flex gap-2">
-                  <Button variant="outline" className="flex-1" size="sm">
+                <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2">
+                  <button className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                     Details ansehen
-                  </Button>
-                  <Button variant="outline" size="sm">
+                  </button>
+                  <button className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                     Vertrag generieren
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           );
         })}
       </div>
 
       {filteredVertraege?.length === 0 && (
-        <Card>
-          <CardContent className="py-8">
-            <div className="text-center text-muted-foreground">
-              Keine Mietverträge gefunden
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-8">
+          <div className="text-center text-gray-500">
+            Keine Mietverträge gefunden
+          </div>
+        </div>
       )}
     </div>
   );

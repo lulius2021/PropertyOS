@@ -257,7 +257,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
               )}
 
               <p className="mt-2 text-xs text-gray-500">
-                {isUploading ? "Bild wird geladen..." : "Ohne Bild wird das PropertyOS Logo verwendet."}
+                {isUploading ? "Bild wird geladen..." : "Ohne Bild wird das PropGate Logo verwendet."}
               </p>
             </div>
           </div>

@@ -1,4 +1,4 @@
-# PropertyOS
+# PropGate
 
 Modern, cloud-based property management SaaS platform for professional real estate management.
 
@@ -6,8 +6,8 @@ Modern, cloud-based property management SaaS platform for professional real esta
 
 This is a **Turborepo monorepo** containing:
 
-- **apps/marketing** - Astro-based marketing website (propertyos.de)
-- **apps/app** - Next.js 15 web application (app.propertyos.de)
+- **apps/marketing** - Astro-based marketing website (propgate.de)
+- **apps/app** - Next.js 15 web application (app.propgate.de)
 - **packages/shared** - Shared TypeScript types and utilities
 
 ## 🚀 Tech Stack
@@ -92,7 +92,7 @@ This project requires **two separate Vercel projects**:
 
 #### Project 1: Marketing Website
 
-- **Domain**: `propertyos.de`
+- **Domain**: `propgate.de`
 - **Root Directory**: `apps/marketing`
 - **Framework Preset**: Astro
 - **Build Command**:
@@ -107,7 +107,7 @@ This project requires **two separate Vercel projects**:
 
 #### Project 2: Web Application
 
-- **Domain**: `app.propertyos.de`
+- **Domain**: `app.propgate.de`
 - **Root Directory**: `apps/app`
 - **Framework Preset**: Next.js
 - **Build Command**:
@@ -142,7 +142,7 @@ R2_BUCKET_NAME=
 ## 📁 Project Structure
 
 ```
-propertyos/
+propgate/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                 # GitHub Actions CI
@@ -198,7 +198,7 @@ Proprietary - All Rights Reserved
 
 **Current Status**: Phase 8 (Reporting, Polish, Hardening) ✅ Complete
 
-**PropertyOS MVP is now feature-complete!**
+**PropGate MVP is now feature-complete!**
 
 **Implemented Features**:
 - ✅ Multi-tenant property management

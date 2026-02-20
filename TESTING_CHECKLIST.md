@@ -1,4 +1,4 @@
-# PropertyOS - Testing Checklist
+# PropGate - Testing Checklist
 
 ## ✅ Fixed Build Errors & Server Status
 - [x] NextAuth v5 migration complete

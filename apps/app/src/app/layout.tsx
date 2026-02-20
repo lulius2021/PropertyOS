@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PropertyOS - Hausverwaltungssoftware",
+  title: "PropGate - Hausverwaltungssoftware",
   description: "Moderne cloudbasierte Hausverwaltungssoftware",
 };
 

@@ -18,7 +18,7 @@ export default async function HomePage() {
               <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
                 <span className="text-white font-bold text-base">P</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">PropertyOS</span>
+              <span className="text-xl font-bold text-gray-900">PropGate</span>
             </div>
             <div className="flex items-center gap-4">
               <Link
@@ -46,7 +46,7 @@ export default async function HomePage() {
           <span className="text-blue-600">einfach gemacht</span>
         </h1>
         <p className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
-          PropertyOS ist Ihre All-in-One-Lösung für professionelle
+          PropGate ist Ihre All-in-One-Lösung für professionelle
           Hausverwaltung. Objekte, Mieter, Verträge und Finanzen — alles an
           einem Ort.
         </p>
@@ -214,7 +214,7 @@ export default async function HomePage() {
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white mt-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-gray-500">
-          <p>© 2026 PropertyOS · DSGVO-konform · Hosting in der EU</p>
+          <p>© 2026 PropGate · DSGVO-konform · Hosting in der EU</p>
         </div>
       </footer>
     </div>

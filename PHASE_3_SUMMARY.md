@@ -2,7 +2,7 @@
 
 ## Summary
 
-Phase 3 has been successfully completed! The PropertyOS web application now has a complete authentication system, protected routing, security headers, and is ready for database connection.
+Phase 3 has been successfully completed! The PropGate web application now has a complete authentication system, protected routing, security headers, and is ready for database connection.
 
 ## What Was Accomplished
 
@@ -133,7 +133,7 @@ Phase 3 has been successfully completed! The PropertyOS web application now has 
 - ✅ Custom 404 design
 - ✅ Link back to dashboard
 - ✅ German language
-- ✅ Branded with PropertyOS styling
+- ✅ Branded with PropGate styling
 
 **Error Boundary** (`src/app/error.tsx`):
 - ✅ Client-side error handling
@@ -212,14 +212,14 @@ apps/app/
 
 **.env.example** (Template):
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/propertyos?schema=public"
+DATABASE_URL="postgresql://user:password@localhost:5432/propgate?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key-here-generate-with-openssl-rand-base64-32"
 ```
 
 **.env.local** (Local Development):
 ```env
-DATABASE_URL="postgresql://localhost:5432/propertyos_dev?schema=public"
+DATABASE_URL="postgresql://localhost:5432/propgate_dev?schema=public"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="development-secret-replace-in-production"
 ```
@@ -227,7 +227,7 @@ NEXTAUTH_SECRET="development-secret-replace-in-production"
 **Production** (Vercel Environment Variables):
 ```env
 DATABASE_URL="postgresql://..."  # Vercel Postgres connection string
-NEXTAUTH_URL="https://app.propertyos.de"
+NEXTAUTH_URL="https://app.propgate.de"
 NEXTAUTH_SECRET="<generate-with-openssl-rand-base64-32>"
 ```
 
@@ -311,7 +311,7 @@ brew install postgresql
 brew services start postgresql
 
 # 3. Create database
-createdb propertyos_dev
+createdb propgate_dev
 
 # 4. Push schema
 pnpm db:push
@@ -339,7 +339,7 @@ See deployment instructions in `DEPLOYMENT.md` for setting up Vercel Postgres.
 
 **Local Development**:
 1. Install PostgreSQL
-2. Create database: `createdb propertyos_dev`
+2. Create database: `createdb propgate_dev`
 3. Update `.env.local` with connection string
 4. Run `pnpm db:push`
 5. Run `pnpm db:seed`

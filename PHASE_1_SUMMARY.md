@@ -2,7 +2,7 @@
 
 ## Summary
 
-Phase 1 has been successfully completed! The PropertyOS monorepo is now set up with a fully functional build pipeline, two applications ready for deployment, and comprehensive documentation.
+Phase 1 has been successfully completed! The PropGate monorepo is now set up with a fully functional build pipeline, two applications ready for deployment, and comprehensive documentation.
 
 ## What Was Accomplished
 
@@ -45,7 +45,7 @@ Phase 1 has been successfully completed! The PropertyOS monorepo is now set up w
 - ✅ `Layout.astro` - Base layout with SEO meta tags
 
 **Features**:
-- ✅ All CTAs link to `https://app.propertyos.de/login`
+- ✅ All CTAs link to `https://app.propgate.de/login`
 - ✅ Responsive design with Tailwind
 - ✅ SEO-optimized with meta tags
 - ✅ Favicon configured
@@ -109,7 +109,7 @@ All build commands have been tested and work successfully:
 ## File Structure
 
 ```
-propertyos/
+propgate/
 ├── .github/workflows/ci.yml       ✅ CI/CD pipeline
 ├── apps/
 │   ├── marketing/                 ✅ Astro marketing site
@@ -153,16 +153,16 @@ Follow the instructions in `DEPLOYMENT.md`:
 2. **Deploy Marketing Site**:
    - Create Vercel project
    - Root: `apps/marketing`
-   - Domain: `propertyos.de`
+   - Domain: `propgate.de`
 
 3. **Deploy Web App**:
    - Create Vercel project
    - Root: `apps/app`
-   - Domain: `app.propertyos.de`
+   - Domain: `app.propgate.de`
 
 4. **Verify Deployment**:
-   - Visit propertyos.de (all 6 pages)
-   - Visit app.propertyos.de (placeholder)
+   - Visit propgate.de (all 6 pages)
+   - Visit app.propgate.de (placeholder)
    - Verify CTAs link correctly
 
 ### Phase 2: Marketing MVP

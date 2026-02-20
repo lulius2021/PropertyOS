@@ -2,7 +2,7 @@
 
 ## Summary
 
-Phase 6 has been successfully implemented! The PropertyOS application now has:
+Phase 6 has been successfully implemented! The PropGate application now has:
 - ✅ Extended Prisma schema with Mahnung model
 - ✅ Mahnwesen service with late fee calculation and escalation logic
 - ✅ Document generation service (PDF with Handlebars + Puppeteer)
@@ -504,7 +504,7 @@ Next major phase tasks:
 
 ## Summary
 
-Phase 6 successfully establishes the **dunning system** and **document generation** for PropertyOS:
+Phase 6 successfully establishes the **dunning system** and **document generation** for PropGate:
 
 ✅ **Dunning Logic**: Automatic escalation (Erinnerung → M1 → M2 → M3)
 ✅ **Late Fees**: Configurable Mahngebühren per Mahnstufe

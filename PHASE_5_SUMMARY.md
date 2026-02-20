@@ -2,7 +2,7 @@
 
 ## Summary
 
-Phase 5 has been successfully implemented! The PropertyOS application now has:
+Phase 5 has been successfully implemented! The PropGate application now has:
 - ✅ Extended Prisma schema with financial models
 - ✅ Warmmiete service for monthly rent calculations
 - ✅ Deckungslogik service with payment allocation priority (BK+HK first, then Kalt)
@@ -561,7 +561,7 @@ Next major phase tasks:
 
 ## Summary
 
-Phase 5 successfully establishes the **financial core** of PropertyOS:
+Phase 5 successfully establishes the **financial core** of PropGate:
 
 ✅ **Payment Requests**: Sollstellungen with component breakdown (Kalt/BK/HK)
 ✅ **Rent Calculation**: Automatic Warmmiete generation per Mietverhältnis

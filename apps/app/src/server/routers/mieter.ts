@@ -7,6 +7,15 @@ export const mieterRouter = router({
     return ctx.db.mieter.findMany({
       where: { tenantId: ctx.tenantId },
       include: {
+        mietverhaeltnisse: {
+          include: {
+            einheit: {
+              include: {
+                objekt: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             mietverhaeltnisse: true,

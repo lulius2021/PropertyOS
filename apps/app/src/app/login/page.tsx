@@ -73,7 +73,7 @@ function LoginForm() {
               ></path>
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">PropertyOS</h1>
+          <h1 className="text-3xl font-bold text-gray-900">PropGate</h1>
           <p className="mt-2 text-gray-600">Anmelden am Dashboard</p>
         </div>
 

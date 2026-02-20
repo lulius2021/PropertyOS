@@ -7,7 +7,7 @@ interface ObjektImageProps {
   size?: "small" | "medium" | "large";
 }
 
-// PropertyOS Haus-Logo als Fallback
+// PropGate Haus-Logo als Fallback
 const HausIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
@@ -51,7 +51,7 @@ export function ObjektImage({ bildUrl, alt, className = "", size = "medium" }: O
     );
   }
 
-  // Fallback: PropertyOS Haus-Icon (wie in der Sidebar)
+  // Fallback: PropGate Haus-Icon (wie in der Sidebar)
   return (
     <div className={`${baseClasses} flex items-center justify-center bg-white border-2 border-gray-200 shadow-sm`}>
       <HausIcon className={`${iconSizes[size]} text-blue-600`} />

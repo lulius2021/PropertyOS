@@ -2,7 +2,7 @@
 
 ## Overview
 
-Phase 8 completes the PropertyOS MVP with comprehensive reporting, credit management, settings interface, enhanced seed data, and final polish.
+Phase 8 completes the PropGate MVP with comprehensive reporting, credit management, settings interface, enhanced seed data, and final polish.
 
 ---
 
@@ -311,7 +311,7 @@ const restschuld = max(anfangsschuld - getilgt, 0);
 
 **Phase 8 Status**: ✅ **COMPLETE**
 
-PropertyOS MVP is now feature-complete with:
+PropGate MVP is now feature-complete with:
 - 12 functional modules (Objekte → Reporting)
 - End-to-end workflows (Mieter → Sollstellung → Zahlung → Mahnung)
 - Comprehensive demo data
