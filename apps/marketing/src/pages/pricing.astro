@@ -1,100 +1,454 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
+
+const plans = [
+  {
+    name: 'Starter',
+    price: '0',
+    period: '/Monat',
+    description: 'Perfekt zum Einstieg und für kleine Portfolios bis 5 Objekte.',
+    featured: false,
+    href: 'https://app.propgate.de/register?plan=starter',
+    cta: 'Kostenlos starten',
+    features: [
+      { text: 'Bis zu 5 Objekte', included: true },
+      { text: 'Unbegrenzte Einheiten pro Objekt', included: true },
+      { text: 'Basis-Mieterverwaltung', included: true },
+      { text: 'Zahlungs-Tracking', included: true },
+      { text: 'Dashboard & KPIs', included: true },
+      { text: 'E-Mail-Support', included: true },
+      { text: 'CSV-Bankimport & Auto-Matching', included: false },
+      { text: 'Mahnwesen mit PDF-Export', included: false },
+      { text: 'Ticketsystem', included: false },
+      { text: 'Zählerverwaltung', included: false },
+      { text: 'Dokument-Export', included: false },
+    ],
+  },
+  {
+    name: 'Professional',
+    price: '29',
+    period: '/Monat',
+    description: 'Für professionelle Verwalter mit wachsendem Portfolio.',
+    featured: true,
+    badge: 'Empfohlen',
+    href: 'https://app.propgate.de/register?plan=professional',
+    cta: 'Jetzt starten',
+    features: [
+      { text: 'Unbegrenzt Objekte', included: true },
+      { text: 'Unbegrenzte Einheiten', included: true },
+      { text: 'Vollständige Mieterverwaltung', included: true },
+      { text: 'Sollstellungen & Kautionsverwaltung', included: true },
+      { text: 'CSV-Bankimport & Auto-Matching', included: true },
+      { text: 'Mahnwesen mit PDF-Export', included: true },
+      { text: 'Ticketsystem mit Status-Workflow', included: true },
+      { text: 'Zählerverwaltung mit Foto-Upload', included: true },
+      { text: 'Dokument-Export (CSV/Excel)', included: true },
+      { text: 'Audit-Logs', included: true },
+      { text: 'Priority-Support', included: true },
+    ],
+  },
+  {
+    name: 'Enterprise',
+    price: '99',
+    period: '/Monat',
+    description: 'Für professionelle Verwaltungsunternehmen mit Team.',
+    featured: false,
+    href: 'https://app.propgate.de/register?plan=enterprise',
+    cta: 'Kontakt aufnehmen',
+    features: [
+      { text: 'Alles aus Professional', included: true },
+      { text: 'Multi-User (unbegrenzt)', included: true },
+      { text: 'Rollenbasierte Zugriffsrechte', included: true },
+      { text: 'API-Zugang', included: true },
+      { text: 'Priority Support mit SLA', included: true },
+      { text: 'Persönliches Onboarding', included: true },
+      { text: 'Custom Branding', included: true },
+      { text: 'Dedizierter Account-Manager', included: true },
+      { text: 'Individuelle Integrationen', included: true },
+    ],
+  },
+];
+
+const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
 ---
 
 <Layout
-  title="Preise - PropertyOS | Transparente Preisgestaltung"
-  description="Transparente Preisgestaltung für Hausverwaltungen jeder Größe. Unbegrenzte Objekte, alle Features inklusive, Premium Support."
+  title="Preise – PropGate | Transparente Preisgestaltung"
+  description="PropGate Preisübersicht: Starter kostenlos, Professional ab €29/Monat, Enterprise ab €99/Monat. Keine versteckten Kosten, monatlich kündbar."
 >
   <Header />
 
-  <main class="py-20">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl text-center">
-        <h1 class="mb-8 text-4xl font-bold text-gray-900">Preise</h1>
-        <p class="mb-12 text-xl text-gray-600">
-          Transparente Preisgestaltung für Hausverwaltungen jeder Größe
+  <main>
+    <!-- Hero -->
+    <section class="pricing-hero">
+      <div class="orb orb-1" aria-hidden="true"></div>
+      <div class="orb orb-2" aria-hidden="true"></div>
+      <div class="pricing-hero-inner">
+        <h1 class="pricing-h1">
+          Einfache, transparente<br />
+          <span class="gradient-text">Preise</span>
+        </h1>
+        <p class="pricing-subtext">
+          Starten Sie kostenlos und upgraden Sie nur dann, wenn Sie bereit sind.
+          Monatlich kündbar, keine Mindestlaufzeit.
+        </p>
+      </div>
+    </section>
+
+    <!-- Plans -->
+    <section class="plans-section">
+      <div class="plans-container">
+        <div class="plans-grid">
+          {plans.map((plan) => (
+            <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`}>
+              {plan.featured && plan.badge && (
+                <div class="plan-badge">{plan.badge}</div>
+              )}
+              <div class="plan-header">
+                <h2 class="plan-name">{plan.name}</h2>
+                <p class="plan-description">{plan.description}</p>
+                <div class="plan-price">
+                  <span class="price-currency">€</span>
+                  <span class="price-amount">{plan.price}</span>
+                  <span class="price-period">{plan.period}</span>
+                </div>
+              </div>
+
+              <a href={plan.href} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : 'plan-cta-secondary'}`}>
+                {plan.cta}
+              </a>
+
+              <ul class="plan-features">
+                {plan.features.map((feature) => (
+                  <li class={`feature-item ${feature.included ? 'feature-included' : 'feature-missing'}`}>
+                    <span class={feature.included ? 'feature-check' : 'feature-cross'} set:html={feature.included ? checkIcon : crossIcon} />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <p class="pricing-note">
+          Alle Preise zzgl. MwSt. · Monatlich kündbar · Keine versteckten Kosten · SSL-verschlüsselt
         </p>
 
-        <div class="rounded-lg border bg-white p-8 shadow-lg">
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Professional</h2>
-          <div class="mb-6">
-            <span class="text-5xl font-bold text-gray-900">Auf Anfrage</span>
+        <!-- FAQ -->
+        <div class="faq-section">
+          <h2 class="faq-title">Häufige Fragen</h2>
+          <div class="faq-grid">
+            <div class="faq-item">
+              <h3 class="faq-q">Muss ich eine Kreditkarte angeben?</h3>
+              <p class="faq-a">Nein. Der Starter-Plan ist dauerhaft kostenlos — keine Kreditkarte, keine versteckten Kosten.</p>
+            </div>
+            <div class="faq-item">
+              <h3 class="faq-q">Kann ich jederzeit upgraden oder kündigen?</h3>
+              <p class="faq-a">Ja. Sie können jederzeit zwischen Plänen wechseln oder kündigen. Es gibt keine Mindestlaufzeit.</p>
+            </div>
+            <div class="faq-item">
+              <h3 class="faq-q">Was passiert mit meinen Daten bei einer Kündigung?</h3>
+              <p class="faq-a">Ihre Daten bleiben 30 Tage nach Kündigung erhalten. Sie können alles als CSV exportieren.</p>
+            </div>
+            <div class="faq-item">
+              <h3 class="faq-q">Gibt es einen Rabatt für Jahrespläne?</h3>
+              <p class="faq-a">Ja. Bei Jahresabrechnung sparen Sie 20%. Kontaktieren Sie uns für Details.</p>
+            </div>
           </div>
-          <ul class="mb-8 space-y-3 text-left text-gray-600">
-            <li class="flex items-start">
-              <svg
-                class="mr-2 mt-1 h-5 w-5 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"></path>
-              </svg>
-              Unbegrenzte Objekte und Einheiten
-            </li>
-            <li class="flex items-start">
-              <svg
-                class="mr-2 mt-1 h-5 w-5 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"></path>
-              </svg>
-              Alle Features inklusive
-            </li>
-            <li class="flex items-start">
-              <svg
-                class="mr-2 mt-1 h-5 w-5 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"></path>
-              </svg>
-              Premium Support
-            </li>
-            <li class="flex items-start">
-              <svg
-                class="mr-2 mt-1 h-5 w-5 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"></path>
-              </svg>
-              DSGVO-konform & sicher
-            </li>
-          </ul>
-          <a
-            href="https://app.propertyos.de/login"
-            class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-medium text-white hover:bg-blue-700"
-          >
-            Jetzt starten
-          </a>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 
+  <CTABanner />
   <Footer />
 </Layout>
+
+<style>
+  /* Pricing Hero */
+  .pricing-hero {
+    background: #0a0a0f;
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
+    top: -200px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+    bottom: -100px;
+    right: -50px;
+  }
+
+  .pricing-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .pricing-h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 50%, #66b8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .pricing-subtext {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #a0a8b8;
+  }
+
+  /* Plans section */
+  .plans-section {
+    background: #f8f9fc;
+    padding: 5rem 1.5rem;
+  }
+
+  .plans-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
+
+  .plan-card {
+    background: #ffffff;
+    border: 1.5px solid rgba(0, 0, 0, 0.09);
+    border-radius: 16px;
+    padding: 2.25rem;
+    position: relative;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .plan-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .plan-featured {
+    border-color: #0066ff;
+    border-width: 2px;
+    box-shadow:
+      0 0 0 4px rgba(0, 102, 255, 0.06),
+      0 16px 48px rgba(0, 102, 255, 0.14);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0066ff;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.875rem;
+    border-radius: 100px;
+  }
+
+  .plan-name {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: #0f0f1a;
+    margin-bottom: 0.375rem;
+    letter-spacing: -0.02em;
+  }
+
+  .plan-featured .plan-name {
+    color: #0066ff;
+  }
+
+  .plan-description {
+    font-size: 0.9375rem;
+    color: #5a6478;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .price-currency {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0f0f1a;
+    margin-top: 0.375rem;
+  }
+
+  .price-amount {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #0f0f1a;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .price-period {
+    font-size: 0.9375rem;
+    color: #5a6478;
+    margin-left: 0.125rem;
+  }
+
+  .plan-cta {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.875rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.75rem;
+    transition: all 0.15s ease;
+  }
+
+  .plan-cta-primary {
+    background: #0066ff;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.3);
+  }
+
+  .plan-cta-primary:hover {
+    background: #0052cc;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+  }
+
+  .plan-cta-secondary {
+    background: transparent;
+    color: #0f0f1a;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .plan-cta-secondary:hover {
+    background: #f8f9fc;
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding-top: 1.5rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .feature-included { color: #374151; }
+  .feature-missing { color: #9ca3af; }
+
+  .feature-check { color: #0066ff; flex-shrink: 0; margin-top: 1px; }
+  .feature-cross { color: #d1d5db; flex-shrink: 0; margin-top: 1px; }
+
+  .pricing-note {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin-bottom: 4rem;
+  }
+
+  /* FAQ */
+  .faq-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+    padding-top: 4rem;
+  }
+
+  .faq-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f0f1a;
+    letter-spacing: -0.03em;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .faq-item {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .faq-q {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f0f1a;
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-a {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #5a6478;
+  }
+
+  @media (max-width: 1024px) {
+    .plans-grid {
+      grid-template-columns: 1fr;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -4,6 +4,8 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { validatePassword } from "@/lib/password-policy";
 
 const PLANS = {
   starter: { label: "Starter", price: "Kostenlos" },
@@ -20,12 +22,21 @@ function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const set = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [field]: e.target.value }));
+  const set =
+    (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Client-side password validation
+    const validation = validatePassword(form.password);
+    if (!validation.valid) {
+      setError(validation.errors[0]);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -71,14 +82,16 @@ function RegisterForm() {
             href="/"
             className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6"
           >
-            ← Zurück zur Website
+            &larr; Zurück zur Website
           </Link>
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center">
               <span className="text-white font-bold text-xl">P</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Account erstellen</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Account erstellen
+          </h1>
           <p className="mt-2 text-sm text-gray-500">
             Plan:{" "}
             <span className="font-semibold text-blue-600">
@@ -130,12 +143,12 @@ function RegisterForm() {
               <input
                 type="password"
                 required
-                minLength={8}
                 value={form.password}
                 onChange={set("password")}
-                placeholder="Mindestens 8 Zeichen"
+                placeholder="Mindestens 10 Zeichen, Groß/Kleinbuchstaben, Zahl, Sonderzeichen"
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
+              <PasswordStrengthMeter password={form.password} />
             </div>
 
             <button
@@ -149,7 +162,10 @@ function RegisterForm() {
 
           <p className="mt-6 text-center text-sm text-gray-500">
             Bereits einen Account?{" "}
-            <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700">
+            <Link
+              href="/login"
+              className="font-semibold text-blue-600 hover:text-blue-700"
+            >
               Anmelden
             </Link>
           </p>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { db } from "@/lib/db";
+import { validatePassword } from "@/lib/password-policy";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,9 +14,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (password.length < 8) {
+    // Strong password validation
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
       return NextResponse.json(
-        { error: "Passwort muss mindestens 8 Zeichen lang sein" },
+        { error: passwordValidation.errors[0] },
         { status: 400 }
       );
     }

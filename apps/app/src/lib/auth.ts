@@ -4,6 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { db } from "./db";
 
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
+
 export const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
@@ -18,7 +21,6 @@ export const authConfig: NextAuthConfig = {
         }
 
         try {
-          // Find user by email (across all tenants for now - will refine in Phase 4)
           const user = await db.user.findFirst({
             where: {
               email: credentials.email as string,
@@ -32,6 +34,16 @@ export const authConfig: NextAuthConfig = {
             return null;
           }
 
+          // Check account lockout
+          if (user.lockedUntil && user.lockedUntil > new Date()) {
+            const remainingMs =
+              user.lockedUntil.getTime() - Date.now();
+            const remainingMin = Math.ceil(remainingMs / 60000);
+            throw new Error(
+              `ACCOUNT_LOCKED:${remainingMin}`
+            );
+          }
+
           // Verify password
           const isPasswordValid = await compare(
             credentials.password as string,
@@ -39,10 +51,43 @@ export const authConfig: NextAuthConfig = {
           );
 
           if (!isPasswordValid) {
+            // Increment failed attempts
+            const newAttempts = user.failedLoginAttempts + 1;
+            const updateData: any = {
+              failedLoginAttempts: newAttempts,
+            };
+
+            // Lock account after MAX_FAILED_ATTEMPTS
+            if (newAttempts >= MAX_FAILED_ATTEMPTS) {
+              updateData.lockedUntil = new Date(
+                Date.now() + LOCKOUT_DURATION_MS
+              );
+            }
+
+            await db.user.update({
+              where: { id: user.id },
+              data: updateData,
+            });
+
+            if (newAttempts >= MAX_FAILED_ATTEMPTS) {
+              throw new Error("ACCOUNT_LOCKED:15");
+            }
+
             return null;
           }
 
-          // Return user data
+          // Successful login - reset failed attempts
+          if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+            await db.user.update({
+              where: { id: user.id },
+              data: {
+                failedLoginAttempts: 0,
+                lockedUntil: null,
+              },
+            });
+          }
+
+          // Return user data with 2FA flag
           return {
             id: user.id,
             email: user.email,
@@ -50,8 +95,13 @@ export const authConfig: NextAuthConfig = {
             tenantId: user.tenantId,
             tenantName: user.tenant.name,
             role: user.role,
+            needsTwoFactor: user.totpEnabled,
+            twoFactorVerified: false,
           };
-        } catch (error) {
+        } catch (error: any) {
+          if (error?.message?.startsWith("ACCOUNT_LOCKED:")) {
+            throw error;
+          }
           console.error("Auth error:", error);
           return null;
         }
@@ -59,12 +109,18 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user, trigger, session }: { token: any; user: any; trigger?: string; session?: any }) {
       if (user) {
         token.id = user.id;
         token.tenantId = user.tenantId;
         token.tenantName = user.tenantName;
         token.role = user.role;
+        token.needsTwoFactor = user.needsTwoFactor ?? false;
+        token.twoFactorVerified = user.twoFactorVerified ?? false;
+      }
+      // Allow updating 2FA verification status via session update
+      if (trigger === "update" && session?.twoFactorVerified !== undefined) {
+        token.twoFactorVerified = session.twoFactorVerified;
       }
       return token;
     },
@@ -74,6 +130,8 @@ export const authConfig: NextAuthConfig = {
         session.user.tenantId = token.tenantId;
         session.user.tenantName = token.tenantName;
         session.user.role = token.role;
+        session.user.needsTwoFactor = token.needsTwoFactor;
+        session.user.twoFactorVerified = token.twoFactorVerified;
       }
       return session;
     },
@@ -84,7 +142,21 @@ export const authConfig: NextAuthConfig = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 7 * 24 * 60 * 60, // 7 days (Launch-Security)
+    maxAge: 24 * 60 * 60, // 24 hours
+  },
+  cookies: {
+    sessionToken: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-authjs.session-token"
+          : "authjs.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

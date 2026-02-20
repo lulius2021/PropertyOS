@@ -2,20 +2,28 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import TrustBar from '../components/TrustBar.astro';
 import FeatureGrid from '../components/FeatureGrid.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import PricingSection from '../components/PricingSection.astro';
 import TrustSection from '../components/TrustSection.astro';
+import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
 import StructuredData from '../components/StructuredData.astro';
 ---
 
 <Layout
-  title="PropertyOS - Moderne Hausverwaltungssoftware | Cloud-basiert & DSGVO-konform"
-  description="PropertyOS ist die moderne, cloudbasierte Software für Hausverwaltungen. Objektverwaltung, Bankimport mit Auto-Matching, Mahnwesen, Ticketsystem & mehr. DSGVO-konform, benutzerfreundlich und effizient."
+  title="PropGate – Moderne Hausverwaltungssoftware | Cloud-basiert & DSGVO-konform"
+  description="PropGate ist die moderne, cloudbasierte Software für Hausverwaltungen. Objektverwaltung, Bankimport mit Auto-Matching, Mahnwesen, Ticketsystem & mehr. DSGVO-konform, benutzerfreundlich und effizient."
 >
   <StructuredData />
   <Header />
   <Hero />
+  <TrustBar />
   <FeatureGrid />
+  <HowItWorks />
+  <PricingSection />
   <TrustSection />
+  <CTABanner />
   <Footer />
 </Layout>

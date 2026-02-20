@@ -3,6 +3,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 import Link from "next/link";
+import { PlanLimitReached } from "@/components/ui/PlanLimitReached";
 
 export default function BankPage() {
   const [statusFilter, setStatusFilter] = useState<
@@ -14,7 +15,7 @@ export default function BankPage() {
     | undefined
   >("UNKLAR");
 
-  const { data: zahlungen, isLoading, refetch } =
+  const { data: zahlungen, isLoading, refetch, error } =
     trpc.bank.listZahlungen.useQuery({ status: statusFilter });
 
   const autoMatchMutation = trpc.bank.autoMatchAlle.useMutation({
@@ -28,6 +29,18 @@ export default function BankPage() {
       refetch();
     },
   });
+
+  // Plan-Gate: Feature nicht verfügbar
+  if (error?.data?.code === "FORBIDDEN") {
+    return (
+      <div className="mx-auto max-w-lg mt-12">
+        <PlanLimitReached
+          feature="bankImport"
+          message={error.message}
+        />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <div>Laden...</div>;

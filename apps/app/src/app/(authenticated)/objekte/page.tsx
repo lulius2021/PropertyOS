@@ -6,17 +6,21 @@ import { trpc } from "@/lib/trpc/client";
 import { ViewToggle } from "@/components/objekte/ViewToggle";
 import { ObjektCard } from "@/components/objekte/ObjektCard";
 import { ErweiterterObjektModal } from "@/components/objekte/ErweiterterObjektModal";
+import { ObjektLimitReached } from "@/components/ui/PlanLimitReached";
 
 export default function ObjektePage() {
   const router = useRouter();
   const utils = trpc.useUtils();
   const { data: objekte, isLoading } = trpc.objekte.list.useQuery();
+  const { data: planInfo } = trpc.plan.info.useQuery();
   const [view, setView] = useState<"table" | "grid">("grid");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
     return <div>Laden...</div>;
   }
+
+  const limitReached = planInfo?.objekteLimitReached ?? false;
 
   return (
     <div>
@@ -29,7 +33,8 @@ export default function ObjektePage() {
           <ViewToggle view={view} onViewChange={setView} />
           <button
             onClick={() => setIsModalOpen(true)}
-            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 flex items-center gap-2"
+            disabled={limitReached}
+            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -38,6 +43,16 @@ export default function ObjektePage() {
           </button>
         </div>
       </div>
+
+      {/* Plan-Limit-Warnung */}
+      {limitReached && planInfo && (
+        <div className="mb-6">
+          <ObjektLimitReached
+            currentCount={planInfo.currentObjekte}
+            maxCount={planInfo.maxObjekte!}
+          />
+        </div>
+      )}
 
       {objekte && objekte.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
@@ -58,7 +73,7 @@ export default function ObjektePage() {
           {objekte?.map((objekt) => (
             <ObjektCard
               key={objekt.id}
-              objekt={objekt}
+              objekt={objekt as any}
               onClick={() => router.push(`/objekte/${objekt.id}`)}
             />
           ))}
@@ -123,6 +138,7 @@ export default function ObjektePage() {
         onSuccess={() => {
           // Refresh die Liste
           utils.objekte.list.invalidate();
+          utils.plan.info.invalidate();
         }}
       />
     </div>

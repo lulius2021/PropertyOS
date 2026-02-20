@@ -3,15 +3,17 @@
  * Handles ticket management system
  */
 
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, createPlanGatedProcedure } from "../trpc";
 import { z } from "zod";
 import { logAudit } from "../middleware/audit";
+
+const ticketsProcedure = createPlanGatedProcedure("tickets");
 
 export const ticketsRouter = router({
   /**
    * Liste aller Tickets
    */
-  list: protectedProcedure
+  list: ticketsProcedure
     .input(
       z
         .object({
@@ -49,7 +51,7 @@ export const ticketsRouter = router({
   /**
    * Einzelnes Ticket abrufen
    */
-  getById: protectedProcedure
+  getById: ticketsProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.ticket.findUnique({
@@ -71,7 +73,7 @@ export const ticketsRouter = router({
   /**
    * Ticket erstellen
    */
-  create: protectedProcedure
+  create: ticketsProcedure
     .input(
       z.object({
         titel: z.string().min(1),
@@ -122,7 +124,7 @@ export const ticketsRouter = router({
   /**
    * Ticket aktualisieren
    */
-  update: protectedProcedure
+  update: ticketsProcedure
     .input(
       z.object({
         id: z.string(),
@@ -167,7 +169,7 @@ export const ticketsRouter = router({
   /**
    * Kommentar hinzufügen
    */
-  addComment: protectedProcedure
+  addComment: ticketsProcedure
     .input(
       z.object({
         ticketId: z.string(),
@@ -199,7 +201,7 @@ export const ticketsRouter = router({
   /**
    * Status ändern (mit Kommentar)
    */
-  changeStatus: protectedProcedure
+  changeStatus: ticketsProcedure
     .input(
       z.object({
         ticketId: z.string(),
@@ -241,7 +243,7 @@ export const ticketsRouter = router({
   /**
    * Statistiken für Dashboard
    */
-  stats: protectedProcedure.query(async ({ ctx }) => {
+  stats: ticketsProcedure.query(async ({ ctx }) => {
     const [erfasst, inBearbeitung, kritisch] = await Promise.all([
       ctx.db.ticket.count({
         where: {

@@ -11,6 +11,9 @@ import { kostenRouter } from "./kosten";
 import { zaehlerRouter } from "./zaehler";
 import { krediteRouter } from "./kredite";
 import { reportingRouter } from "./reporting";
+import { authSecurityRouter } from "./auth-security";
+import { planRouter } from "./plan";
+import { statistikRouter } from "./statistik";
 
 export const appRouter = router({
   objekte: objekteRouter,
@@ -25,6 +28,9 @@ export const appRouter = router({
   zaehler: zaehlerRouter,
   kredite: krediteRouter,
   reporting: reportingRouter,
+  authSecurity: authSecurityRouter,
+  plan: planRouter,
+  statistik: statistikRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -10,7 +10,7 @@ interface Props {
 
 const {
   title,
-  description = 'PropertyOS - Moderne Hausverwaltungssoftware. Cloudbasierte Software für operativen Tagesbetrieb: Objektverwaltung, Bankimport, Mahnwesen, Tickets & mehr. DSGVO-konform.',
+  description = 'PropGate – Moderne Hausverwaltungssoftware. Cloudbasierte Software für operativen Tagesbetrieb: Objektverwaltung, Bankimport, Mahnwesen, Tickets & mehr. DSGVO-konform.',
   ogImage = '/og-image.png',
   noindex = false,
 } = Astro.props;
@@ -42,7 +42,7 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:locale" content="de_DE" />
-    <meta property="og:site_name" content="PropertyOS" />
+    <meta property="og:site_name" content="PropGate" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -56,11 +56,16 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
-    <!-- Preconnect to improve performance -->
-    <link rel="preconnect" href="https://app.propertyos.de" />
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Theme Color -->
-    <meta name="theme-color" content="#0066CC" />
+    <meta name="theme-color" content="#0066ff" />
   </head>
   <body class="antialiased">
     <slot />

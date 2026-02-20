@@ -1,86 +1,427 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
+
+const featureGroups = [
+  {
+    title: 'Objektverwaltung',
+    description: 'Behalten Sie den Überblick über Ihr gesamtes Immobilienportfolio.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    features: [
+      'Unbegrenzt Objekte und Einheiten anlegen',
+      'Vollständige Adress- und Stammdatenverwaltung',
+      'Statushistorie und Änderungsprotokoll',
+      'Portfolio-Übersicht mit KPIs',
+      'CSV/Excel-Export aller Daten',
+    ],
+  },
+  {
+    title: 'Mietverwaltung',
+    description: 'Vollständige Mieterverwaltung — von der Sollstellung bis zur Kaution.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+    features: [
+      'Mieter-Stammdaten und Kontaktdaten',
+      'Mietvertrags-Verwaltung mit allen Details',
+      'Automatische Sollstellungserstellung',
+      'Warmmiete-Berechnung (Nettomiete + BK + HK)',
+      'Kautionsverwaltung mit Rückgabe-Workflow',
+    ],
+  },
+  {
+    title: 'Bankimport & Auto-Matching',
+    description: 'Sparen Sie Stunden bei der Zahlungszuordnung.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>`,
+    features: [
+      'CSV-Import von Kontoauszügen aller Banken',
+      'Intelligentes Auto-Matching nach IBAN und Betrag',
+      'Deckungslogik mit BK/HK-Priorisierung',
+      'Manuelle Zuordnung für ungematchte Buchungen',
+      'Übersicht offener und geklärter Zahlungen',
+    ],
+  },
+  {
+    title: 'Mahnwesen',
+    description: 'Automatisierte Mahnvorschläge auf Knopfdruck.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>`,
+    features: [
+      'Automatische Mahnvorschläge bei Zahlungsverzug',
+      'Konfigurierbare Mahngebühren und Verzugszinsen',
+      'Mahnschreiben als PDF oder DOCX generieren',
+      'Mehrstufiges Mahnverfahren',
+      'Vollständige Mahnhistorie pro Mieter',
+    ],
+  },
+  {
+    title: 'Ticketsystem',
+    description: 'Schadensmeldungen und Anfragen effizient bearbeiten.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`,
+    features: [
+      'Schadensmeldungen, Wartungsanfragen, Beschwerden',
+      'Status-Workflow (Offen → In Bearbeitung → Erledigt)',
+      'Verantwortlichkeiten und Fristen',
+      'Foto-Uploads und Dokumentenanhänge',
+      'Benachrichtigungen bei Status-Änderungen',
+    ],
+  },
+  {
+    title: 'Zählerverwaltung',
+    description: 'Alle Zähler im Blick — lückenlose Dokumentation.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    features: [
+      'Strom-, Gas-, Wasser- und Wärmezähler',
+      'Zählerstand-Erfassung mit Datum',
+      'Foto-Upload bei Ein- und Auszug',
+      'Automatische Verbrauchsberechnung',
+      'Zählerhistorie mit Verbrauchskurven',
+    ],
+  },
+];
 ---
 
 <Layout
-  title="Features - PropertyOS | Alle Funktionen im Überblick"
-  description="Objektverwaltung, Mietverwaltung, Bankimport, Mahnwesen, Ticketsystem, Zählerverwaltung und mehr. Alle Features von PropertyOS im Detail."
+  title="Features – PropGate | Alle Funktionen im Überblick"
+  description="PropGate bietet alles für professionelle Hausverwaltung: Objektverwaltung, Mieterverwaltung, Bankimport, Mahnwesen, Ticketsystem und Zählerverwaltung. DSGVO-konform."
 >
   <Header />
 
-  <main class="py-20">
-    <div class="container mx-auto px-4">
-      <h1 class="mb-8 text-4xl font-bold text-gray-900">Alle Features im Detail</h1>
-
-      <div class="space-y-12">
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Objektverwaltung</h2>
-          <p class="text-gray-600">
-            Verwalten Sie Ihre Immobilien mit allen Details: Adressen, Einheiten, Statushistorie
-            und mehr. Behalten Sie den Überblick über Ihr gesamtes Portfolio.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Mietverwaltung</h2>
-          <p class="text-gray-600">
-            Vollständige Mieterverwaltung mit automatischer Sollstellungserstellung,
-            Warmmiete-Berechnung und Kautionsverwaltung.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Bankimport & Auto-Matching</h2>
-          <p class="text-gray-600">
-            Importieren Sie Kontoauszüge per CSV und lassen Sie Zahlungen automatisch zuordnen.
-            Intelligente Deckungslogik berücksichtigt Betriebskosten und Heizkosten vorrangig.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Mahnwesen</h2>
-          <p class="text-gray-600">
-            Automatische Mahnvorschläge basierend auf Zahlungsverzug. Berechnung von Mahngebühren
-            und Verzugszinsen. Generierung von Mahnschreiben als PDF oder DOCX.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Ticketsystem</h2>
-          <p class="text-gray-600">
-            Erfassen und bearbeiten Sie Schadensmeldungen, Wartungsanfragen und Beschwerden
-            strukturiert. Mit Status-Workflow und Verantwortlichkeiten.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Kosten & Zeiterfassung</h2>
-          <p class="text-gray-600">
-            Erfassen Sie alle Kosten mit BK/HK-Relevanz für die Nebenkostenabrechnung.
-            Zeiterfassung für interne Dienstleistungen.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Zählerverwaltung</h2>
-          <p class="text-gray-600">
-            Verwalten Sie Strom-, Gas-, Wasser- und Wärmezähler. Erfassen Sie Zählerstände mit
-            Foto-Upload bei Ein- und Auszug.
-          </p>
-        </section>
-
-        <section>
-          <h2 class="mb-4 text-2xl font-semibold text-gray-900">Reporting & Auswertungen</h2>
-          <p class="text-gray-600">
-            Dashboard mit KPIs, Statusquoten, Soll/Ist-Vergleich und Portfolio-Exporte als CSV
-            oder Excel.
-          </p>
-        </section>
+  <main>
+    <!-- Hero -->
+    <section class="features-hero">
+      <div class="orb orb-1" aria-hidden="true"></div>
+      <div class="orb orb-2" aria-hidden="true"></div>
+      <div class="features-hero-inner">
+        <p class="eyebrow">Features</p>
+        <h1 class="features-h1">
+          Alles für professionelle<br />
+          <span class="gradient-text">Hausverwaltung</span>
+        </h1>
+        <p class="features-subtext">
+          Von der Objektverwaltung bis zum Bankimport — PropGate bietet alle
+          Werkzeuge für effizienten Verwaltungsalltag.
+        </p>
+        <a href="https://app.propgate.de/register" class="hero-cta">
+          Kostenlos starten
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
       </div>
-    </div>
+    </section>
+
+    <!-- Feature Groups -->
+    <section class="features-section">
+      <div class="features-container">
+        {featureGroups.map((group, i) => (
+          <div class={`feature-group ${i % 2 === 1 ? 'feature-group-reverse' : ''}`}>
+            <div class="feature-group-content">
+              <div class="feature-group-icon">
+                <span set:html={group.icon} />
+              </div>
+              <h2 class="feature-group-title">{group.title}</h2>
+              <p class="feature-group-description">{group.description}</p>
+              <ul class="feature-group-list">
+                {group.features.map((f) => (
+                  <li class="feature-group-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feature-check" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="feature-group-visual">
+              <div class="feature-visual-card">
+                <div class="visual-icon">
+                  <span set:html={group.icon} />
+                </div>
+                <div class="visual-lines">
+                  <div class="visual-line vl-wide"></div>
+                  <div class="visual-line vl-mid"></div>
+                  <div class="visual-line vl-narrow"></div>
+                  <div class="visual-divider"></div>
+                  {group.features.slice(0, 4).map(() => (
+                    <div class="visual-feature-row">
+                      <div class="vf-dot"></div>
+                      <div class="vf-text"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   </main>
 
+  <CTABanner />
   <Footer />
 </Layout>
+
+<style>
+  .features-hero {
+    background: #0a0a0f;
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
+    top: -200px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+    bottom: -50px;
+    right: -100px;
+  }
+
+  .features-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4da6ff;
+    margin-bottom: 0.875rem;
+  }
+
+  .features-h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 50%, #66b8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .features-subtext {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #a0a8b8;
+    margin-bottom: 2rem;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #0066ff;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.875rem 1.75rem;
+    border-radius: 10px;
+    transition: background 0.15s ease, transform 0.1s ease;
+    box-shadow: 0 0 24px rgba(0, 102, 255, 0.35);
+  }
+
+  .hero-cta:hover {
+    background: #0052cc;
+    transform: translateY(-2px);
+  }
+
+  /* Feature Groups */
+  .features-section {
+    background: #ffffff;
+    padding: 5rem 1.5rem;
+  }
+
+  .features-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+  }
+
+  .feature-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .feature-group-reverse {
+    direction: rtl;
+  }
+
+  .feature-group-reverse > * {
+    direction: ltr;
+  }
+
+  .feature-group-icon {
+    width: 52px;
+    height: 52px;
+    background: rgba(0, 102, 255, 0.08);
+    border: 1px solid rgba(0, 102, 255, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0066ff;
+    margin-bottom: 1.25rem;
+  }
+
+  .feature-group-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #0f0f1a;
+    margin-bottom: 0.625rem;
+    letter-spacing: -0.03em;
+  }
+
+  .feature-group-description {
+    font-size: 1.0625rem;
+    color: #5a6478;
+    margin-bottom: 1.5rem;
+    line-height: 1.65;
+  }
+
+  .feature-group-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .feature-group-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  .feature-check {
+    color: #0066ff;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Visual Cards */
+  .feature-group-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-visual-card {
+    background: #f8f9fc;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .visual-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 102, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0066ff;
+    margin-bottom: 1.25rem;
+  }
+
+  .visual-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .visual-line {
+    height: 12px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .vl-wide { width: 75%; }
+  .vl-mid { width: 55%; }
+  .vl-narrow { width: 35%; }
+
+  .visual-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0.5rem 0;
+  }
+
+  .visual-feature-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0;
+  }
+
+  .vf-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0066ff;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .vf-text {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.07);
+  }
+
+  @media (max-width: 1024px) {
+    .feature-group {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .feature-group-reverse {
+      direction: ltr;
+    }
+
+    .feature-group-visual {
+      order: -1;
+    }
+
+    .feature-group-reverse .feature-group-visual {
+      order: -1;
+    }
+  }
+</style>

@@ -3,9 +3,11 @@
  * Handles payment imports and allocations
  */
 
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, createPlanGatedProcedure } from "../trpc";
 import { z } from "zod";
 import { logAudit } from "../middleware/audit";
+
+const bankImportProcedure = createPlanGatedProcedure("bankImport");
 import {
   ordneZahlungZu,
   hebeZuordnungAuf,
@@ -20,7 +22,7 @@ export const bankRouter = router({
   /**
    * Liste aller Zahlungen (mit Filter)
    */
-  listZahlungen: protectedProcedure
+  listZahlungen: bankImportProcedure
     .input(
       z
         .object({
@@ -87,7 +89,7 @@ export const bankRouter = router({
   /**
    * CSV-Import von Zahlungen
    */
-  importCSV: protectedProcedure
+  importCSV: bankImportProcedure
     .input(
       z.object({
         zahlungen: z.array(
@@ -167,7 +169,7 @@ export const bankRouter = router({
   /**
    * Manuelle Zuordnung einer Zahlung zu einer Sollstellung
    */
-  zuordnen: protectedProcedure
+  zuordnen: bankImportProcedure
     .input(
       z.object({
         zahlungId: z.string(),
@@ -190,7 +192,7 @@ export const bankRouter = router({
   /**
    * Zahlung aufteilen (Split)
    */
-  splitten: protectedProcedure
+  splitten: bankImportProcedure
     .input(
       z.object({
         zahlungId: z.string(),
@@ -257,7 +259,7 @@ export const bankRouter = router({
   /**
    * Zahlung ignorieren
    */
-  ignorieren: protectedProcedure
+  ignorieren: bankImportProcedure
     .input(z.object({ zahlungId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.zahlung.update({
@@ -279,7 +281,7 @@ export const bankRouter = router({
   /**
    * Zuordnung aufheben (Revert)
    */
-  zuordnungAufheben: protectedProcedure
+  zuordnungAufheben: bankImportProcedure
     .input(z.object({ zuordnungId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await hebeZuordnungAuf(input.zuordnungId, ctx.tenantId, ctx.userId);
@@ -289,7 +291,7 @@ export const bankRouter = router({
   /**
    * Auto-Matching für alle unklaren Zahlungen
    */
-  autoMatchAlle: protectedProcedure.mutation(async ({ ctx }) => {
+  autoMatchAlle: bankImportProcedure.mutation(async ({ ctx }) => {
     const results = await autoMatchAlleUnklareZahlungen(ctx.tenantId);
 
       await logAudit({
@@ -307,14 +309,14 @@ export const bankRouter = router({
   /**
    * Bank-Import-Profile verwalten
    */
-  listProfiles: protectedProcedure.query(async ({ ctx }) => {
+  listProfiles: bankImportProcedure.query(async ({ ctx }) => {
     return ctx.db.bankImportProfile.findMany({
       where: { tenantId: ctx.tenantId },
       orderBy: { profilName: "asc" },
     });
   }),
 
-  createProfile: protectedProcedure
+  createProfile: bankImportProcedure
     .input(
       z.object({
         profilName: z.string().min(1),
@@ -350,7 +352,7 @@ export const bankRouter = router({
       return profile;
     }),
 
-  deleteProfile: protectedProcedure
+  deleteProfile: bankImportProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.bankImportProfile.delete({

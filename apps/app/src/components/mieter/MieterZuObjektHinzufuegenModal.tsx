@@ -460,8 +460,8 @@ export function MieterZuObjektHinzufuegenModal({
                       <option value="">Bitte wählen Sie eine Einheit</option>
                       {verfuegbareEinheiten.map((einheit) => (
                         <option key={einheit.id} value={einheit.id}>
-                          Einheit {einheit.einheitNr} - {einheit.bezeichnung || "Keine Bezeichnung"}
-                          {einheit.wohnflaeche && ` (${einheit.wohnflaeche} m²)`}
+                          Einheit {einheit.einheitNr} - {(einheit as any).bezeichnung || "Keine Bezeichnung"}
+                          {(einheit as any).wohnflaeche && ` (${(einheit as any).wohnflaeche} m²)`}
                         </option>
                       ))}
                     </select>

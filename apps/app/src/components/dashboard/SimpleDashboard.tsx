@@ -41,6 +41,12 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
 
   // Reihe 3: 1 großes Widget (4 Spalten breit)
   { i: "schnellzugriff-1", type: "schnellzugriff", size: "large", x: 0, y: 5, w: 4, h: 3 },
+
+  // Reihe 4: 4 neue Statistik-Widgets
+  { i: "belegungsquote-1", type: "belegungsquote", size: "small", x: 0, y: 8, w: 1, h: 2 },
+  { i: "einzugsquote-1", type: "einzugsquote", size: "small", x: 1, y: 8, w: 1, h: 2 },
+  { i: "operativerCashflow-1", type: "operativerCashflow", size: "small", x: 2, y: 8, w: 1, h: 2 },
+  { i: "kaltmieteProQm-1", type: "kaltmieteProQm", size: "small", x: 3, y: 8, w: 1, h: 2 },
 ];
 
 export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {

@@ -4,87 +4,154 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Datenschutz - PropertyOS">
+<Layout title="Datenschutz – PropGate" noindex={true}>
   <Header />
 
-  <main class="py-20">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl">
-        <h1 class="mb-8 text-4xl font-bold text-gray-900">Datenschutzerklärung</h1>
+  <main class="legal-main">
+    <div class="legal-container">
+      <h1 class="legal-h1">Datenschutzerklärung</h1>
 
-        <div class="space-y-8 text-gray-600">
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">1. Datenschutz auf einen Blick</h2>
-            <h3 class="mb-2 font-semibold text-gray-900">Allgemeine Hinweise</h3>
-            <p>
-              Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
-              personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene
-              Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.
-            </p>
-          </section>
+      <div class="legal-content">
+        <section>
+          <h2>1. Datenschutz auf einen Blick</h2>
+          <h3>Allgemeine Hinweise</h3>
+          <p>
+            Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
+            personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene
+            Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.
+          </p>
+        </section>
 
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">
-              2. Datenerfassung auf dieser Website
-            </h2>
-            <h3 class="mb-2 font-semibold text-gray-900">
-              Wer ist verantwortlich für die Datenerfassung auf dieser Website?
-            </h3>
-            <p>
-              Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen
-              Kontaktdaten können Sie dem Impressum dieser Website entnehmen.
-            </p>
-          </section>
+        <section>
+          <h2>2. Datenerfassung auf dieser Website</h2>
+          <h3>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</h3>
+          <p>
+            Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen
+            Kontaktdaten können Sie dem Impressum dieser Website entnehmen.
+          </p>
+        </section>
 
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">3. Hosting</h2>
-            <p>
-              Wir hosten die Inhalte unserer Website bei Vercel Inc. Die Server befinden sich in
-              EU-Rechenzentren. Alle Datenübertragungen erfolgen verschlüsselt über HTTPS.
-            </p>
-          </section>
+        <section>
+          <h2>3. Hosting</h2>
+          <p>
+            Wir hosten die Inhalte unserer Website bei Vercel Inc. Die Server befinden sich in
+            EU-Rechenzentren. Alle Datenübertragungen erfolgen verschlüsselt über HTTPS.
+          </p>
+        </section>
 
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">
-              4. Datenverarbeitung in der Anwendung
-            </h2>
-            <p>
-              PropertyOS verarbeitet personenbezogene Daten im Auftrag unserer Kunden
-              (Hausverwaltungen). Als Auftragsverarbeiter halten wir uns strikt an die Vorgaben der
-              DSGVO:
-            </p>
-            <ul class="ml-6 mt-4 list-disc space-y-2">
-              <li>Strikte Mandantentrennung auf Datenbankebene</li>
-              <li>Verschlüsselte Speicherung sensibler Daten</li>
-              <li>Audit-Logs für alle Änderungen</li>
-              <li>Zugriffskontrolle mit rollenbasiertem System</li>
-              <li>Automatische tägliche Backups</li>
-            </ul>
-          </section>
+        <section>
+          <h2>4. Datenverarbeitung in der Anwendung</h2>
+          <p>
+            PropGate verarbeitet personenbezogene Daten im Auftrag unserer Kunden
+            (Hausverwaltungen). Als Auftragsverarbeiter halten wir uns strikt an die Vorgaben der
+            DSGVO:
+          </p>
+          <ul>
+            <li>Strikte Mandantentrennung auf Datenbankebene</li>
+            <li>Verschlüsselte Speicherung sensibler Daten</li>
+            <li>Audit-Logs für alle Änderungen</li>
+            <li>Zugriffskontrolle mit rollenbasiertem System</li>
+            <li>Automatische tägliche Backups</li>
+          </ul>
+        </section>
 
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">5. Ihre Rechte</h2>
-            <p>Sie haben jederzeit das Recht:</p>
-            <ul class="ml-6 mt-4 list-disc space-y-2">
-              <li>Auskunft über Ihre gespeicherten Daten zu erhalten</li>
-              <li>Berichtigung, Löschung oder Einschränkung der Verarbeitung zu verlangen</li>
-              <li>Widerspruch gegen die Verarbeitung einzulegen</li>
-              <li>Datenübertragbarkeit zu verlangen</li>
-              <li>Beschwerde bei einer Aufsichtsbehörde einzureichen</li>
-            </ul>
-          </section>
+        <section>
+          <h2>5. Ihre Rechte</h2>
+          <p>Sie haben jederzeit das Recht:</p>
+          <ul>
+            <li>Auskunft über Ihre gespeicherten Daten zu erhalten</li>
+            <li>Berichtigung, Löschung oder Einschränkung der Verarbeitung zu verlangen</li>
+            <li>Widerspruch gegen die Verarbeitung einzulegen</li>
+            <li>Datenübertragbarkeit zu verlangen</li>
+            <li>Beschwerde bei einer Aufsichtsbehörde einzureichen</li>
+          </ul>
+        </section>
 
-          <section class="mt-8 border-t pt-8">
-            <p class="text-sm italic">
-              Hinweis: Dies ist eine verkürzte Datenschutzerklärung als Platzhalter. Vor dem
-              produktiven Einsatz muss eine vollständige, rechtlich geprüfte
-              Datenschutzerklärung erstellt werden.
-            </p>
-          </section>
-        </div>
+        <section class="legal-notice">
+          <p>
+            <em>Hinweis: Dies ist eine verkürzte Datenschutzerklärung als Platzhalter. Vor dem
+            produktiven Einsatz muss eine vollständige, rechtlich geprüfte
+            Datenschutzerklärung erstellt werden.</em>
+          </p>
+        </section>
       </div>
     </div>
   </main>
 
   <Footer />
 </Layout>
+
+<style>
+  .legal-main {
+    background: #ffffff;
+    min-height: 60vh;
+    padding: 5rem 1.5rem;
+  }
+
+  .legal-container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .legal-h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f0f1a;
+    letter-spacing: -0.04em;
+    margin-bottom: 2.5rem;
+  }
+
+  .legal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .legal-content section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .legal-content h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f0f1a;
+  }
+
+  .legal-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .legal-content p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4b5563;
+  }
+
+  .legal-content ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .legal-content li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #4b5563;
+  }
+
+  .legal-notice {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 1.5rem;
+  }
+
+  .legal-notice p {
+    font-size: 0.9rem;
+    color: #9ca3af;
+  }
+</style>

@@ -22,44 +22,53 @@ const rateLimitStore = new Map<string, number[]>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 Minute
 const MAX_REQUESTS_PER_WINDOW = {
   login: 5, // Max 5 Login-Versuche pro Minute
+  register: 3, // Max 3 Registrierungen pro Minute
+  forgotPassword: 3, // Max 3 Passwort-Reset-Anfragen pro 5 Minuten
+  verify2fa: 5, // Max 5 2FA-Versuche pro Minute
   api: 100, // Max 100 API-Calls pro Minute
   default: 60, // Max 60 Requests pro Minute (allgemein)
+};
+
+// Specific rate limit windows (ms)
+const SPECIFIC_WINDOWS: Record<string, number> = {
+  "/api/auth/forgot-password": 5 * 60 * 1000, // 5 Minuten
 };
 
 /**
  * Rate Limiting prüfen
  */
 function checkRateLimit(
-  ip: string,
+  key: string,
   limit: number,
   window: number = RATE_LIMIT_WINDOW
 ): { allowed: boolean; remaining: number; reset: number } {
   const now = Date.now();
   const windowStart = now - window;
 
-  // Hole bisherige Requests für diese IP
-  let requests = rateLimitStore.get(ip) || [];
+  // Hole bisherige Requests für diesen Key
+  let requests = rateLimitStore.get(key) || [];
 
   // Filtere alte Requests (außerhalb des Zeitfensters)
   requests = requests.filter((timestamp) => timestamp > windowStart);
 
   // Prüfe Limit
   if (requests.length >= limit) {
+    const resetIn = Math.ceil((requests[0] + window - now) / 1000);
     return {
       allowed: false,
       remaining: 0,
-      reset: Math.ceil((requests[0] + window) / 1000), // Timestamp in Sekunden
+      reset: resetIn,
     };
   }
 
   // Request hinzufügen
   requests.push(now);
-  rateLimitStore.set(ip, requests);
+  rateLimitStore.set(key, requests);
 
   return {
     allowed: true,
     remaining: limit - requests.length,
-    reset: Math.ceil((now + window) / 1000),
+    reset: Math.ceil(window / 1000),
   };
 }
 
@@ -77,6 +86,25 @@ function getIP(request: NextRequest): string {
   return request.headers.get("x-real-ip") || "unknown";
 }
 
+/**
+ * Get specific rate limit for auth endpoints
+ */
+function getAuthRateLimit(pathname: string): { limit: number; window: number } | null {
+  if (pathname === "/api/auth/callback/credentials") {
+    return { limit: MAX_REQUESTS_PER_WINDOW.login, window: RATE_LIMIT_WINDOW };
+  }
+  if (pathname === "/api/auth/register") {
+    return { limit: MAX_REQUESTS_PER_WINDOW.register, window: RATE_LIMIT_WINDOW };
+  }
+  if (pathname === "/api/auth/forgot-password") {
+    return { limit: MAX_REQUESTS_PER_WINDOW.forgotPassword, window: SPECIFIC_WINDOWS[pathname] };
+  }
+  if (pathname === "/api/auth/verify-2fa") {
+    return { limit: MAX_REQUESTS_PER_WINDOW.verify2fa, window: RATE_LIMIT_WINDOW };
+  }
+  return null;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -86,14 +114,38 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Auth paths (Login, Register, API Auth)
+  const ip = getIP(request);
+
+  // Specific auth endpoint rate limiting (POST only, stricter)
+  if (request.method === "POST") {
+    const authLimit = getAuthRateLimit(pathname);
+    if (authLimit) {
+      const key = `${ip}:${pathname}`;
+      const result = checkRateLimit(key, authLimit.limit, authLimit.window);
+
+      if (!result.allowed) {
+        return new NextResponse(
+          JSON.stringify({
+            error: `Zu viele Anfragen. Bitte versuchen Sie es in ${result.reset} Sekunden erneut.`,
+          }),
+          {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "Retry-After": result.reset.toString(),
+            },
+          }
+        );
+      }
+    }
+  }
+
+  // General rate limiting
   const isAuthPath =
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
     pathname.startsWith("/api/auth");
 
-  // Rate Limiting anwenden
-  const ip = getIP(request);
   let limit = MAX_REQUESTS_PER_WINDOW.default;
 
   if (isAuthPath) {
@@ -122,7 +174,7 @@ export function proxy(request: NextRequest) {
         status: 429,
         headers: {
           "Content-Type": "application/json",
-          "Retry-After": (rateLimitResult.reset - Math.floor(Date.now() / 1000)).toString(),
+          "Retry-After": rateLimitResult.reset.toString(),
           "X-RateLimit-Limit": limit.toString(),
           "X-RateLimit-Remaining": "0",
           "X-RateLimit-Reset": rateLimitResult.reset.toString(),

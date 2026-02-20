@@ -1,74 +1,296 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
+
+const securityItems = [
+  {
+    title: 'DSGVO-Konformität',
+    description:
+      'PropGate ist vollständig DSGVO-konform entwickelt. Alle personenbezogenen Daten werden verschlüsselt gespeichert und mit strikter Mandantentrennung verwaltet. Jede Änderung wird in einem Audit-Log mit Zeitstempel, Benutzer und Änderungsdetails protokolliert.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  },
+  {
+    title: 'TLS-Verschlüsselung',
+    description:
+      'Alle Datenübertragungen erfolgen über TLS-verschlüsselte HTTPS-Verbindungen. Passwörter werden mit modernen Hashing-Algorithmen (bcrypt) gesichert. Session-Cookies sind httpOnly und CSRF-geschützt.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
+  },
+  {
+    title: 'Zwei-Faktor-Authentifizierung',
+    description:
+      'Zusätzliche Sicherheitsebene durch TOTP-basierte 2FA (Google Authenticator, Authy, etc.). Optional für alle Benutzer aktivierbar, erzwingbar auf Enterprise-Plan.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4" stroke-width="1.75"/></svg>`,
+  },
+  {
+    title: 'EU-Hosting',
+    description:
+      'PropGate wird auf Vercel mit PostgreSQL-Datenbanken in EU-Rechenzentren (Frankfurt) betrieben. Alle Daten verbleiben in der EU. Keine Datenübertragung in Drittländer.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>`,
+  },
+  {
+    title: 'Automatische Backups',
+    description:
+      'Tägliche automatische Backups Ihrer Datenbank und aller Dokumente. Point-in-Time-Recovery ermöglicht die Wiederherstellung auf jeden beliebigen Zeitpunkt der letzten 7 Tage.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>`,
+  },
+  {
+    title: 'Rollenbasierte Zugriffsrechte',
+    description:
+      'Granulare Zugriffskontrolle mit Rollen (Admin, Sachbearbeiter, Nur-Lesen). Session-Verwaltung mit automatischem Logout nach Inaktivität. Vollständige Zugriffs-Logs.',
+    icon: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+  },
+];
 ---
 
 <Layout
-  title="Sicherheit & Datenschutz - PropertyOS | DSGVO-konform"
-  description="PropertyOS ist vollständig DSGVO-konform mit strikter Mandantentrennung, verschlüsselter Speicherung, Audit-Logs und EU-Hosting. Ihre Daten sind sicher."
+  title="Sicherheit & Datenschutz – PropGate | DSGVO-konform"
+  description="PropGate ist vollständig DSGVO-konform. TLS-Verschlüsselung, 2FA, tägliche Backups, EU-Hosting in Frankfurt und strikte Mandantentrennung schützen Ihre Daten."
 >
   <Header />
 
-  <main class="py-20">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl">
-        <h1 class="mb-8 text-4xl font-bold text-gray-900">Sicherheit & Datenschutz</h1>
+  <main>
+    <!-- Hero -->
+    <section class="security-hero">
+      <div class="orb orb-1" aria-hidden="true"></div>
+      <div class="orb orb-2" aria-hidden="true"></div>
+      <div class="security-hero-inner">
+        <p class="eyebrow">Sicherheit & Datenschutz</p>
+        <h1 class="security-h1">
+          Ihre Daten.<br />
+          <span class="gradient-text">Sicher geschützt.</span>
+        </h1>
+        <p class="security-subtext">
+          PropGate wurde von Grund auf mit Blick auf Datenschutz und Sicherheit entwickelt.
+          DSGVO-konform, EU-gehostet, vollständig verschlüsselt.
+        </p>
+      </div>
+    </section>
 
-        <div class="space-y-8">
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">DSGVO-Konformität</h2>
-            <p class="text-gray-600">
-              PropertyOS ist vollständig DSGVO-konform entwickelt. Alle personenbezogenen Daten
-              werden verschlüsselt gespeichert und mit strikter Mandantentrennung verwaltet. Jede
-              Änderung wird in einem Audit-Log protokolliert.
-            </p>
-          </section>
+    <!-- Security Items -->
+    <section class="security-section">
+      <div class="security-container">
+        <div class="security-grid">
+          {securityItems.map((item) => (
+            <div class="security-card">
+              <div class="security-icon">
+                <span set:html={item.icon} />
+              </div>
+              <h2 class="security-title">{item.title}</h2>
+              <p class="security-description">{item.description}</p>
+            </div>
+          ))}
+        </div>
 
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Verschlüsselung</h2>
-            <p class="text-gray-600">
-              Alle Datenübertragungen erfolgen über verschlüsselte HTTPS-Verbindungen. Passwörter
-              werden mit modernen Hashing-Algorithmen gesichert. Session-Cookies sind httpOnly und
-              CSRF-geschützt.
-            </p>
-          </section>
-
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Hosting & Infrastruktur</h2>
-            <p class="text-gray-600">
-              PropertyOS wird auf Vercel gehostet, mit PostgreSQL-Datenbanken in EU-Rechenzentren.
-              File-Storage erfolgt über CloudFlare R2 mit automatischer Versionierung.
-            </p>
-          </section>
-
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Backups</h2>
-            <p class="text-gray-600">
-              Automatische tägliche Backups Ihrer Datenbank und Dokumente. Point-in-Time-Recovery
-              für maximale Datensicherheit.
-            </p>
-          </section>
-
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Zugriffskontrolle</h2>
-            <p class="text-gray-600">
-              Rollenbasierte Zugriffskontrolle (Admin, Sachbearbeiter, ReadOnly) mit
-              Session-Verwaltung und automatischem Logout bei Inaktivität.
-            </p>
-          </section>
-
-          <section>
-            <h2 class="mb-4 text-2xl font-semibold text-gray-900">Audit-Logs</h2>
-            <p class="text-gray-600">
-              Alle kritischen Operationen werden mit Zeitstempel, Benutzer und Änderungsdetails
-              protokolliert. Vollständige Nachvollziehbarkeit aller Vorgänge.
-            </p>
-          </section>
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+          <div class="trust-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>DSGVO-konform</span>
+          </div>
+          <div class="trust-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            </svg>
+            <span>EU-Hosting Frankfurt</span>
+          </div>
+          <div class="trust-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+            <span>TLS-Verschlüsselung</span>
+          </div>
+          <div class="trust-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+            <span>Tägliche Backups</span>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 
+  <CTABanner />
   <Footer />
 </Layout>
+
+<style>
+  .security-hero {
+    background: #0a0a0f;
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
+    top: -200px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+    bottom: -50px;
+    right: -100px;
+  }
+
+  .security-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4da6ff;
+    margin-bottom: 0.875rem;
+  }
+
+  .security-h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 50%, #66b8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .security-subtext {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #a0a8b8;
+  }
+
+  /* Security section */
+  .security-section {
+    background: #f8f9fc;
+    padding: 5rem 1.5rem;
+  }
+
+  .security-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .security-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 14px;
+    padding: 2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .security-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
+  }
+
+  .security-icon {
+    width: 52px;
+    height: 52px;
+    background: rgba(0, 102, 255, 0.08);
+    border: 1px solid rgba(0, 102, 255, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0066ff;
+    margin-bottom: 1.25rem;
+  }
+
+  .security-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0f0f1a;
+    margin-bottom: 0.625rem;
+    letter-spacing: -0.01em;
+  }
+
+  .security-description {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #5a6478;
+  }
+
+  /* Trust Badges */
+  .trust-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 2rem;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 14px;
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: #374151;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: #f8f9fc;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+  }
+
+  .trust-badge svg {
+    color: #0066ff;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .security-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .security-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

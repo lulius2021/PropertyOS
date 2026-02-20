@@ -14,6 +14,12 @@ export default async function AuthenticatedLayout({
     redirect("/login");
   }
 
+  // 2FA enforcement: if user has 2FA enabled but hasn't verified yet, redirect
+  const user = session.user as any;
+  if (user?.needsTwoFactor && !user?.twoFactorVerified) {
+    redirect("/verify-2fa");
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}

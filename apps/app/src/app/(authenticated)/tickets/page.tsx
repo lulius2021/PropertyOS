@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { PlanLimitReached } from "@/components/ui/PlanLimitReached";
 
 // Form Schema
 const createTicketSchema = z.object({
@@ -31,7 +32,7 @@ export default function TicketsPage() {
 
   const utils = trpc.useUtils();
 
-  const { data: tickets, isLoading } = trpc.tickets.list.useQuery({
+  const { data: tickets, isLoading, error } = trpc.tickets.list.useQuery({
     status: statusFilter,
   });
   const { data: stats } = trpc.tickets.stats.useQuery();
@@ -69,6 +70,18 @@ export default function TicketsPage() {
       frist: data.frist ? new Date(data.frist) : undefined,
     });
   };
+
+  // Plan-Gate: Feature nicht verfügbar
+  if (error?.data?.code === "FORBIDDEN") {
+    return (
+      <div className="mx-auto max-w-lg mt-12">
+        <PlanLimitReached
+          feature="tickets"
+          message={error.message}
+        />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <div>Laden...</div>;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, checkObjektLimit } from "../trpc";
 import { logAudit } from "../middleware/audit";
 
 export const objekteRouter = router({
@@ -117,11 +117,14 @@ export const objekteRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Plan-Limit prüfen
+      await checkObjektLimit(ctx);
+
       const objekt = await ctx.db.objekt.create({
         data: {
           ...input,
           tenantId: ctx.tenantId,
-        },
+        } as any,
       });
 
       await logAudit({

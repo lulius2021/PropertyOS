@@ -10,14 +10,22 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Hole tenantId vom User
+    // Hole User mit Rolle und tenantId
     const user = await db.user.findUnique({
       where: { id: session.user.id },
-      select: { tenantId: true },
+      select: { tenantId: true, role: true },
     });
 
     if (!user?.tenantId) {
       return NextResponse.json({ error: 'No tenant found' }, { status: 400 });
+    }
+
+    // Nur ADMIN darf exportieren
+    if (user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Nur Administratoren können Daten exportieren' },
+        { status: 403 }
+      );
     }
 
     const tenantId = user.tenantId;
