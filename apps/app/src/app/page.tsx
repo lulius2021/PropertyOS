@@ -15,9 +15,11 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-base">P</span>
-              </div>
+              <img
+                src="/logos/logo.png"
+                alt="PropGate"
+                className="h-8 w-8 rounded-md"
+              />
               <span className="text-xl font-bold text-gray-900">PropGate</span>
             </div>
             <div className="flex items-center gap-4">
