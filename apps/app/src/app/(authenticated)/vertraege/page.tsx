@@ -20,25 +20,69 @@ import { de } from "date-fns/locale";
 export default function VertraegePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [laufendFilter, setLaufendFilter] = useState<string>("all");
+  const [mieterTypFilter, setMieterTypFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("einzug");
+  const [selectedObjekte, setSelectedObjekte] = useState<string[]>([]);
 
   const { data: vertraege, isLoading } = trpc.vertraege.list.useQuery();
   const { data: stats } = trpc.vertraege.stats.useQuery();
+  const { data: objekte } = trpc.objekte.list.useQuery();
 
-  const filteredVertraege = vertraege?.filter((v) => {
-    const matchesSearch =
-      v.mieter?.nachname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.mieter?.vorname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.mieter?.firma?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.einheit?.einheitNr.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.einheit?.objekt?.bezeichnung
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase());
+  const filteredVertraege = vertraege
+    ?.filter((v) => {
+      const matchesSearch =
+        v.mieter?.nachname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.mieter?.vorname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.mieter?.firma?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.einheit?.einheitNr.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.einheit?.objekt?.bezeichnung
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "all" || v.vertragStatus === statusFilter;
+      const matchesStatus =
+        statusFilter === "all" || v.vertragStatus === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      const matchesLaufend =
+        laufendFilter === "all" ||
+        (laufendFilter === "laufend" && !v.auszugsdatum) ||
+        (laufendFilter === "beendet" && v.auszugsdatum);
+
+      const matchesMieterTyp =
+        mieterTypFilter === "all" ||
+        (mieterTypFilter === "privat" && (v.mieter?.typ === "PRIVAT" || !v.mieter?.typ)) ||
+        (mieterTypFilter === "geschaeftlich" && (v.mieter?.typ === "GESCHAEFTLICH" || v.mieter?.typ === "GEWERBE"));
+
+      const matchesObjekt =
+        selectedObjekte.length === 0 ||
+        (v.einheit?.objektId && selectedObjekte.includes(v.einheit.objektId));
+
+      return matchesSearch && matchesStatus && matchesLaufend && matchesMieterTyp && matchesObjekt;
+    })
+    .sort((a, b) => {
+      if (sortBy === "einzug") {
+        return new Date(b.einzugsdatum).getTime() - new Date(a.einzugsdatum).getTime();
+      } else if (sortBy === "einzug-alt") {
+        return new Date(a.einzugsdatum).getTime() - new Date(b.einzugsdatum).getTime();
+      } else if (sortBy === "miete-hoch") {
+        const warmmieteA = parseFloat(a.kaltmiete) + parseFloat(a.bkVorauszahlung) + parseFloat(a.hkVorauszahlung);
+        const warmmieteB = parseFloat(b.kaltmiete) + parseFloat(b.bkVorauszahlung) + parseFloat(b.hkVorauszahlung);
+        return warmmieteB - warmmieteA;
+      } else if (sortBy === "miete-niedrig") {
+        const warmmieteA = parseFloat(a.kaltmiete) + parseFloat(a.bkVorauszahlung) + parseFloat(a.hkVorauszahlung);
+        const warmmieteB = parseFloat(b.kaltmiete) + parseFloat(b.bkVorauszahlung) + parseFloat(b.hkVorauszahlung);
+        return warmmieteA - warmmieteB;
+      }
+      return 0;
+    });
+
+  const toggleObjekt = (objektId: string) => {
+    setSelectedObjekte((prev) =>
+      prev.includes(objektId)
+        ? prev.filter((id) => id !== objektId)
+        : [...prev, objektId]
+    );
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -122,53 +166,35 @@ export default function VertraegePage() {
       {/* Statistics */}
       {stats && (
         <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Gesamt Verträge
-              </CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.gesamt}</div>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium text-gray-600">Gesamt Verträge</div>
+              <FileText className="h-4 w-4 text-gray-400" />
+            </div>
+            <div className="mt-2 text-2xl font-bold text-gray-900">{stats.gesamt}</div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Aktiv</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {stats.aktiv}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="text-sm font-medium text-gray-600">Aktiv</div>
+            <div className="mt-2 text-2xl font-bold text-green-600">
+              {stats.aktiv}
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Warmmiete Gesamt
-              </CardTitle>
-              <Euro className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.gesamtWarmmiete}</div>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium text-gray-600">Warmmiete Gesamt</div>
+              <Euro className="h-4 w-4 text-gray-400" />
+            </div>
+            <div className="mt-2 text-2xl font-bold text-gray-900">{stats.gesamtWarmmiete} €</div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Ø Warmmiete
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {stats.durchschnittWarmmiete}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="text-sm font-medium text-gray-600">Ø Warmmiete</div>
+            <div className="mt-2 text-2xl font-bold text-gray-900">
+              {stats.durchschnittWarmmiete} €
+            </div>
+          </div>
         </div>
       )}
 

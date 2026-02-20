@@ -26,7 +26,18 @@ export const objekteRouter = router({
           tenantId: ctx.tenantId,
         },
         include: {
-          einheiten: true,
+          einheiten: {
+            include: {
+              mietverhaeltnisse: {
+                where: {
+                  auszugsdatum: null, // Nur aktive Mietverhältnisse
+                },
+                include: {
+                  mieter: true,
+                },
+              },
+            },
+          },
           dokumente: true,
         },
       });
@@ -35,12 +46,73 @@ export const objekteRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        bezeichnung: z.string().min(1),
-        strasse: z.string().min(1),
-        plz: z.string().min(1),
-        ort: z.string().min(1),
-        objektart: z.enum(["WOHNHAUS", "GEWERBE", "GEMISCHT"]),
+        // Basis - nur Bezeichnung ist wirklich erforderlich
+        bezeichnung: z.string().min(1, "Objektname ist erforderlich"),
+        objektIdIntern: z.string().optional(),
+        strasse: z.string().optional(),
+        hausnummer: z.string().optional(),
+        plz: z.string().optional(),
+        ort: z.string().optional(),
+        land: z.string().optional(),
+
+        // Eigentum
+        eigentuemer: z.string().optional(),
+        eigentuemeranteile: z.string().optional(),
+        vertretungsberechtigt: z.boolean().optional(),
+
+        // Objekt-Typ
+        objektart: z.enum(["MFH", "WEG", "SONDEREIGENTUM", "WOHNHAUS", "GEWERBE", "GEMISCHT", "ANLAGE"]).optional(),
+        verwaltungsart: z.enum(["MIETVERWALTUNG", "WEG_VERWALTUNG", "SEV", "GEMISCHT"]).optional(),
+        baujahr: z.number().optional(),
+        kernsanierungJahr: z.number().optional(),
+
+        // Grundstück
+        flurstueck: z.string().optional(),
+        gemarkung: z.string().optional(),
+        grundstueckFlaeche: z.number().optional(),
+
+        // Gebäude
+        anzahlGebaeude: z.number().optional(),
+        anzahlGeschosse: z.number().optional(),
+        unterkellerung: z.boolean().optional(),
+        aufzug: z.boolean().optional(),
+        tiefgarage: z.boolean().optional(),
+
+        // Flächen
+        wohnflaeche: z.number().optional(),
+        gewerbeflaeche: z.number().optional(),
+        nutzflaeche: z.number().optional(),
         gesamtflaeche: z.number().optional(),
+        anzahlWohnungen: z.number().optional(),
+        anzahlGewerbe: z.number().optional(),
+        anzahlStellplaetze: z.number().optional(),
+
+        // Technik
+        heizungsart: z.string().optional(),
+        warmwasser: z.string().optional(),
+        stromAllgemein: z.boolean().optional(),
+        wasserUnterzaehler: z.boolean().optional(),
+        internetVersorgung: z.string().optional(),
+        pvAnlage: z.boolean().optional(),
+
+        // Verwaltung
+        verwalterVertragBeginn: z.date().optional(),
+        verwalterVertragLaufzeit: z.string().optional(),
+        verwalterVerguetung: z.string().optional(),
+        objektkontoIban: z.string().optional(),
+        ruecklagenkontoIban: z.string().optional(),
+        hausgelkontoIban: z.string().optional(),
+        nebenkostenUmlagefaehig: z.boolean().optional(),
+        umlageschluessel: z.string().optional(),
+
+        // Zugang
+        schliessanlage: z.string().optional(),
+        schluesselbestand: z.string().optional(),
+        zugaenge: z.string().optional(),
+
+        // Sonstiges
+        bildUrl: z.string().optional().nullable(),
+        energieausweis: z.string().optional(),
         notizen: z.string().optional(),
       })
     )
@@ -68,12 +140,73 @@ export const objekteRouter = router({
     .input(
       z.object({
         id: z.string(),
-        bezeichnung: z.string().min(1).optional(),
-        strasse: z.string().min(1).optional(),
-        plz: z.string().min(1).optional(),
-        ort: z.string().min(1).optional(),
-        objektart: z.enum(["WOHNHAUS", "GEWERBE", "GEMISCHT"]).optional(),
+        // Basis
+        bezeichnung: z.string().min(1, "Objektname ist erforderlich").optional(),
+        objektIdIntern: z.string().optional(),
+        strasse: z.string().optional(),
+        hausnummer: z.string().optional(),
+        plz: z.string().optional(),
+        ort: z.string().optional(),
+        land: z.string().optional(),
+
+        // Eigentum
+        eigentuemer: z.string().optional(),
+        eigentuemeranteile: z.string().optional(),
+        vertretungsberechtigt: z.boolean().optional(),
+
+        // Objekt-Typ
+        objektart: z.enum(["MFH", "WEG", "SONDEREIGENTUM", "WOHNHAUS", "GEWERBE", "GEMISCHT", "ANLAGE"]).optional(),
+        verwaltungsart: z.enum(["MIETVERWALTUNG", "WEG_VERWALTUNG", "SEV", "GEMISCHT"]).optional(),
+        baujahr: z.number().optional(),
+        kernsanierungJahr: z.number().optional(),
+
+        // Grundstück
+        flurstueck: z.string().optional(),
+        gemarkung: z.string().optional(),
+        grundstueckFlaeche: z.number().optional(),
+
+        // Gebäude
+        anzahlGebaeude: z.number().optional(),
+        anzahlGeschosse: z.number().optional(),
+        unterkellerung: z.boolean().optional(),
+        aufzug: z.boolean().optional(),
+        tiefgarage: z.boolean().optional(),
+
+        // Flächen
+        wohnflaeche: z.number().optional(),
+        gewerbeflaeche: z.number().optional(),
+        nutzflaeche: z.number().optional(),
         gesamtflaeche: z.number().optional(),
+        anzahlWohnungen: z.number().optional(),
+        anzahlGewerbe: z.number().optional(),
+        anzahlStellplaetze: z.number().optional(),
+
+        // Technik
+        heizungsart: z.string().optional(),
+        warmwasser: z.string().optional(),
+        stromAllgemein: z.boolean().optional(),
+        wasserUnterzaehler: z.boolean().optional(),
+        internetVersorgung: z.string().optional(),
+        pvAnlage: z.boolean().optional(),
+
+        // Verwaltung
+        verwalterVertragBeginn: z.date().optional(),
+        verwalterVertragLaufzeit: z.string().optional(),
+        verwalterVerguetung: z.string().optional(),
+        objektkontoIban: z.string().optional(),
+        ruecklagenkontoIban: z.string().optional(),
+        hausgelkontoIban: z.string().optional(),
+        nebenkostenUmlagefaehig: z.boolean().optional(),
+        umlageschluessel: z.string().optional(),
+
+        // Zugang
+        schliessanlage: z.string().optional(),
+        schluesselbestand: z.string().optional(),
+        zugaenge: z.string().optional(),
+
+        // Sonstiges
+        bildUrl: z.string().optional().nullable(),
+        energieausweis: z.string().optional(),
         notizen: z.string().optional(),
       })
     )

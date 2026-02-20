@@ -1,9 +1,18 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc/client";
+import { ViewToggle } from "@/components/objekte/ViewToggle";
+import { ObjektCard } from "@/components/objekte/ObjektCard";
+import { ErweiterterObjektModal } from "@/components/objekte/ErweiterterObjektModal";
 
 export default function ObjektePage() {
+  const router = useRouter();
+  const utils = trpc.useUtils();
   const { data: objekte, isLoading } = trpc.objekte.list.useQuery();
+  const [view, setView] = useState<"table" | "grid">("grid");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
     return <div>Laden...</div>;
@@ -16,9 +25,18 @@ export default function ObjektePage() {
           <h1 className="text-3xl font-bold text-gray-900">Objekte</h1>
           <p className="mt-2 text-gray-600">Verwaltung aller Immobilienobjekte</p>
         </div>
-        <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-          + Neues Objekt
-        </button>
+        <div className="flex items-center gap-3">
+          <ViewToggle view={view} onViewChange={setView} />
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 flex items-center gap-2"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Neues Objekt
+          </button>
+        </div>
       </div>
 
       {objekte && objekte.length === 0 ? (
@@ -27,11 +45,26 @@ export default function ObjektePage() {
           <p className="mt-2 text-gray-600">
             Erstellen Sie Ihr erstes Objekt, um zu beginnen.
           </p>
-          <button className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
             Objekt erstellen
           </button>
         </div>
+      ) : view === "grid" ? (
+        // Finder-Ansicht mit Karten
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {objekte?.map((objekt) => (
+            <ObjektCard
+              key={objekt.id}
+              objekt={objekt}
+              onClick={() => router.push(`/objekte/${objekt.id}`)}
+            />
+          ))}
+        </div>
       ) : (
+        // Tabellenansicht
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -69,9 +102,12 @@ export default function ObjektePage() {
                     {objekt._count.einheiten}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm">
-                    <a href={`/objekte/${objekt.id}`} className="text-blue-600 hover:text-blue-700">
+                    <button
+                      onClick={() => router.push(`/objekte/${objekt.id}`)}
+                      className="text-blue-600 hover:text-blue-700"
+                    >
                       Details
-                    </a>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -79,6 +115,16 @@ export default function ObjektePage() {
           </table>
         </div>
       )}
+
+      {/* Neues Objekt Modal */}
+      <ErweiterterObjektModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          // Refresh die Liste
+          utils.objekte.list.invalidate();
+        }}
+      />
     </div>
   );
 }

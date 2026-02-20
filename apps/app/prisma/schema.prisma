@@ -71,28 +71,118 @@ enum UserRole {
 model Objekt {
   id            String    @id @default(cuid())
   tenantId      String
+
+  // 1) Identität & Zuordnung
   bezeichnung   String
+  objektIdIntern String?
   strasse       String
+  hausnummer    String?
   plz           String
   ort           String
-  objektart     Objektart
+  land          String?   @default("Deutschland")
+
+  // Eigentümer
+  eigentuemer   String?
+  eigentuemeranteile String? @db.Text
+  vertretungsberechtigt Boolean? @default(false)
+
+  // 2) Objekt-Typ & Grundparameter
+  objektart     Objektart?
+  verwaltungsart Verwaltungsart?
+  baujahr       Int?
+  kernsanierungJahr Int?
+
+  // Grundstück
+  flurstueck    String?
+  gemarkung     String?
+  grundstueckFlaeche Decimal? @db.Decimal(10, 2)
+
+  // Gebäude
+  anzahlGebaeude Int?
+  anzahlGeschosse Int?
+  unterkellerung Boolean?
+  aufzug        Boolean?
+  tiefgarage    Boolean?
+
+  // 3) Flächen
+  wohnflaeche   Decimal?  @db.Decimal(10, 2)
+  gewerbeflaeche Decimal? @db.Decimal(10, 2)
+  nutzflaeche   Decimal?  @db.Decimal(10, 2)
   gesamtflaeche Decimal?  @db.Decimal(10, 2)
+
+  // Einheiten-Anzahl
+  anzahlWohnungen Int?
+  anzahlGewerbe   Int?
+  anzahlStellplaetze Int?
+
+  // 4) Technische Ausstattung
+  heizungsart   String?
+  warmwasser    String?   // zentral/dezentral
+  stromAllgemein Boolean?
+  wasserUnterzaehler Boolean?
+  internetVersorgung String?
+  pvAnlage      Boolean?
+
+  // 5) Vertragliche Verwaltung
+  verwalterVertragBeginn DateTime?
+  verwalterVertragLaufzeit String?
+  verwalterVerguetung String?
+
+  // Bankdaten
+  objektkontoIban String?
+  ruecklagenkontoIban String?
+  hausgelkontoIban String?
+
+  // Abrechnungssystematik
+  nebenkostenUmlagefaehig Boolean?
+  umlageschluessel String?
+
+  // 6) Versorger & Dienstleister (JSON für Flexibilität)
+  versorger     Json?     // Array von Versorgern
+  dienstleister Json?     // Array von Dienstleistern
+
+  // 7) Versicherungen
+  versicherungen Json?    // Array von Versicherungen
+
+  // 8) Schlüssel & Zutritt
+  schliessanlage String?
+  schluesselbestand String? @db.Text
+  zugaenge      String?   @db.Text
+
+  // 9) Ansprechpartner
+  ansprechpartner Json?   // Array von Ansprechpartnern
+
+  // Sonstiges
+  bildUrl       String?
   notizen       String?   @db.Text
+  energieausweis String?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   einheiten Einheit[]
   dokumente Dokument[]
-  zaehler   Zaehler[] // Objektzähler (Gas, Wasser, etc.)
+  zaehler   Zaehler[]
 
   @@index([tenantId])
   @@map("objekte")
 }
 
 enum Objektart {
+  MFH              // Mehrfamilienhaus
+  WEG              // Wohnungseigentümergemeinschaft
+  SONDEREIGENTUM   // Sondereigentum
   WOHNHAUS
   GEWERBE
+  GEMISCHT
+  ANLAGE
+}
+
+enum Verwaltungsart {
+  MIETVERWALTUNG
+  WEG_VERWALTUNG
+  SEV              // Sondereigentumsverwaltung
   GEMISCHT
 }
 
@@ -163,17 +253,55 @@ model EinheitStatusHistorie {
 model Mieter {
   id        String    @id @default(cuid())
   tenantId  String
+
+  // 1) Personen- & Kontaktdaten
+  mieterIdIntern String?
   typ       MieterTyp @default(PRIVAT)
   anrede    String?
+  titel     String?
   vorname   String?
   nachname  String
   firma     String?
+  geburtsdatum DateTime?
+  staatsangehoerigkeit String?
+
+  // Adresse (Meldeadresse, kann abweichen)
   strasse   String?
+  hausnummer String?
   plz       String?
   ort       String?
-  telefon   String?
+  land      String?
+
+  // Kontakt
+  telefonMobil String?
+  telefonFestnetz String?
   email     String?
-  notizen   String?   @db.Text
+  kommunikationskanal String? // E-Mail/Brief/Portal/WhatsApp
+
+  // Notfallkontakt
+  notfallkontaktName String?
+  notfallkontaktBeziehung String?
+  notfallkontaktTelefon String?
+
+  // Mitmieter & Bewohner (JSON für Flexibilität)
+  mitmieter Json?     // Array von Mitmieter-Objekten
+  weitereBewohner Json? // Array von Bewohner-Objekten (z.B. Kinder)
+
+  // Identität/Legitimation (DSGVO-kritisch)
+  ausweisart String?
+  ausweisnummer String?
+  bonitaetGeprueft Boolean?
+  bonitaetDatum DateTime?
+
+  // DSGVO
+  datenschutzHinweisUebergeben Boolean? @default(false)
+  datenschutzDatum DateTime?
+  einwilligungen Json? // Array von Einwilligungen
+
+  // Sonstiges
+  telefon   String?  // Legacy-Feld, wird durch telefonMobil ersetzt
+  notizen   String?  @db.Text
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -188,6 +316,7 @@ model Mieter {
 enum MieterTyp {
   PRIVAT
   GEWERBE
+  GESCHAEFTLICH
 }
 
 model Mietverhaeltnis {
@@ -195,13 +324,63 @@ model Mietverhaeltnis {
   tenantId        String
   mieterId        String
   einheitId       String
+
+  // 3) Mietvertrag
+  vertragsnummer  String?
+  vertragsart     Vertragsart?  @default(UNBEFRISTET)
   einzugsdatum    DateTime
+  uebergabedatum  DateTime?
   auszugsdatum    DateTime?
+  befristungsgrund String?
+  kuendigungsfrist String?
+
+  // Miete
   kaltmiete       Decimal       @db.Decimal(10, 2)
   bkVorauszahlung Decimal       @db.Decimal(10, 2)
   hkVorauszahlung Decimal       @db.Decimal(10, 2)
+  stellplatzmiete Decimal?      @db.Decimal(10, 2)
+  moeblierungszuschlag Decimal? @db.Decimal(10, 2)
+  sonstigePauschalen Decimal?   @db.Decimal(10, 2)
+
+  // Staffel-/Indexmiete
+  staffelmiete    Json?         // Array von Stufen
+  indexmiete      Json?         // Index-Details
+
+  // Kaution
   kaution         Decimal?      @db.Decimal(10, 2)
   kautionStatus   KautionStatus @default(AUSSTEHEND)
+  kautionsart     String?       // Bar/Konto/Bürgschaft/Versicherung
+  kautionEingaenge Json?        // Array von Zahlungen
+  kautionRueckzahlung Json?     // Rückzahlungs-Details
+
+  // Sondervereinbarungen
+  hausordnungAnerkannt Boolean?
+  tierhaltungGeregelt Boolean?
+  tierhaltungDetails String?
+  rauchenErlaubt Boolean?
+  schoenheitsreparaturen String?
+  schluesselanzahl Int?
+
+  // Zahlungsdetails
+  zahlweise       String?       // Überweisung/SEPA/Dauerauftrag
+  faelligkeit     String?       // z.B. "3. Werktag"
+  verwendungszweck String?
+
+  // Nebenkosten-Abrechnung
+  umlageschluessel String?
+  personenanzahl  Int?
+  personenHistorie Json?        // Array von {datum, anzahl}
+
+  // Übergabe/Zustand
+  uebergabeprotokoll Json?      // Einzugs-/Auszugsdetails
+  zustandsbewertung Json?
+  maengelliste    Json?
+  zaehlerstaendeEinzug Json?
+  zaehlerstaendeAuszug Json?
+
+  // Kommunikation
+  nachsendeadresse String?
+
   vertragStatus   VertragStatus @default(ENTWURF)
   notizen         String?       @db.Text
   createdAt       DateTime      @default(now())
@@ -217,6 +396,15 @@ model Mietverhaeltnis {
   @@index([tenantId, einheitId])
   @@index([tenantId, mieterId])
   @@map("mietverhaeltnisse")
+}
+
+enum Vertragsart {
+  UNBEFRISTET
+  BEFRISTET
+  UNTERMIETE
+  STAFFELMIETE
+  INDEXMIETE
+  GEWERBE
 }
 
 enum KautionStatus {

@@ -1,228 +1,329 @@
 "use client";
 
-import { trpc } from "@/lib/trpc/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Users, Search, Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/lib/trpc/client";
+import { ErweiterterMieterModal } from "@/components/mieter/ErweiterterMieterModal";
 
 export default function MieterPage() {
+  const router = useRouter();
+  const utils = trpc.useUtils();
   const [searchTerm, setSearchTerm] = useState("");
-  const [typFilter, setTypFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<"aktiv" | "frueher" | "alle">("aktiv");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedObjekte, setSelectedObjekte] = useState<string[]>([]);
 
   const { data: mieter, isLoading } = trpc.mieter.list.useQuery();
   const { data: stats } = trpc.mieter.stats.useQuery();
+  const { data: objekte } = trpc.objekte.list.useQuery();
 
-  const filteredMieter = mieter?.filter((m) => {
-    const matchesSearch =
-      m.nachname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.vorname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.firma?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.email?.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filter: Aktive vs. Frühere Mieter
+  const aktiveMieter = mieter?.filter((m) =>
+    m.mietverhaeltnisse.some((mv: any) => !mv.auszugsdatum)
+  );
+  const fruehereMieter = mieter?.filter((m) =>
+    m.mietverhaeltnisse.every((mv: any) => mv.auszugsdatum)
+  );
 
-    const matchesTyp = typFilter === "all" || m.typ === typFilter;
+  const displayMieter =
+    statusFilter === "aktiv" ? aktiveMieter :
+    statusFilter === "frueher" ? fruehereMieter :
+    mieter;
 
-    return matchesSearch && matchesTyp;
+  const filteredMieter = displayMieter?.filter((m) => {
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = (
+      m.nachname.toLowerCase().includes(searchLower) ||
+      m.vorname?.toLowerCase().includes(searchLower) ||
+      m.firma?.toLowerCase().includes(searchLower) ||
+      m.email?.toLowerCase().includes(searchLower)
+    );
+
+    // Filter nach ausgewählten Objekten
+    const matchesObjekt = selectedObjekte.length === 0 || m.mietverhaeltnisse.some((mv: any) =>
+      mv.einheit?.objektId && selectedObjekte.includes(mv.einheit.objektId)
+    );
+
+    return matchesSearch && matchesObjekt;
   });
 
-  const getTypColor = (typ: string) => {
-    switch (typ) {
-      case "PRIVAT":
-        return "bg-blue-100 text-blue-800";
-      case "GEWERBE":
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getTypLabel = (typ: string) => {
-    switch (typ) {
-      case "PRIVAT":
-        return "Privat";
-      case "GEWERBE":
-        return "Gewerbe";
-      default:
-        return typ;
-    }
+  const toggleObjekt = (objektId: string) => {
+    setSelectedObjekte((prev) =>
+      prev.includes(objektId)
+        ? prev.filter((id) => id !== objektId)
+        : [...prev, objektId]
+    );
   };
 
   const getDisplayName = (m: any) => {
-    if (m.typ === "GEWERBE" && m.firma) {
-      return m.firma;
-    }
+    if (m.firma) return m.firma;
     return `${m.vorname || ""} ${m.nachname}`.trim();
   };
 
+  const getMietverhaeltnis = (m: any) => {
+    return m.mietverhaeltnisse[0]; // Aktuellstes Mietverhältnis
+  };
+
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-muted-foreground">Lade Mieter...</div>
-      </div>
-    );
+    return <div className="p-8 text-center text-gray-400">Laden...</div>;
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Mieter</h1>
-        <p className="text-muted-foreground">
-          Verwalten Sie Ihre Mieter und deren Kontaktdaten
-        </p>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Mieter</h1>
+          <p className="mt-2 text-gray-600">Verwalten Sie Ihre Mieter und deren Kontaktdaten</p>
+        </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 flex items-center gap-2"
+        >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Neuer Mieter
+        </button>
       </div>
 
       {/* Statistics */}
-      {stats && (
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Gesamt Mieter
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.gesamt}</div>
-            </CardContent>
-          </Card>
+      <div className="grid gap-4 md:grid-cols-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium text-gray-600">Gesamt</div>
+            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <div className="mt-2 text-2xl font-bold text-gray-900">{stats?.gesamt || 0}</div>
+        </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Privat</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
-                {stats.privat}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="text-sm font-medium text-gray-600">Aktive Mieter</div>
+          <div className="mt-2 text-2xl font-bold text-green-600">{aktiveMieter?.length || 0}</div>
+        </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Gewerbe</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">
-                {stats.gewerbe}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="text-sm font-medium text-gray-600">Frühere Mieter</div>
+          <div className="mt-2 text-2xl font-bold text-gray-600">{fruehereMieter?.length || 0}</div>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="text-sm font-medium text-gray-600">Geschäftlich</div>
+          <div className="mt-2 text-2xl font-bold text-purple-600">{stats?.gewerbe || 0}</div>
+        </div>
+      </div>
+
+      {/* Objekt Filter */}
+      {objekte && objekte.length > 0 && (
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h3 className="text-sm font-semibold text-gray-900">Nach Objekt filtern</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex flex-wrap gap-2">
+              {objekte.map((objekt) => {
+                const isSelected = selectedObjekte.includes(objekt.id);
+                const mieterCount = mieter?.filter((m) =>
+                  m.mietverhaeltnisse.some((mv: any) => mv.einheit?.objektId === objekt.id)
+                ).length || 0;
+
+                return (
+                  <button
+                    key={objekt.id}
+                    onClick={() => toggleObjekt(objekt.id)}
+                    className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
+                      isSelected
+                        ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span>{objekt.bezeichnung}</span>
+                    <span
+                      className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
+                        isSelected
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {mieterCount}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {selectedObjekte.length > 0 && (
+              <button
+                onClick={() => setSelectedObjekte([])}
+                className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Alle Filter zurücksetzen
+              </button>
+            )}
+          </div>
         </div>
       )}
 
       {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Suche nach Name, Firma oder E-Mail..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-            <Select value={typFilter} onValueChange={setTypFilter}>
-              <SelectTrigger className="w-full md:w-[200px]">
-                <SelectValue placeholder="Typ filtern" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alle Typen</SelectItem>
-                <SelectItem value="PRIVAT">Privat</SelectItem>
-                <SelectItem value="GEWERBE">Gewerbe</SelectItem>
-              </SelectContent>
-            </Select>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="relative flex-1 max-w-md">
+            <svg className="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Suche nach Name, Firma oder E-Mail..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Mieter List */}
+          <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+            <button
+              onClick={() => setStatusFilter("aktiv")}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                statusFilter === "aktiv"
+                  ? "bg-green-50 text-green-700"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Aktive Mieter
+            </button>
+            <button
+              onClick={() => setStatusFilter("frueher")}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                statusFilter === "frueher"
+                  ? "bg-gray-100 text-gray-700"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Frühere Mieter
+            </button>
+            <button
+              onClick={() => setStatusFilter("alle")}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                statusFilter === "alle"
+                  ? "bg-blue-50 text-blue-700"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Alle
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mieter Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredMieter?.map((m) => (
-          <Card key={m.id} className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg">
-                    {getDisplayName(m)}
-                  </CardTitle>
-                  {m.typ === "GEWERBE" && m.vorname && m.nachname && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Ansprechpartner: {m.vorname} {m.nachname}
-                    </p>
+        {filteredMieter?.map((m) => {
+          const mv = getMietverhaeltnis(m);
+          const isAktiv = mv && !mv.auszugsdatum;
+
+          return (
+            <div
+              key={m.id}
+              className="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => router.push(`/mieter/${m.id}`)}
+            >
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-lg">{getDisplayName(m)}</h3>
+                    {m.firma && m.vorname && m.nachname && (
+                      <p className="text-sm text-gray-500 mt-1">
+                        Ansprechpartner: {m.vorname} {m.nachname}
+                      </p>
+                    )}
+                  </div>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      isAktiv
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {isAktiv ? "Aktiv" : "Früher"}
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  {m.email && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <span className="truncate">{m.email}</span>
+                    </div>
+                  )}
+
+                  {(m.telefonMobil || m.telefon) && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      <span>{m.telefonMobil || m.telefon}</span>
+                    </div>
+                  )}
+
+                  {mv && mv.einheit && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      <span>{mv.einheit.objekt?.bezeichnung} - Einheit {mv.einheit.einheitNr}</span>
+                    </div>
                   )}
                 </div>
-                <Badge className={getTypColor(m.typ)}>
-                  {getTypLabel(m.typ)}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3 text-sm">
-                {m.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                    <span className="truncate">{m.email}</span>
-                  </div>
-                )}
-                {m.telefon && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                    <span>{m.telefon}</span>
-                  </div>
-                )}
-                {(m.strasse || m.plz || m.ort) && (
-                  <div className="flex items-start gap-2">
-                    <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      {m.strasse && <div>{m.strasse}</div>}
-                      {(m.plz || m.ort) && (
-                        <div>
-                          {m.plz} {m.ort}
-                        </div>
-                      )}
+
+                {mv && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Kaltmiete</span>
+                      <span className="font-semibold text-gray-900">
+                        {parseFloat(mv.kaltmiete.toString()).toFixed(2)} €
+                      </span>
                     </div>
                   </div>
                 )}
               </div>
-
-              {m.notizen && (
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-xs text-muted-foreground line-clamp-2">
-                    {m.notizen}
-                  </p>
-                </div>
-              )}
-
-              <div className="mt-4 pt-4 border-t">
-                <Button variant="outline" className="w-full" size="sm">
-                  Details ansehen
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          );
+        })}
       </div>
 
       {filteredMieter?.length === 0 && (
-        <Card>
-          <CardContent className="py-8">
-            <div className="text-center text-muted-foreground">
-              Keine Mieter gefunden
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
+          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">Keine Mieter gefunden</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Beginnen Sie, indem Sie einen neuen Mieter erstellen.
+          </p>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          >
+            Neuer Mieter
+          </button>
+        </div>
       )}
+
+      {/* Modal */}
+      <ErweiterterMieterModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          utils.mieter.list.invalidate();
+          utils.mieter.stats.invalidate();
+        }}
+      />
     </div>
   );
 }
