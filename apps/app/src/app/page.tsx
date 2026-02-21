@@ -88,7 +88,7 @@ export default async function HomePage() {
             {/* Line 1 */}
             <span className="line-wrap">
               <span className="line-1" style={{ fontSize: "clamp(2.8rem, 7vw, 5.25rem)", color: "#f0f4ff", display: "block" }}>
-                Hausverwaltung,
+                Immobilienverwaltung,
               </span>
             </span>
             {/* Line 2 */}
@@ -231,7 +231,7 @@ export default async function HomePage() {
           <div data-animate style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#0066ff", marginBottom: "0.875rem" }}>Features</p>
             <h2 style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 800, letterSpacing: "-0.035em", color: "#0f0f1a", marginBottom: "1rem", lineHeight: 1.12 }}>
-              Alles für professionelle<br />Hausverwaltung
+              Alles für professionelle<br />Immobilienverwaltung
             </h2>
             <p style={{ fontSize: "1.0625rem", color: "#5a6478", maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>
               Von der Objektverwaltung bis zum Bankimport — PropGate bietet alle Werkzeuge.
@@ -323,7 +323,7 @@ export default async function HomePage() {
           <p style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#3d7eff", marginBottom: "1.25rem" }}>Jetzt loslegen</p>
           <h2 style={{ fontSize: "clamp(2.25rem, 5vw, 3.75rem)", fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.04em", color: "#f0f4ff", marginBottom: "1.25rem" }}>
             Bereit für moderne<br />
-            <span className="gradient-text">Hausverwaltung?</span>
+            <span className="gradient-text">Immobilienverwaltung?</span>
           </h2>
           <p style={{ fontSize: "1.0625rem", lineHeight: 1.7, color: "#5a6478", marginBottom: "2.5rem" }}>
             Starten Sie kostenlos — keine Kreditkarte, kein Risiko.<br />In wenigen Minuten einsatzbereit.
@@ -351,7 +351,7 @@ export default async function HomePage() {
                 </div>
                 <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#ffffff" }}>Prop<span style={{ color: "#4da6ff" }}>Gate</span></span>
               </div>
-              <p style={{ fontSize: "0.875rem", lineHeight: 1.65, color: "#4b5563" }}>Moderne Hausverwaltungssoftware für professionelle Immobilienverwalter. DSGVO-konform, cloudbasiert, effizient.</p>
+              <p style={{ fontSize: "0.875rem", lineHeight: 1.65, color: "#4b5563" }}>Moderne Immobilienverwaltungssoftware für professionelle Immobilienverwalter. DSGVO-konform, cloudbasiert, effizient.</p>
             </div>
             <div>
               <p style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#9ca3af", marginBottom: "1rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>Produkt</p>

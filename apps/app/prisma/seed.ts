@@ -13,7 +13,7 @@ async function main() {
     update: {},
     create: {
       id: "demo-tenant-1",
-      name: "Demo Hausverwaltung GmbH",
+      name: "Demo Immobilienverwaltung GmbH",
     },
   });
 

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PropGate - Hausverwaltungssoftware",
-  description: "Moderne cloudbasierte Hausverwaltungssoftware",
+  title: "PropGate - Immobilienverwaltungssoftware",
+  description: "Moderne cloudbasierte Immobilienverwaltungssoftware",
 };
 
 export default function RootLayout({
