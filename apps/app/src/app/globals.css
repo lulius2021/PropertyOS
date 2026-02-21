@@ -12,16 +12,388 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark Mode deaktiviert - PropertyOS ist B2B und sollte immer hell sein */
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ================================================================
+   PROPGATE — PREMIUM ANIMATION SYSTEM
+   ================================================================ */
+
+/* ── Keyframes ────────────────────────────────────────────────── */
+
+/* Orb ambient movement */
+@keyframes orb-float-1 {
+  0%   { transform: translate(0, 0)       scale(1);    filter: blur(70px)  brightness(1.0); }
+  20%  { transform: translate(90px,-110px) scale(1.3);  filter: blur(50px)  brightness(1.7); }
+  50%  { transform: translate(150px, 40px) scale(1.1);  filter: blur(85px)  brightness(0.9); }
+  75%  { transform: translate(-70px, 90px) scale(0.8);  filter: blur(95px)  brightness(1.4); }
+  100% { transform: translate(0, 0)        scale(1);    filter: blur(70px)  brightness(1.0); }
+}
+@keyframes orb-float-2 {
+  0%   { transform: translate(0, 0)         scale(1);    filter: blur(70px)  brightness(1.0); }
+  30%  { transform: translate(-110px, 70px)  scale(1.25); filter: blur(50px)  brightness(1.6); }
+  60%  { transform: translate(70px,-100px)   scale(0.85); filter: blur(95px)  brightness(0.85); }
+  80%  { transform: translate(-50px,-50px)   scale(1.2);  filter: blur(60px)  brightness(1.5); }
+  100% { transform: translate(0, 0)          scale(1);    filter: blur(70px)  brightness(1.0); }
+}
+@keyframes orb-float-3 {
+  0%   { transform: translate(0, 0)        scale(1);    filter: blur(70px)  brightness(1.0); }
+  40%  { transform: translate(75px,-115px)  scale(1.4);  filter: blur(45px)  brightness(1.8); }
+  70%  { transform: translate(-95px, 55px)  scale(0.75); filter: blur(100px) brightness(0.9); }
+  100% { transform: translate(0, 0)         scale(1);    filter: blur(70px)  brightness(1.0); }
+}
+
+/* Text line reveal — modern slide-up-from-mask */
+@keyframes line-reveal {
+  from { transform: translateY(105%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Subtle fade-in for supporting elements */
+@keyframes soft-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header entry */
+@keyframes header-drop {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll reveal */
+@keyframes scroll-reveal {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Browser mockup 3D entry */
+@keyframes perspective-rise {
+  from { opacity: 0; transform: perspective(1200px) rotateX(14deg) translateY(50px) scale(0.93); }
+  to   { opacity: 1; transform: perspective(1200px) rotateX(0deg)  translateY(0)    scale(1); }
+}
+
+/* Gradient sweep — premium shimmer across text */
+@keyframes text-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Button gleam — single sweep */
+@keyframes btn-gleam {
+  0%        { left: -100%; opacity: 0; }
+  5%        { opacity: 1; }
+  40%, 100% { left: 150%;  opacity: 0; }
+}
+
+/* Button glow breathe */
+@keyframes btn-breathe {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,102,255,0.4), 0 4px 16px rgba(0,102,255,0.3), inset 0 1px 0 rgba(255,255,255,0.15); }
+  50%       { box-shadow: 0 0 45px rgba(0,102,255,0.75), 0 8px 32px rgba(0,102,255,0.45), 0 0 80px rgba(0,102,255,0.2), inset 0 1px 0 rgba(255,255,255,0.2); }
+}
+
+/* Badge dot pulse */
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,102,255,0.6); }
+  50%       { box-shadow: 0 0 0 5px rgba(0,102,255,0); }
+}
+
+/* Floating particles */
+@keyframes particle-rise {
+  0%   { transform: translateY(0)     translateX(0)              scale(0.5); opacity: 0; }
+  8%   { opacity: 0.8; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(-200px) translateX(var(--dx, 20px)) scale(1.5); opacity: 0; }
+}
+
+/* Scan line inside browser */
+@keyframes scan-line {
+  from { top: -2px; }
+  to   { top: 100%; }
+}
+
+/* Shimmer sweep for cards */
+@keyframes shimmer-sweep {
+  from { transform: translateX(-200%) skewX(-15deg); }
+  to   { transform: translateX(250%)  skewX(-15deg); }
+}
+
+/* Number pop for step numbers */
+@keyframes number-pop {
+  from { opacity: 0; transform: scale(0.6) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+/* Icon bounce on hover */
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  40%       { transform: translateY(-6px); }
+  70%       { transform: translateY(-2px); }
+}
+
+/* Featured pricing pulse */
+@keyframes featured-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(0,102,255,0.06), 0 12px 40px rgba(0,102,255,0.14); }
+  50%       { box-shadow: 0 0 0 8px rgba(0,102,255,0.15), 0 16px 56px rgba(0,102,255,0.32), 0 0 70px rgba(0,102,255,0.08); }
+}
+
+/* Stats count-in */
+@keyframes stat-pop {
+  from { opacity: 0; transform: scale(0.7) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+
+/* ── Orbs ─────────────────────────────────────────────────────── */
+.orb-1 { animation: orb-float-1 8s  ease-in-out infinite; }
+.orb-2 { animation: orb-float-2 11s ease-in-out infinite; }
+.orb-3 { animation: orb-float-3 7s  ease-in-out infinite; }
+
+
+/* ── Header ───────────────────────────────────────────────────── */
+.header-animate {
+  animation: header-drop 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+
+/* ── Hero text — line-by-line reveal ─────────────────────────── */
+
+/* Each line sits inside overflow:hidden wrapper */
+.line-wrap {
+  overflow: hidden;
+  display: block;
+}
+
+.line-1 { animation: line-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s  both; display: block; }
+.line-2 { animation: line-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both; display: block; }
+.line-3 { animation: line-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both; display: block; }
+
+.hero-badge  { animation: soft-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.0s  both; }
+.hero-sub    { animation: soft-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.6s  both; }
+.hero-ctas   { animation: soft-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both; }
+.hero-stats  { animation: soft-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.9s  both; }
+
+
+/* ── Gradient text — sweeping shimmer ────────────────────────── */
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    #1a80ff  0%,
+    #80d0ff  25%,
+    #ffffff  40%,
+    #80d0ff  55%,
+    #1a80ff  75%,
+    #80d0ff  90%,
+    #1a80ff  100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 3s linear infinite;
+  display: inline;
+}
+
+
+/* ── Badge dot ────────────────────────────────────────────────── */
+.badge-dot {
+  position: relative;
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+
+/* ── Primary CTA button — gradient + gleam ───────────────────── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a6fff 0%, #0050dd 50%, #0040cc 100%) !important;
+  border: none !important;
+  animation: btn-breathe 2.5s ease-in-out infinite !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.25s ease !important;
+}
+
+/* The gleam sweep */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.12),
+    transparent
+  );
+  animation: btn-gleam 3.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top highlight line */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  filter: brightness(1.15) !important;
+}
+
+.btn-primary > * {
+  position: relative;
+  z-index: 3;
+}
+
+/* ── Ghost CTA button ─────────────────────────────────────────── */
+.btn-ghost {
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease !important;
+}
+
+.btn-ghost:hover {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.3) !important;
+  background: rgba(255,255,255,0.06) !important;
+}
+
+
+/* ── Browser mockup ───────────────────────────────────────────── */
+.browser-mockup {
+  animation: perspective-rise 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,102,255,0.6) 50%, transparent 100%);
+  animation: scan-line 4s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* ── Floating particles ───────────────────────────────────────── */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0,102,255,0.8);
+  box-shadow: 0 0 8px rgba(0,102,255,0.9), 0 0 16px rgba(0,102,255,0.4);
+  animation: particle-rise var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
+  pointer-events: none;
+}
+
+
+/* ── Scroll reveal ────────────────────────────────────────────── */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-stagger-parent] > * {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-stagger-parent].is-visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.00s; }
+[data-stagger-parent].is-visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.10s; }
+[data-stagger-parent].is-visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.18s; }
+[data-stagger-parent].is-visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.26s; }
+[data-stagger-parent].is-visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 0.34s; }
+[data-stagger-parent].is-visible > *:nth-child(6) { opacity: 1; transform: none; transition-delay: 0.42s; }
+
+
+/* ── Feature cards ────────────────────────────────────────────── */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease !important;
+}
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(0,102,255,0.07) 48%, rgba(100,180,255,0.1) 50%, rgba(0,102,255,0.07) 52%, transparent 65%);
+  transform: translateX(-200%) skewX(-15deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 1;
+}
+.feature-card:hover {
+  transform: translateY(-5px) !important;
+  border-color: rgba(0,102,255,0.28) !important;
+  box-shadow: 0 16px 48px rgba(0,102,255,0.12), 0 0 0 1px rgba(0,102,255,0.08) !important;
+}
+.feature-card:hover::after {
+  animation: shimmer-sweep 0.6s ease-out forwards;
+}
+.feature-card:hover .feature-icon {
+  animation: icon-bounce 0.55s ease forwards;
+}
+
+
+/* ── Featured pricing ─────────────────────────────────────────── */
+.featured-plan {
+  animation: featured-pulse 2.8s ease-in-out infinite !important;
+}
+
+
+/* ── Step number pop ──────────────────────────────────────────── */
+.step-number { display: block; }
+[data-stagger-parent].is-visible > *:nth-child(1) .step-number { animation: number-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both; }
+[data-stagger-parent].is-visible > *:nth-child(2) .step-number { animation: number-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.24s both; }
+[data-stagger-parent].is-visible > *:nth-child(3) .step-number { animation: number-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.36s both; }
+
+
+/* ── Stat number animation ────────────────────────────────────── */
+.stat-item {
+  animation: stat-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0s) both;
+}
+
+
+/* ── Magnetic ─────────────────────────────────────────────────── */
+.magnetic {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+
+/* ── Cursor glow ──────────────────────────────────────────────── */
+.cursor-glow {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,102,255,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+  mix-blend-mode: screen;
 }

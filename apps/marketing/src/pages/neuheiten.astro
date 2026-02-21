@@ -1,0 +1,266 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const changelog = [
+  {
+    version: 'v1.4',
+    date: 'Februar 2026',
+    badge: 'Neu',
+    badgeColor: '#0066ff',
+    items: [
+      { type: 'feature', text: 'CSV-Bankimport mit automatischem Zahlungs-Matching' },
+      { type: 'feature', text: 'Zweifaktor-Authentifizierung (TOTP) für alle Accounts' },
+      { type: 'improvement', text: 'Dashboard KPIs jetzt in Echtzeit aktualisiert' },
+      { type: 'fix', text: 'Suchfunktion in Mieterliste deutlich schneller' },
+    ],
+  },
+  {
+    version: 'v1.3',
+    date: 'Januar 2026',
+    badge: 'Update',
+    badgeColor: '#7c3aed',
+    items: [
+      { type: 'feature', text: 'Ticketsystem für Mieteranfragen und Reparaturen' },
+      { type: 'feature', text: 'Zählerverwaltung mit automatischer Abrechnung' },
+      { type: 'improvement', text: 'Verbessertes Mahnwesen mit konfigurierbaren Stufen' },
+      { type: 'fix', text: 'PDF-Export für Sollstellungen überarbeitet' },
+    ],
+  },
+  {
+    version: 'v1.2',
+    date: 'Dezember 2025',
+    badge: 'Update',
+    badgeColor: '#7c3aed',
+    items: [
+      { type: 'feature', text: 'Kreditverwaltung mit Tilgungsplan' },
+      { type: 'feature', text: 'Reporting-Modul mit exportierbaren Auswertungen' },
+      { type: 'improvement', text: 'Mobile-Ansicht für alle Tabellen optimiert' },
+    ],
+  },
+  {
+    version: 'v1.0',
+    date: 'November 2025',
+    badge: 'Launch',
+    badgeColor: '#059669',
+    items: [
+      { type: 'feature', text: 'Objektverwaltung & Einheiten' },
+      { type: 'feature', text: 'Mieterverwaltung & Verträge' },
+      { type: 'feature', text: 'Sollstellungen & offene Posten' },
+      { type: 'feature', text: 'DSGVO-konformes EU-Hosting in Frankfurt' },
+    ],
+  },
+];
+
+const typeIcon: Record<string, string> = {
+  feature: '✦',
+  improvement: '↑',
+  fix: '✓',
+};
+
+const typeColor: Record<string, string> = {
+  feature: '#0066ff',
+  improvement: '#7c3aed',
+  fix: '#059669',
+};
+---
+
+<Layout
+  title="Neuheiten & Changelog – PropGate"
+  description="Alle Updates, neue Features und Verbesserungen von PropGate auf einen Blick."
+>
+  <Header showBack={true} />
+
+  <main class="page-main">
+    <div class="page-bg" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+      <div class="page-hero">
+        <p class="eyebrow">Changelog</p>
+        <h1 class="page-h1">Neuheiten &<br /><span class="gradient-text">Updates</span></h1>
+        <p class="page-sub">Alle neuen Features, Verbesserungen und Fixes — transparent und auf einen Blick.</p>
+      </div>
+
+      <div class="timeline">
+        {changelog.map((release) => (
+          <div class="release">
+            <div class="release-header">
+              <span class="release-version">{release.version}</span>
+              <span class="release-badge" style={`background: ${release.badgeColor}22; color: ${release.badgeColor}; border-color: ${release.badgeColor}44`}>{release.badge}</span>
+              <span class="release-date">{release.date}</span>
+            </div>
+            <div class="release-items">
+              {release.items.map((item) => (
+                <div class="release-item">
+                  <span class="item-icon" style={`color: ${typeColor[item.type]}`}>{typeIcon[item.type]}</span>
+                  <span class="item-text">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-main {
+    background: var(--bg);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding-top: 4rem;
+  }
+
+  .page-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+
+  .orb-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+    bottom: 0;
+    left: -100px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-hero {
+    text-align: center;
+    padding-bottom: 4rem;
+  }
+
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4da6ff;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-h1 {
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--heading);
+    margin-bottom: 1rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 60%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-sub {
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .release {
+    border: 1px solid var(--border-card);
+    border-radius: 18px;
+    padding: 2rem;
+    background: var(--bg-card);
+    transition: border-color 0.2s ease;
+  }
+
+  .release:hover {
+    border-color: var(--border);
+  }
+
+  .release-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .release-version {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.02em;
+  }
+
+  .release-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid;
+    letter-spacing: 0.03em;
+  }
+
+  .release-date {
+    font-size: 0.875rem;
+    color: var(--text-subtle);
+    margin-left: auto;
+  }
+
+  .release-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .release-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .item-icon {
+    font-size: 0.875rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .item-text {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+</style>

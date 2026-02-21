@@ -44,7 +44,12 @@ export type WidgetType =
   | "gesamtMiete"
   // K) Datenqualitaet
   | "unzugeordneteZahlungen"
-  | "stammdatenLuecken";
+  | "stammdatenLuecken"
+  // Zeitverlauf-Charts
+  | "sollIstVerlauf"
+  | "cashflowVerlauf"
+  | "kostenVerlauf"
+  | "ticketsVerlauf";
 
 export interface WidgetConfig {
   i: string; // unique id

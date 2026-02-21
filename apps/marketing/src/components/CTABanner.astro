@@ -1,22 +1,22 @@
 ---
 ---
 
-<section class="cta-section">
+<section class="cta-section" data-dark>
   <!-- Glow Orbs -->
   <div class="cta-orb cta-orb-1" aria-hidden="true"></div>
   <div class="cta-orb cta-orb-2" aria-hidden="true"></div>
 
   <div class="cta-container">
-    <p class="cta-eyebrow">Jetzt loslegen</p>
-    <h2 class="cta-h2">
+    <p class="cta-eyebrow" data-animate="fade">Jetzt loslegen</p>
+    <h2 class="cta-h2" data-animate data-delay="1">
       Bereit für moderne<br />
       <span class="gradient-text">Hausverwaltung?</span>
     </h2>
-    <p class="cta-subtext">
+    <p class="cta-subtext" data-animate data-delay="2">
       Starten Sie kostenlos — kein Kreditkarte erforderlich. Ihr Konto ist in wenigen Minuten einsatzbereit.
     </p>
-    <div class="cta-buttons">
-      <a href="https://app.propgate.de/register" class="cta-primary">
+    <div class="cta-buttons" data-animate data-delay="3">
+      <a href="https://app.propgate.de/register" class="cta-primary magnetic">
         Kostenlos starten
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -31,7 +31,7 @@
 
 <style>
   .cta-section {
-    background: #0a0a0f;
+    background: var(--bg);
     padding: 6rem 1.5rem;
     text-align: center;
     position: relative;
@@ -82,21 +82,14 @@
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.04em;
-    color: #ffffff;
+    color: var(--heading);
     margin-bottom: 1.25rem;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 50%, #66b8ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   .cta-subtext {
     font-size: 1.0625rem;
     line-height: 1.7;
-    color: #a0a8b8;
+    color: var(--text-muted);
     margin-bottom: 2.5rem;
   }
 
@@ -132,19 +125,19 @@
   .cta-ghost {
     display: inline-flex;
     align-items: center;
-    color: #a0a8b8;
+    color: var(--text-muted);
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
     padding: 0.875rem 1.5rem;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
 
   .cta-ghost:hover {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    border-color: var(--border);
+    background: var(--bg-card);
   }
 </style>

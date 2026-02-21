@@ -1,100 +1,138 @@
 ---
 const plans = [
   {
+    id: 'starter',
     name: 'Starter',
-    price: '0',
-    period: '/Monat',
-    description: 'Für Einsteiger und kleine Portfolios.',
+    limit: 'bis 5 Objekte',
+    priceMonthly: '9,99',
+    priceAnnual: '8,99',
+    description: 'Für Einsteiger mit kleinem Portfolio.',
     featured: false,
     href: 'https://app.propgate.de/register?plan=starter',
-    cta: 'Kostenlos starten',
+    cta: 'Kostenlos testen',
     features: [
-      'Bis zu 5 Objekte',
-      'Basis-Mieterverwaltung',
-      'Zahlungs-Tracking',
-      'Dashboard & KPIs',
-      'E-Mail-Support',
-    ],
-    missing: [
-      'CSV-Bankimport',
+      'Bis zu 5 Objekte & Einheiten',
+      'Mieterverwaltung & Verträge',
+      'Zahlungs-Tracking & Offene Posten',
       'Mahnwesen',
-      'Ticketsystem',
-      'Dokument-Export',
+      'Zählerverwaltung',
+      'Dashboard & KPIs',
     ],
   },
   {
-    name: 'Professional',
-    price: '29',
-    period: '/Monat',
-    description: 'Für wachsende Immobilienportfolios.',
+    id: 'plus',
+    name: 'Plus',
+    limit: 'bis 20 Objekte',
+    priceMonthly: '29,99',
+    priceAnnual: '26,99',
+    description: 'Für wachsende Portfolios mit mehr Features.',
+    featured: false,
+    href: 'https://app.propgate.de/register?plan=plus',
+    cta: 'Kostenlos testen',
+    features: [
+      'Bis zu 20 Objekte & Einheiten',
+      'Alles aus Starter',
+      'Ticketsystem',
+      'CSV-Bankimport & Auto-Matching',
+      'Dokumentenverwaltung',
+      'Datenexport (CSV / Excel)',
+    ],
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    limit: 'bis 60 Objekte',
+    priceMonthly: '79,99',
+    priceAnnual: '71,99',
+    description: 'Für professionelle Immobilienverwalter.',
     featured: true,
     badge: 'Empfohlen',
-    href: 'https://app.propgate.de/register?plan=professional',
-    cta: 'Jetzt starten',
+    href: 'https://app.propgate.de/register?plan=pro',
+    cta: 'Kostenlos testen',
     features: [
-      'Unbegrenzt Objekte',
-      'Vollständige Mieterverwaltung',
-      'CSV-Bankimport & Auto-Matching',
-      'Mahnwesen mit PDF-Export',
-      'Ticketsystem',
-      'Zählerverwaltung',
-      'Dokument-Export (CSV/Excel)',
+      'Bis zu 60 Objekte & Einheiten',
+      'Alles aus Plus',
       'Priority-Support',
     ],
-    missing: [],
   },
   {
-    name: 'Enterprise',
-    price: '99',
-    period: '/Monat',
-    description: 'Für professionelle Verwaltungsunternehmen.',
+    id: 'unlimited',
+    name: 'Unlimited',
+    limit: 'Unbegrenzte Objekte',
+    priceMonthly: '149,00',
+    priceAnnual: '134,10',
+    description: 'Für große Verwaltungsunternehmen.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=enterprise',
-    cta: 'Kontakt aufnehmen',
+    href: 'https://app.propgate.de/register?plan=unlimited',
+    cta: 'Kostenlos testen',
     features: [
-      'Alles aus Professional',
-      'Multi-User (unbegrenzt)',
-      'Rollenbasierte Rechte',
-      'API-Zugang',
-      'Priority Support mit SLA',
-      'Onboarding-Service',
-      'Custom Branding',
+      'Unbegrenzt Objekte & Einheiten',
+      'Alles aus Pro',
+      'Multi-User (Team-Zugang)',
+      'Rollenbasierte Zugriffsrechte',
+      'API-Zugriff',
       'Dedizierter Account-Manager',
     ],
-    missing: [],
   },
 ];
 
-const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
-const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
 ---
 
 <section class="pricing-section" id="preise">
   <div class="pricing-container">
     <!-- Header -->
-    <div class="section-header">
+    <div class="section-header" data-animate="fade">
       <p class="section-eyebrow">Preise</p>
       <h2 class="section-h2">Transparent und fair</h2>
       <p class="section-subtitle">
-        Starten Sie kostenlos und upgraden Sie, wenn Ihr Portfolio wächst.
+        30 Tage kostenlos testen — keine Kreditkarte erforderlich.
       </p>
     </div>
 
+    <!-- Trial Banner -->
+    <div class="trial-banner" data-animate="fade">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <span><strong>30 Tage Free Trial</strong> — Alle Features testen, kein Upgrade nötig, kein Risiko.</span>
+    </div>
+
+    <!-- Billing Toggle -->
+    <div class="billing-toggle-wrap" data-animate="fade">
+      <div class="billing-toggle" role="group" aria-label="Abrechnungszeitraum">
+        <button class="toggle-btn is-active" data-period="monthly" id="toggle-monthly">
+          Monatlich
+        </button>
+        <button class="toggle-btn" data-period="annual" id="toggle-annual">
+          Jährlich
+          <span class="save-chip">2 Monate gratis</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Plans -->
-    <div class="plans-grid">
+    <div class="plans-grid" data-stagger-parent>
       {plans.map((plan) => (
-        <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`}>
+        <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`} data-stagger>
           {plan.featured && plan.badge && (
             <div class="plan-badge">{plan.badge}</div>
           )}
           <div class="plan-header">
-            <h3 class="plan-name">{plan.name}</h3>
+            <div class="plan-name-row">
+              <h3 class="plan-name">{plan.name}</h3>
+              <span class="plan-limit">{plan.limit}</span>
+            </div>
             <p class="plan-description">{plan.description}</p>
             <div class="plan-price">
               <span class="price-currency">€</span>
-              <span class="price-amount">{plan.price}</span>
-              <span class="price-period">{plan.period}</span>
+              <span class="price-amount" data-monthly={plan.priceMonthly} data-annual={plan.priceAnnual}>
+                {plan.priceMonthly}
+              </span>
+              <span class="price-period">/Monat</span>
             </div>
+            <p class="price-note price-note-monthly">zzgl. MwSt., monatlich kündbar</p>
+            <p class="price-note price-note-annual" style="display:none">zzgl. MwSt., jährliche Zahlung</p>
           </div>
 
           <a href={plan.href} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : 'plan-cta-secondary'}`}>
@@ -103,14 +141,8 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
 
           <ul class="plan-features">
             {plan.features.map((feature) => (
-              <li class="feature-item feature-included">
+              <li class="feature-item">
                 <span class="feature-check" set:html={checkIcon} />
-                <span>{feature}</span>
-              </li>
-            ))}
-            {plan.missing.map((feature) => (
-              <li class="feature-item feature-missing">
-                <span class="feature-cross" set:html={crossIcon} />
                 <span>{feature}</span>
               </li>
             ))}
@@ -119,27 +151,27 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
       ))}
     </div>
 
-    <!-- Bottom note -->
-    <p class="pricing-note">
-      Alle Preise zzgl. MwSt. · Monatlich kündbar · Keine versteckten Kosten
+    <p class="pricing-note" data-animate="fade">
+      Alle Pläne starten mit 30 Tagen Free Trial · Keine Kreditkarte · Monatlich kündbar
+      · <a href="/pricing" class="pricing-link">Vollständiger Planvergleich →</a>
     </p>
   </div>
 </section>
 
 <style>
   .pricing-section {
-    background: #ffffff;
+    background: var(--bg);
     padding: 5rem 1.5rem;
   }
 
   .pricing-container {
-    max-width: 1280px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
   .section-header {
     text-align: center;
-    margin-bottom: 3.5rem;
+    margin-bottom: 2rem;
   }
 
   .section-eyebrow {
@@ -156,75 +188,148 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.03em;
-    color: #0f0f1a;
-    margin-bottom: 1rem;
+    color: var(--heading);
+    margin-bottom: 0.75rem;
   }
 
   .section-subtitle {
     font-size: 1.0625rem;
-    line-height: 1.7;
-    color: #5a6478;
+    color: var(--text-muted);
+    line-height: 1.6;
   }
 
+  /* Trial Banner */
+  .trial-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    background: rgba(0, 102, 255, 0.06);
+    border: 1px solid rgba(0, 102, 255, 0.15);
+    color: #1a3a6b;
+    font-size: 0.9375rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trial-banner svg {
+    color: #0066ff;
+    flex-shrink: 0;
+  }
+
+  /* Billing Toggle */
+  .billing-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .billing-toggle {
+    display: inline-flex;
+    background: #f3f4f6;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.125rem;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .toggle-btn.is-active {
+    background: #ffffff;
+    color: #0f0f1a;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+  }
+
+  .save-chip {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* Plans Grid */
   .plans-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
     align-items: start;
   }
 
   .plan-card {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.09);
-    border-radius: 16px;
-    padding: 2rem;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-card);
+    border-radius: 14px;
+    padding: 1.5rem;
     position: relative;
     transition: box-shadow 0.2s ease;
   }
 
   .plan-card:hover {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
   }
 
   .plan-featured {
     border-color: #0066ff;
     border-width: 2px;
     box-shadow:
-      0 0 0 4px rgba(0, 102, 255, 0.06),
-      0 12px 40px rgba(0, 102, 255, 0.12);
-  }
-
-  .plan-featured:hover {
-    box-shadow:
-      0 0 0 4px rgba(0, 102, 255, 0.08),
-      0 16px 48px rgba(0, 102, 255, 0.18);
+      0 0 0 4px rgba(0, 102, 255, 0.05),
+      0 10px 36px rgba(0, 102, 255, 0.12);
   }
 
   .plan-badge {
     position: absolute;
-    top: -13px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
     background: #0066ff;
     color: #ffffff;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding: 0.3rem 0.875rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 100px;
     white-space: nowrap;
   }
 
   .plan-header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .plan-name-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.375rem;
   }
 
   .plan-name {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
-    color: #0f0f1a;
-    margin-bottom: 0.375rem;
+    color: var(--heading);
     letter-spacing: -0.02em;
   }
 
@@ -232,38 +337,51 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     color: #0066ff;
   }
 
+  .plan-limit {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #9ca3af;
+    white-space: nowrap;
+  }
+
   .plan-description {
-    font-size: 0.9375rem;
-    color: #5a6478;
-    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
     line-height: 1.5;
   }
 
   .plan-price {
     display: flex;
     align-items: baseline;
-    gap: 0.2rem;
+    gap: 0.1rem;
   }
 
   .price-currency {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: #0f0f1a;
-    margin-top: 0.375rem;
+    color: var(--heading);
+    margin-top: 0.25rem;
   }
 
   .price-amount {
-    font-size: 3rem;
+    font-size: 2.25rem;
     font-weight: 800;
-    color: #0f0f1a;
+    color: var(--heading);
     line-height: 1;
     letter-spacing: -0.04em;
   }
 
   .price-period {
-    font-size: 0.9375rem;
-    color: #5a6478;
+    font-size: 0.875rem;
+    color: #9ca3af;
     margin-left: 0.125rem;
+  }
+
+  .price-note {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.25rem;
   }
 
   .plan-cta {
@@ -272,33 +390,33 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     text-decoration: none;
     font-size: 0.9375rem;
     font-weight: 600;
-    padding: 0.75rem 1.25rem;
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
+    padding: 0.6875rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
     transition: all 0.15s ease;
   }
 
   .plan-cta-primary {
     background: #0066ff;
     color: #ffffff;
-    box-shadow: 0 4px 16px rgba(0, 102, 255, 0.3);
+    box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);
   }
 
   .plan-cta-primary:hover {
     background: #0052cc;
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+    box-shadow: 0 6px 18px rgba(0, 102, 255, 0.4);
   }
 
   .plan-cta-secondary {
     background: transparent;
-    color: #0f0f1a;
-    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-card);
   }
 
   .plan-cta-secondary:hover {
-    background: #f8f9fc;
-    border-color: rgba(0, 0, 0, 0.2);
+    background: var(--bg-card);
+    border-color: var(--border);
   }
 
   .plan-features {
@@ -307,33 +425,22 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.625rem;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    padding-top: 1.125rem;
   }
 
   .feature-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.625rem;
-    font-size: 0.9375rem;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
     line-height: 1.4;
-  }
-
-  .feature-included {
-    color: #374151;
-  }
-
-  .feature-missing {
-    color: #9ca3af;
   }
 
   .feature-check {
     color: #0066ff;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .feature-cross {
-    color: #d1d5db;
     flex-shrink: 0;
     margin-top: 1px;
   }
@@ -345,17 +452,53 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     margin-top: 2rem;
   }
 
-  @media (max-width: 1024px) {
+  .pricing-link {
+    color: #0066ff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .pricing-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 1280px) {
     .plans-grid {
-      grid-template-columns: 1fr;
-      max-width: 440px;
-      margin: 0 auto;
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (max-width: 640px) {
     .plans-grid {
-      max-width: 100%;
+      grid-template-columns: 1fr;
     }
   }
 </style>
+
+<script>
+  const monthlyBtn = document.getElementById('toggle-monthly');
+  const annualBtn = document.getElementById('toggle-annual');
+
+  function setPeriod(period: string) {
+    const isAnnual = period === 'annual';
+
+    monthlyBtn?.classList.toggle('is-active', !isAnnual);
+    annualBtn?.classList.toggle('is-active', isAnnual);
+
+    document.querySelectorAll<HTMLElement>('.price-amount').forEach((el) => {
+      el.textContent = isAnnual
+        ? (el.dataset.annual ?? el.dataset.monthly ?? '')
+        : (el.dataset.monthly ?? '');
+    });
+
+    document.querySelectorAll<HTMLElement>('.price-note-monthly').forEach((el) => {
+      el.style.display = isAnnual ? 'none' : '';
+    });
+    document.querySelectorAll<HTMLElement>('.price-note-annual').forEach((el) => {
+      el.style.display = isAnnual ? '' : 'none';
+    });
+  }
+
+  monthlyBtn?.addEventListener('click', () => setPeriod('monthly'));
+  annualBtn?.addEventListener('click', () => setPeriod('annual'));
+</script>

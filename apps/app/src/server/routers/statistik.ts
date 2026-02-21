@@ -883,4 +883,233 @@ export const statistikRouter = router({
       },
     };
   }),
+
+  // =========================================================================
+  // 10) SOLL/IST MONATSVERLAUF
+  // =========================================================================
+  sollIstMonatlich: protectedProcedure
+    .input(
+      z
+        .object({ jahr: z.number().optional() })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
+      const jahr = input?.jahr ?? new Date().getFullYear();
+
+      const monate: {
+        monat: string;
+        soll: number;
+        ist: number;
+      }[] = [];
+
+      const monatNamen = [
+        "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+        "Jul", "Aug", "Sep", "Okt", "Nov", "Dez",
+      ];
+
+      for (let m = 0; m < 12; m++) {
+        const start = new Date(jahr, m, 1);
+        const end = new Date(jahr, m + 1, 0, 23, 59, 59);
+
+        const [sollAgg, istAgg] = await Promise.all([
+          ctx.db.sollstellung.aggregate({
+            where: {
+              tenantId,
+              faelligkeitsdatum: { gte: start, lte: end },
+              status: { not: "STORNIERT" },
+            },
+            _sum: { betragGesamt: true },
+          }),
+          ctx.db.sollstellung.aggregate({
+            where: {
+              tenantId,
+              faelligkeitsdatum: { gte: start, lte: end },
+              status: { not: "STORNIERT" },
+            },
+            _sum: { gedecktGesamt: true },
+          }),
+        ]);
+
+        monate.push({
+          monat: monatNamen[m],
+          soll: d2n(sollAgg._sum.betragGesamt),
+          ist: d2n(istAgg._sum.gedecktGesamt),
+        });
+      }
+
+      return monate;
+    }),
+
+  // =========================================================================
+  // 11) CASHFLOW MONATSVERLAUF
+  // =========================================================================
+  cashflowMonatlich: protectedProcedure
+    .input(
+      z
+        .object({ jahr: z.number().optional() })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
+      const jahr = input?.jahr ?? new Date().getFullYear();
+
+      const monatNamen = [
+        "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+        "Jul", "Aug", "Sep", "Okt", "Nov", "Dez",
+      ];
+
+      const monate: {
+        monat: string;
+        einnahmen: number;
+        ausgaben: number;
+        cashflow: number;
+      }[] = [];
+
+      for (let m = 0; m < 12; m++) {
+        const start = new Date(jahr, m, 1);
+        const end = new Date(jahr, m + 1, 0, 23, 59, 59);
+
+        const [einnahmenAgg, ausgabenAgg] = await Promise.all([
+          ctx.db.zahlung.aggregate({
+            where: {
+              tenantId,
+              datum: { gte: start, lte: end },
+              status: { in: ["ZUGEORDNET", "TEILWEISE_ZUGEORDNET", "SPLITTET"] },
+            },
+            _sum: { betrag: true },
+          }),
+          ctx.db.kosten.aggregate({
+            where: {
+              tenantId,
+              datum: { gte: start, lte: end },
+            },
+            _sum: { betragBrutto: true },
+          }),
+        ]);
+
+        const einnahmen = d2n(einnahmenAgg._sum.betrag);
+        const ausgaben = d2n(ausgabenAgg._sum.betragBrutto);
+
+        monate.push({
+          monat: monatNamen[m],
+          einnahmen,
+          ausgaben,
+          cashflow: parseFloat((einnahmen - ausgaben).toFixed(2)),
+        });
+      }
+
+      return monate;
+    }),
+
+  // =========================================================================
+  // 12) KOSTEN MONATSVERLAUF
+  // =========================================================================
+  kostenMonatlich: protectedProcedure
+    .input(
+      z
+        .object({ jahr: z.number().optional() })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
+      const jahr = input?.jahr ?? new Date().getFullYear();
+
+      const monatNamen = [
+        "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+        "Jul", "Aug", "Sep", "Okt", "Nov", "Dez",
+      ];
+
+      const monate: {
+        monat: string;
+        bk: number;
+        hk: number;
+        sonstige: number;
+        gesamt: number;
+      }[] = [];
+
+      for (let m = 0; m < 12; m++) {
+        const start = new Date(jahr, m, 1);
+        const end = new Date(jahr, m + 1, 0, 23, 59, 59);
+
+        const kostenAll = await ctx.db.kosten.findMany({
+          where: { tenantId, datum: { gte: start, lte: end } },
+          select: { betragBrutto: true, bkRelevant: true, hkRelevant: true },
+        });
+
+        let bk = 0;
+        let hk = 0;
+        let sonstige = 0;
+        for (const k of kostenAll) {
+          const betrag = d2n(k.betragBrutto);
+          if (k.bkRelevant) bk += betrag;
+          else if (k.hkRelevant) hk += betrag;
+          else sonstige += betrag;
+        }
+
+        monate.push({
+          monat: monatNamen[m],
+          bk: parseFloat(bk.toFixed(2)),
+          hk: parseFloat(hk.toFixed(2)),
+          sonstige: parseFloat(sonstige.toFixed(2)),
+          gesamt: parseFloat((bk + hk + sonstige).toFixed(2)),
+        });
+      }
+
+      return monate;
+    }),
+
+  // =========================================================================
+  // 13) TICKETS MONATSVERLAUF
+  // =========================================================================
+  ticketsMonatlich: protectedProcedure
+    .input(
+      z
+        .object({ jahr: z.number().optional() })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
+      const jahr = input?.jahr ?? new Date().getFullYear();
+
+      const monatNamen = [
+        "Jan", "Feb", "Mär", "Apr", "Mai", "Jun",
+        "Jul", "Aug", "Sep", "Okt", "Nov", "Dez",
+      ];
+
+      const monate: {
+        monat: string;
+        neu: number;
+        abgeschlossen: number;
+      }[] = [];
+
+      for (let m = 0; m < 12; m++) {
+        const start = new Date(jahr, m, 1);
+        const end = new Date(jahr, m + 1, 0, 23, 59, 59);
+
+        const [neu, abgeschlossen] = await Promise.all([
+          ctx.db.ticket.count({
+            where: {
+              tenantId,
+              createdAt: { gte: start, lte: end },
+            },
+          }),
+          ctx.db.ticket.count({
+            where: {
+              tenantId,
+              status: "ABGESCHLOSSEN",
+              updatedAt: { gte: start, lte: end },
+            },
+          }),
+        ]);
+
+        monate.push({
+          monat: monatNamen[m],
+          neu,
+          abgeschlossen,
+        });
+      }
+
+      return monate;
+    }),
 });

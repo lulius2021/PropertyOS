@@ -1,0 +1,265 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const posts = [
+  {
+    title: '5 Fehler, die Vermieter bei der Nebenkostenabrechnung machen',
+    excerpt: 'Die Betriebskostenabrechnung ist eine der häufigsten Fehlerquellen in der Hausverwaltung. Wir zeigen die fünf typischen Stolperfallen und wie Sie sie vermeiden.',
+    date: '18. Februar 2026',
+    readTime: '5 min',
+    category: 'Praxistipps',
+    categoryColor: '#0066ff',
+    slug: '#',
+  },
+  {
+    title: 'DSGVO für Vermieter: Was Sie wirklich wissen müssen',
+    excerpt: 'Welche Daten dürfen Sie von Mietern erheben? Wie lange müssen Sie sie aufbewahren? Ein praktischer Überblick über die wichtigsten DSGVO-Pflichten für Vermieter.',
+    date: '4. Februar 2026',
+    readTime: '7 min',
+    category: 'Recht & Compliance',
+    categoryColor: '#7c3aed',
+    slug: '#',
+  },
+  {
+    title: 'Digitale Hausverwaltung: Warum der Wechsel sich lohnt',
+    excerpt: 'Papierchaos, manuelle Excel-Tabellen, verlorene Belege — viele Verwalter kennen das Problem. Wir zeigen, welche konkreten Vorteile die Digitalisierung bringt.',
+    date: '21. Januar 2026',
+    readTime: '6 min',
+    category: 'Digitalisierung',
+    categoryColor: '#059669',
+    slug: '#',
+  },
+  {
+    title: 'Mieterhöhung durchsetzen: So geht's rechtssicher',
+    excerpt: 'Eine Mieterhöhung ist nur unter bestimmten Voraussetzungen zulässig. Dieser Artikel erklärt die gesetzlichen Grundlagen und den korrekten Ablauf.',
+    date: '8. Januar 2026',
+    readTime: '8 min',
+    category: 'Recht & Compliance',
+    categoryColor: '#7c3aed',
+    slug: '#',
+  },
+];
+---
+
+<Layout
+  title="Blog – PropGate | Hausverwaltung & Immobilienwissen"
+  description="Praxistipps, rechtliche Infos und Best Practices rund um Hausverwaltung und Immobilien."
+>
+  <Header showBack={true} />
+
+  <main class="page-main">
+    <div class="page-bg" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </div>
+
+    <div class="container">
+      <div class="page-hero">
+        <p class="eyebrow">Blog</p>
+        <h1 class="page-h1">Wissen für<br /><span class="gradient-text">Verwalter</span></h1>
+        <p class="page-sub">Praxistipps, Rechtliches und Best Practices rund um Hausverwaltung und Immobilien.</p>
+      </div>
+
+      <div class="posts-grid">
+        {posts.map((post, i) => (
+          <a href={post.slug} class={`post-card ${i === 0 ? 'post-card--featured' : ''}`}>
+            <div class="post-meta">
+              <span class="post-category" style={`color: ${post.categoryColor}`}>{post.category}</span>
+              <span class="post-dot">·</span>
+              <span class="post-read">{post.readTime} Lesezeit</span>
+            </div>
+            <h2 class="post-title">{post.title}</h2>
+            <p class="post-excerpt">{post.excerpt}</p>
+            <div class="post-footer">
+              <span class="post-date">{post.date}</span>
+              <span class="post-arrow">→</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-main {
+    background: var(--bg);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding-top: 4rem;
+  }
+
+  .page-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.13) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+    bottom: 10%;
+    right: -80px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-hero {
+    text-align: center;
+    padding-bottom: 3.5rem;
+  }
+
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4da6ff;
+    margin-bottom: 0.75rem;
+  }
+
+  .page-h1 {
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--heading);
+    margin-bottom: 1rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 60%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-sub {
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* Posts */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.75rem;
+    border: 1px solid var(--border-card);
+    border-radius: 18px;
+    background: var(--bg-card);
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--border);
+    background: var(--bg-card);
+    transform: translateY(-2px);
+  }
+
+  .post-card--featured {
+    grid-column: 1 / -1;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .post-dot {
+    color: var(--text-subtle);
+  }
+
+  .post-read {
+    color: var(--text-subtle);
+  }
+
+  .post-title {
+    font-size: 1.1875rem;
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+  }
+
+  .post-card--featured .post-title {
+    font-size: 1.375rem;
+  }
+
+  .post-excerpt {
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .post-date {
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+  }
+
+  .post-arrow {
+    font-size: 1rem;
+    color: #0066ff;
+    transition: transform 0.15s ease;
+  }
+
+  .post-card:hover .post-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 640px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .post-card--featured {
+      grid-column: auto;
+    }
+  }
+</style>

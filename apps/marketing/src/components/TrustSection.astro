@@ -30,18 +30,20 @@ const items = [
 <section class="trust-section">
   <div class="trust-container">
     <!-- Header -->
-    <div class="section-header">
-      <p class="section-eyebrow">Sicherheit</p>
-      <h2 class="section-h2">Ihre Daten in sicheren Händen</h2>
+    <div class="section-header" data-animate="fade">
+      <div>
+        <p class="section-eyebrow">Sicherheit</p>
+        <h2 class="section-h2">Ihre Daten in sicheren Händen</h2>
+      </div>
       <p class="section-subtitle">
         PropGate wurde von Grund auf mit Blick auf Datenschutz und Sicherheit entwickelt.
       </p>
     </div>
 
     <!-- Grid -->
-    <div class="trust-grid">
+    <div class="trust-grid" data-stagger-parent>
       {items.map((item) => (
-        <div class="trust-card">
+        <div class="trust-card" data-stagger>
           <div class="trust-icon">
             <span set:html={item.icon} />
           </div>
@@ -55,18 +57,21 @@ const items = [
 
 <style>
   .trust-section {
-    background: #f8f9fc;
+    background: var(--bg-alt);
     padding: 5rem 1.5rem;
   }
 
   .trust-container {
-    max-width: 1280px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
   .section-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: 3rem;
   }
 
   .section-eyebrow {
@@ -83,16 +88,15 @@ const items = [
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.03em;
-    color: #0f0f1a;
+    color: var(--heading);
     margin-bottom: 1rem;
   }
 
   .section-subtitle {
     font-size: 1.0625rem;
     line-height: 1.7;
-    color: #5a6478;
-    max-width: 480px;
-    margin: 0 auto;
+    color: var(--text-muted);
+    padding-bottom: 0.25rem;
   }
 
   .trust-grid {
@@ -102,8 +106,8 @@ const items = [
   }
 
   .trust-card {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.07);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 12px;
     padding: 1.75rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -130,14 +134,14 @@ const items = [
   .trust-title {
     font-size: 1rem;
     font-weight: 600;
-    color: #0f0f1a;
+    color: var(--heading);
     margin-bottom: 0.5rem;
   }
 
   .trust-description {
     font-size: 0.9375rem;
     line-height: 1.65;
-    color: #5a6478;
+    color: var(--text-muted);
   }
 
   @media (max-width: 1024px) {
@@ -149,6 +153,13 @@ const items = [
   @media (max-width: 640px) {
     .trust-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .section-header {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
     }
   }
 </style>

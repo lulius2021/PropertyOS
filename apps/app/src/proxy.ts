@@ -106,6 +106,11 @@ function getAuthRateLimit(pathname: string): { limit: number; window: number } |
 }
 
 export function proxy(request: NextRequest) {
+  // Skip rate limiting in local development
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
+
   const { pathname } = request.nextUrl;
 
   // Public paths (Sicherheit, Impressum, etc.)
@@ -141,16 +146,11 @@ export function proxy(request: NextRequest) {
   }
 
   // General rate limiting
-  const isAuthPath =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/register") ||
-    pathname.startsWith("/api/auth");
-
+  // Note: strict per-endpoint auth limits are already handled above (POST only).
+  // Here we only apply broad per-IP limits to prevent scraping/flooding.
   let limit = MAX_REQUESTS_PER_WINDOW.default;
 
-  if (isAuthPath) {
-    limit = MAX_REQUESTS_PER_WINDOW.login;
-  } else if (pathname.startsWith("/api/")) {
+  if (pathname.startsWith("/api/")) {
     limit = MAX_REQUESTS_PER_WINDOW.api;
   }
 

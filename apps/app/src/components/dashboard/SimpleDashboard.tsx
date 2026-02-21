@@ -47,6 +47,10 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   { i: "einzugsquote-1", type: "einzugsquote", size: "small", x: 1, y: 8, w: 1, h: 2 },
   { i: "operativerCashflow-1", type: "operativerCashflow", size: "small", x: 2, y: 8, w: 1, h: 2 },
   { i: "kaltmieteProQm-1", type: "kaltmieteProQm", size: "small", x: 3, y: 8, w: 1, h: 2 },
+
+  // Reihe 5: 2 Zeitverlauf-Charts
+  { i: "sollIstVerlauf-1", type: "sollIstVerlauf", size: "medium", x: 0, y: 10, w: 2, h: 3 },
+  { i: "cashflowVerlauf-1", type: "cashflowVerlauf", size: "medium", x: 2, y: 10, w: 2, h: 3 },
 ];
 
 export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {

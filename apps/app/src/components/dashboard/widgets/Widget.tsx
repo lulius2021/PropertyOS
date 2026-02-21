@@ -3,6 +3,121 @@
 import { WidgetType, WidgetSize } from "./types";
 import { trpc } from "@/lib/trpc/client";
 import Link from "next/link";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+const CHART_COLORS = {
+  green: "#22c55e",
+  emerald: "#10b981",
+  gray: "#e5e7eb",
+  grayDark: "#9ca3af",
+  orange: "#f97316",
+  red: "#ef4444",
+  yellow: "#eab308",
+  blue: "#3b82f6",
+  violet: "#8b5cf6",
+  teal: "#14b8a6",
+  indigo: "#6366f1",
+  rose: "#f43f5e",
+  amber: "#f59e0b",
+  cyan: "#06b6d4",
+};
+
+function DonutChart({
+  data,
+  innerLabel,
+  innerSublabel,
+  size,
+}: {
+  data: { name: string; value: number; color: string }[];
+  innerLabel: string;
+  innerSublabel?: string;
+  size: WidgetSize;
+}) {
+  const isSmall = size === "small";
+  const outerRadius = isSmall ? 50 : 70;
+  const innerRadius = isSmall ? 35 : 50;
+  const cx = "50%";
+  const cy = "50%";
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: "100%", height: isSmall ? 110 : 160 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            cx={cx}
+            cy={cy}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
+            dataKey="value"
+            strokeWidth={0}
+            animationDuration={600}
+          >
+            {data.map((entry, idx) => (
+              <Cell key={idx} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <span className={`font-bold text-gray-900 ${isSmall ? "text-lg" : "text-2xl"}`}>{innerLabel}</span>
+        {innerSublabel && !isSmall && (
+          <span className="text-xs text-gray-500">{innerSublabel}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function HorizontalBarChart({
+  data,
+  size,
+  formatValue,
+}: {
+  data: { name: string; value: number; color: string }[];
+  size: WidgetSize;
+  formatValue?: (v: number) => string;
+}) {
+  const isSmall = size === "small";
+  const maxVal = Math.max(...data.map((d) => d.value), 1);
+  const fmt = formatValue ?? ((v: number) => String(v));
+
+  return (
+    <div className={`space-y-${isSmall ? "1" : "2"} w-full`}>
+      {data.map((item) => (
+        <div key={item.name} className="flex items-center gap-2">
+          <span className={`${isSmall ? "w-10 text-[10px]" : "w-16 text-xs"} text-gray-500 truncate`}>{item.name}</span>
+          <div className="flex-1 h-5 rounded-full bg-gray-100 overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${Math.max((item.value / maxVal) * 100, item.value > 0 ? 4 : 0)}%`,
+                backgroundColor: item.color,
+              }}
+            />
+          </div>
+          <span className={`${isSmall ? "w-8 text-[10px]" : "w-14 text-xs"} text-right font-semibold text-gray-900`}>
+            {fmt(item.value)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 interface WidgetProps {
   type: WidgetType;
@@ -24,6 +139,21 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   const isSmall = size === "small";
   const isMedium = size === "medium";
   const isLarge = size === "large";
+
+  // All statistics hooks at top level — React Rules of Hooks requires unconditional calls
+  const { data: vermietungData, isLoading: vermietungLoading } = trpc.statistik.vermietung.useQuery();
+  const { data: sollIstData, isLoading: sollIstLoading } = trpc.statistik.sollIst.useQuery();
+  const { data: cashflowData, isLoading: cashflowLoading } = trpc.statistik.cashflow.useQuery();
+  const { data: finanzierungData, isLoading: finanzierungLoading } = trpc.statistik.finanzierung.useQuery();
+  const { data: kostenAnalyseData, isLoading: kostenAnalyseLoading } = trpc.statistik.kostenAnalyse.useQuery();
+  const { data: ticketAnalyseData, isLoading: ticketAnalyseLoading } = trpc.statistik.ticketAnalyse.useQuery();
+  const { data: zaehlerAnalyseData, isLoading: zaehlerAnalyseLoading } = trpc.statistik.zaehlerAnalyse.useQuery();
+  const { data: mieteAnalyseData, isLoading: mieteAnalyseLoading } = trpc.statistik.mieteAnalyse.useQuery();
+  const { data: datenqualitaetData, isLoading: datenqualitaetLoading } = trpc.statistik.datenqualitaet.useQuery();
+  const { data: sollIstMonatlichData, isLoading: sollIstMonatlichLoading } = trpc.statistik.sollIstMonatlich.useQuery();
+  const { data: cashflowMonatlichData, isLoading: cashflowMonatlichLoading } = trpc.statistik.cashflowMonatlich.useQuery();
+  const { data: kostenMonatlichData, isLoading: kostenMonatlichLoading } = trpc.statistik.kostenMonatlich.useQuery();
+  const { data: ticketsMonatlichData, isLoading: ticketsMonatlichLoading } = trpc.statistik.ticketsMonatlich.useQuery();
 
   // Objekte Widget
   if (type === "objekte") {
@@ -264,41 +394,47 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "belegungsquote") {
-    const { data: stats, isLoading: loading } = trpc.statistik.vermietung.useQuery();
+    const stats = vermietungData; const loading = vermietungLoading;
     const quote = stats?.belegungsquote ?? 0;
+    const chartData = stats ? [
+      { name: "Vermietet", value: stats.einheitenVermietet, color: CHART_COLORS.emerald },
+      { name: "Leer", value: stats.einheitenLeer, color: CHART_COLORS.gray },
+    ] : [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Belegungsquote</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
-                {loading ? "—" : `${quote.toFixed(1)} %`}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-emerald-100 p-3">
-              <svg className="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="h-2.5 w-full rounded-full bg-gray-100">
-              <div className="h-2.5 rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${Math.min(quote, 100)}%` }} />
-            </div>
-            {!isSmall && stats && (
-              <p className="mt-2 text-sm text-gray-500">
-                {stats.einheitenVermietet} von {stats.einheitenGesamt} Einheiten vermietet
-              </p>
-            )}
-          </div>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-500">Belegungsquote</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData}
+                innerLabel={`${quote.toFixed(1)}%`}
+                innerSublabel="belegt"
+                size={size}
+              />
+              {!isSmall && stats && (
+                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    {stats.einheitenVermietet} vermietet
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-200" />
+                    {stats.einheitenLeer} leer
+                  </span>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
   }
 
   if (type === "leerstandsquote") {
-    const { data: stats, isLoading: loading } = trpc.statistik.vermietung.useQuery();
+    const stats = vermietungData; const loading = vermietungLoading;
     const quote = stats?.leerstandsquote ?? 0;
     const isHigh = quote > 10;
     return (
@@ -328,7 +464,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "leerstandsdauer") {
-    const { data: stats, isLoading: loading } = trpc.statistik.vermietung.useQuery();
+    const stats = vermietungData; const loading = vermietungLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -354,7 +490,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "fluktuationsquote") {
-    const { data: stats, isLoading: loading } = trpc.statistik.vermietung.useQuery();
+    const stats = vermietungData; const loading = vermietungLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -380,7 +516,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "ertragsverlustLeerstand") {
-    const { data: stats, isLoading: loading } = trpc.statistik.vermietung.useQuery();
+    const stats = vermietungData; const loading = vermietungLoading;
     const verlust = stats?.ertragsverlustLeerstand ?? 0;
     const hasLoss = verlust > 0;
     return (
@@ -412,7 +548,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "sollstellungen") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -438,7 +574,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "istzahlungen") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     return (
       <div className="h-full rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -464,43 +600,42 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "einzugsquote") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     const quote = stats?.einzugsquote ?? 0;
-    const barColor = quote > 95 ? "bg-green-500" : quote > 80 ? "bg-yellow-500" : "bg-red-500";
-    const textColor = quote > 95 ? "text-green-700" : quote > 80 ? "text-yellow-700" : "text-red-700";
+    const mainColor = quote > 95 ? CHART_COLORS.green : quote > 80 ? CHART_COLORS.yellow : CHART_COLORS.red;
+    const offen = stats ? stats.sollSumme - stats.istSumme : 0;
+    const chartData = stats ? [
+      { name: "Eingezogen", value: stats.istSumme, color: mainColor },
+      { name: "Offen", value: Math.max(offen, 0), color: CHART_COLORS.gray },
+    ] : [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Einzugsquote</p>
-              <p className={`mt-2 font-bold tracking-tight ${textColor} ${isSmall ? "text-2xl" : "text-3xl"}`}>
-                {loading ? "—" : `${quote.toFixed(1)} %`}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-blue-100 p-3">
-              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="h-2.5 w-full rounded-full bg-gray-100">
-              <div className={`h-2.5 rounded-full ${barColor} transition-all duration-500`} style={{ width: `${Math.min(quote, 100)}%` }} />
-            </div>
-            {!isSmall && stats && (
-              <p className="mt-2 text-sm text-gray-500">
-                {formatCurrency(stats.istSumme)} von {formatCurrency(stats.sollSumme)} eingezogen
-              </p>
-            )}
-          </div>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-500">Einzugsquote</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData}
+                innerLabel={`${quote.toFixed(1)}%`}
+                innerSublabel="eingezogen"
+                size={size}
+              />
+              {!isSmall && stats && (
+                <p className="mt-1 text-center text-xs text-gray-500">
+                  {formatCurrency(stats.istSumme)} von {formatCurrency(stats.sollSumme)}
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
   }
 
   if (type === "mietrueckstaende") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     const rueckstaende = stats?.rueckstaende ?? 0;
     const hasArrears = rueckstaende > 0;
     return (
@@ -530,38 +665,27 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "agingRueckstaende") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     const aging = stats?.aging;
-    const rows = [
-      { label: "0–30 Tage", value: aging?.bis30 ?? 0, color: "bg-yellow-400" },
-      { label: "31–60 Tage", value: aging?.bis60 ?? 0, color: "bg-orange-400" },
-      { label: "61–90 Tage", value: aging?.bis90 ?? 0, color: "bg-red-400" },
-      { label: "> 90 Tage", value: aging?.ueber90 ?? 0, color: "bg-red-600" },
+    const bars = [
+      { name: "0–30", value: aging?.bis30 ?? 0, color: CHART_COLORS.yellow },
+      { name: "31–60", value: aging?.bis60 ?? 0, color: CHART_COLORS.orange },
+      { name: "61–90", value: aging?.bis90 ?? 0, color: CHART_COLORS.red },
+      { name: "> 90", value: aging?.ueber90 ?? 0, color: "#dc2626" },
     ];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col">
-          <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-gray-500">Aging Rueckstaende</p>
-            <div className="ml-4 rounded-xl bg-blue-100 p-3">
-              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3 flex-1 space-y-2">
+          <p className="text-sm font-medium text-gray-500">Aging Rückstände</p>
+          <div className="mt-3 flex-1">
             {loading ? (
               <p className="text-2xl font-bold text-gray-900">—</p>
             ) : (
-              rows.map((row) => (
-                <div key={row.label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className={`h-3 w-3 rounded-full ${row.color}`} />
-                    <span className="text-xs text-gray-600">{row.label}</span>
-                  </div>
-                  <span className="text-xs font-semibold text-gray-900">{formatCurrency(row.value)}</span>
-                </div>
-              ))
+              <HorizontalBarChart
+                data={bars}
+                size={size}
+                formatValue={(v) => formatCurrency(v)}
+              />
             )}
           </div>
         </div>
@@ -570,7 +694,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "zahlungsverzug") {
-    const { data: stats, isLoading: loading } = trpc.statistik.sollIst.useQuery();
+    const stats = sollIstData; const loading = sollIstLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -600,29 +724,49 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "operativerCashflow") {
-    const { data: stats, isLoading: loading } = trpc.statistik.cashflow.useQuery();
+    const stats = cashflowData; const loading = cashflowLoading;
     const value = stats?.operativerCashflow ?? 0;
     const isPositive = value >= 0;
+    const chartData = stats ? [
+      { name: "Einnahmen", value: stats.einnahmen, fill: CHART_COLORS.green },
+      { name: "Ausgaben", value: stats.ausgabenOpex, fill: CHART_COLORS.red },
+    ] : [];
     return (
       <div className={`h-full rounded-xl border p-4 shadow-sm ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col">
           <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>Operativer Cashflow</p>
-              <p className={`mt-2 font-bold tracking-tight ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-xl" : "text-3xl"}`}>
-                {loading ? "—" : formatCurrency(value)}
-              </p>
-            </div>
-            <div className={`ml-4 rounded-xl p-3 ${isPositive ? "bg-green-200" : "bg-red-200"}`}>
-              <svg className={`h-5 w-5 ${isPositive ? "text-green-700" : "text-red-700"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && stats && (
-            <p className={`mt-3 text-sm ${isPositive ? "text-green-600" : "text-red-600"}`}>
-              Einnahmen {formatCurrency(stats.einnahmen)} - Ausgaben {formatCurrency(stats.ausgabenOpex)}
+            <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>Operativer Cashflow</p>
+            <p className={`font-bold ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-lg" : "text-xl"}`}>
+              {loading ? "—" : formatCurrency(value)}
             </p>
+          </div>
+          {!loading && stats && !isSmall && (
+            <div className="mt-2 flex-1" style={{ minHeight: 80 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
+                  <XAxis type="number" hide />
+                  <YAxis type="category" dataKey="name" width={65} tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20} animationDuration={600}>
+                    {chartData.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+          {!isSmall && stats && (
+            <div className="mt-1 flex justify-between text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+                Einnahmen
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
+                Ausgaben
+              </span>
+            </div>
           )}
         </div>
       </div>
@@ -630,29 +774,49 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "cashflowNachDebt") {
-    const { data: stats, isLoading: loading } = trpc.statistik.cashflow.useQuery();
+    const stats = cashflowData; const loading = cashflowLoading;
     const value = stats?.cashflowNachDebt ?? 0;
     const isPositive = value >= 0;
+    const chartData = stats ? [
+      { name: "Op. CF", value: stats.operativerCashflow, fill: CHART_COLORS.green },
+      { name: "Kapital", value: stats.debtServiceGesamt, fill: CHART_COLORS.violet },
+    ] : [];
     return (
       <div className={`h-full rounded-xl border p-4 shadow-sm ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col">
           <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>Cashflow nach Kapitaldienst</p>
-              <p className={`mt-2 font-bold tracking-tight ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-xl" : "text-3xl"}`}>
-                {loading ? "—" : formatCurrency(value)}
-              </p>
-            </div>
-            <div className={`ml-4 rounded-xl p-3 ${isPositive ? "bg-green-200" : "bg-red-200"}`}>
-              <svg className={`h-5 w-5 ${isPositive ? "text-green-700" : "text-red-700"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && stats && (
-            <p className={`mt-3 text-sm ${isPositive ? "text-green-600" : "text-red-600"}`}>
-              Nach Zins + Tilgung ({formatCurrency(stats.debtServiceGesamt)})
+            <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>CF nach Kapitaldienst</p>
+            <p className={`font-bold ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-lg" : "text-xl"}`}>
+              {loading ? "—" : formatCurrency(value)}
             </p>
+          </div>
+          {!loading && stats && !isSmall && (
+            <div className="mt-2 flex-1" style={{ minHeight: 80 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
+                  <XAxis type="number" hide />
+                  <YAxis type="category" dataKey="name" width={55} tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20} animationDuration={600}>
+                    {chartData.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+          {!isSmall && stats && (
+            <div className="mt-1 flex justify-between text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+                Cashflow
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-violet-500" />
+                Kapitaldienst
+              </span>
+            </div>
           )}
         </div>
       </div>
@@ -660,27 +824,37 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "debtService") {
-    const { data: stats, isLoading: loading } = trpc.statistik.cashflow.useQuery();
+    const stats = cashflowData; const loading = cashflowLoading;
+    const chartData = stats ? [
+      { name: "Zins", value: stats.debtServiceZins, color: CHART_COLORS.teal },
+      { name: "Tilgung", value: stats.debtServiceTilgung, color: CHART_COLORS.violet },
+    ].filter((d) => d.value > 0) : [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Kapitaldienst</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
-                {loading ? "—" : formatCurrency(stats?.debtServiceGesamt ?? 0)}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-teal-100 p-3">
-              <svg className="h-5 w-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && stats && (
-            <p className="mt-3 text-sm text-gray-500">
-              Zins {formatCurrency(stats.debtServiceZins)} + Tilgung {formatCurrency(stats.debtServiceTilgung)}
-            </p>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-500">Kapitaldienst</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData.length > 0 ? chartData : [{ name: "Keine", value: 1, color: CHART_COLORS.gray }]}
+                innerLabel={formatCurrency(stats?.debtServiceGesamt ?? 0)}
+                size={size}
+              />
+              {!isSmall && stats && (
+                <div className="mt-1 flex justify-center gap-4 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500" />
+                    Zins {formatCurrency(stats.debtServiceZins)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-violet-500" />
+                    Tilgung {formatCurrency(stats.debtServiceTilgung)}
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -692,7 +866,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "restschuld") {
-    const { data: stats, isLoading: loading } = trpc.statistik.finanzierung.useQuery();
+    const stats = finanzierungData; const loading = finanzierungLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -720,30 +894,37 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "dscr") {
-    const { data: stats, isLoading: loading } = trpc.statistik.finanzierung.useQuery();
+    const stats = finanzierungData; const loading = finanzierungLoading;
     const value = stats?.dscr ?? 0;
-    const color = value > 1.2 ? "text-green-700" : value > 1.0 ? "text-yellow-700" : "text-red-700";
+    const mainColor = value > 1.2 ? CHART_COLORS.green : value > 1.0 ? CHART_COLORS.yellow : CHART_COLORS.red;
     const bgColor = value > 1.2 ? "border-green-200 bg-green-50" : value > 1.0 ? "border-yellow-200 bg-yellow-50" : "border-red-200 bg-red-50";
+    const label = value > 1.2 ? "gut" : value > 1.0 ? "grenzwertig" : "kritisch";
+    // Gauge: fill proportional to DSCR (0 to 2 as max)
+    const fill = Math.min(value / 2, 1);
+    const chartData = [
+      { name: "DSCR", value: fill * 100, color: mainColor },
+      { name: "Rest", value: (1 - fill) * 100, color: CHART_COLORS.gray },
+    ];
     return (
       <div className={`h-full rounded-xl border p-4 shadow-sm ${bgColor}`}>
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${color}`}>DSCR</p>
-              <p className={`mt-2 font-bold tracking-tight ${color} ${isSmall ? "text-2xl" : "text-3xl"}`}>
-                {loading ? "—" : `${value.toFixed(2)}x`}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-violet-100 p-3">
-              <svg className="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && (
-            <p className={`mt-3 text-sm ${color}`}>
-              Schuldendienstdeckungsgrad {value > 1.2 ? "(gut)" : value > 1.0 ? "(grenzwertig)" : "(kritisch)"}
-            </p>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-600">DSCR</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData}
+                innerLabel={`${value.toFixed(2)}x`}
+                innerSublabel={label}
+                size={size}
+              />
+              {!isSmall && (
+                <p className="mt-1 text-center text-xs text-gray-500">
+                  Schuldendienstdeckungsgrad
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -751,7 +932,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "kredituebersicht") {
-    const { data: stats, isLoading: loading } = trpc.statistik.finanzierung.useQuery();
+    const stats = finanzierungData; const loading = finanzierungLoading;
     const kredite = stats?.krediteDetails ?? [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -802,38 +983,42 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "kostenGesamt") {
-    const { data: stats, isLoading: loading } = trpc.statistik.kostenAnalyse.useQuery();
+    const stats = kostenAnalyseData; const loading = kostenAnalyseLoading;
+    const chartData = stats ? [
+      { name: "BK", value: stats.bkRelevant, color: CHART_COLORS.blue },
+      { name: "HK", value: stats.hkRelevant, color: CHART_COLORS.orange },
+      { name: "Sonstige", value: stats.sonstige, color: CHART_COLORS.grayDark },
+    ].filter((d) => d.value > 0) : [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Gesamtkosten</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
-                {loading ? "—" : formatCurrency(stats?.kostenGesamt ?? 0)}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-rose-100 p-3">
-              <svg className="h-5 w-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && stats && (
-            <div className="mt-3 space-y-1 text-sm text-gray-500">
-              <div className="flex justify-between">
-                <span>BK-relevant</span>
-                <span className="font-medium text-gray-700">{formatCurrency(stats.bkRelevant)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>HK-relevant</span>
-                <span className="font-medium text-gray-700">{formatCurrency(stats.hkRelevant)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Sonstige</span>
-                <span className="font-medium text-gray-700">{formatCurrency(stats.sonstige)}</span>
-              </div>
-            </div>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-500">Gesamtkosten</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData.length > 0 ? chartData : [{ name: "Keine", value: 1, color: CHART_COLORS.gray }]}
+                innerLabel={formatCurrency(stats?.kostenGesamt ?? 0)}
+                size={size}
+              />
+              {!isSmall && stats && (
+                <div className="mt-1 flex flex-wrap justify-center gap-3 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
+                    BK {formatCurrency(stats.bkRelevant)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange-500" />
+                    HK {formatCurrency(stats.hkRelevant)}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-400" />
+                    Sonst. {formatCurrency(stats.sonstige)}
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -841,7 +1026,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "kostenProQm") {
-    const { data: stats, isLoading: loading } = trpc.statistik.kostenAnalyse.useQuery();
+    const stats = kostenAnalyseData; const loading = kostenAnalyseLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -869,34 +1054,45 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "kostenNachKategorie") {
-    const { data: stats, isLoading: loading } = trpc.statistik.kostenAnalyse.useQuery();
+    const stats = kostenAnalyseData; const loading = kostenAnalyseLoading;
     const kategorien = stats?.nachKategorie ?? [];
+    const pieColors = [CHART_COLORS.rose, CHART_COLORS.blue, CHART_COLORS.orange, CHART_COLORS.teal, CHART_COLORS.violet, CHART_COLORS.amber, CHART_COLORS.cyan, CHART_COLORS.indigo];
+    const chartData = kategorien.map((k, idx) => ({
+      name: k.kategorie,
+      value: k.summe,
+      color: pieColors[idx % pieColors.length],
+    }));
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col">
-          <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-gray-500">Kosten nach Kategorie</p>
-            <div className="ml-4 rounded-xl bg-rose-100 p-3">
-              <svg className="h-5 w-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3 flex-1 overflow-auto space-y-2">
-            {loading ? (
-              <p className="text-2xl font-bold text-gray-900">—</p>
-            ) : kategorien.length === 0 ? (
-              <p className="text-sm text-gray-400">Keine Kostendaten vorhanden</p>
-            ) : (
-              kategorien.map((k, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600 truncate max-w-[60%]">{k.kategorie}</span>
-                  <span className="text-xs font-semibold text-gray-900">{formatCurrency(k.summe)}</span>
+          <p className="text-sm font-medium text-gray-500">Kosten nach Kategorie</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : kategorien.length === 0 ? (
+            <p className="mt-4 text-sm text-gray-400">Keine Kostendaten vorhanden</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData}
+                innerLabel={`${kategorien.length}`}
+                innerSublabel="Kategorien"
+                size={size}
+              />
+              {!isSmall && (
+                <div className="mt-1 space-y-1 overflow-auto max-h-20">
+                  {kategorien.slice(0, 5).map((k, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1.5 truncate max-w-[60%]">
+                        <span className="inline-block h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: pieColors[idx % pieColors.length] }} />
+                        {k.kategorie}
+                      </span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(k.summe)}</span>
+                    </div>
+                  ))}
                 </div>
-              ))
-            )}
-          </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
@@ -907,42 +1103,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "ticketsPrioritaet") {
-    const { data: stats, isLoading: loading } = trpc.statistik.ticketAnalyse.useQuery();
+    const stats = ticketAnalyseData; const loading = ticketAnalyseLoading;
     const prio = stats?.nachPrioritaet;
     const bars = [
-      { label: "Niedrig", value: prio?.niedrig ?? 0, color: "bg-green-400" },
-      { label: "Mittel", value: prio?.mittel ?? 0, color: "bg-yellow-400" },
-      { label: "Hoch", value: prio?.hoch ?? 0, color: "bg-orange-500" },
-      { label: "Kritisch", value: prio?.kritisch ?? 0, color: "bg-red-500" },
+      { name: "Niedrig", value: prio?.niedrig ?? 0, color: CHART_COLORS.green },
+      { name: "Mittel", value: prio?.mittel ?? 0, color: CHART_COLORS.yellow },
+      { name: "Hoch", value: prio?.hoch ?? 0, color: CHART_COLORS.orange },
+      { name: "Kritisch", value: prio?.kritisch ?? 0, color: CHART_COLORS.red },
     ];
-    const maxVal = Math.max(...bars.map((b) => b.value), 1);
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col">
-          <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-gray-500">Tickets nach Prioritaet</p>
-            <div className="ml-4 rounded-xl bg-amber-100 p-3">
-              <svg className="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3 flex-1 space-y-2">
+          <p className="text-sm font-medium text-gray-500">Tickets nach Priorität</p>
+          <div className="mt-3 flex-1">
             {loading ? (
               <p className="text-2xl font-bold text-gray-900">—</p>
             ) : (
-              bars.map((bar) => (
-                <div key={bar.label} className="flex items-center gap-2">
-                  <span className="w-14 text-xs text-gray-500">{bar.label}</span>
-                  <div className="flex-1 h-4 rounded-full bg-gray-100">
-                    <div
-                      className={`h-4 rounded-full ${bar.color} transition-all duration-500`}
-                      style={{ width: `${(bar.value / maxVal) * 100}%`, minWidth: bar.value > 0 ? "12px" : "0px" }}
-                    />
-                  </div>
-                  <span className="w-6 text-right text-xs font-semibold text-gray-900">{bar.value}</span>
-                </div>
-              ))
+              <HorizontalBarChart data={bars} size={size} />
             )}
           </div>
         </div>
@@ -951,7 +1128,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "ticketBearbeitungszeit") {
-    const { data: stats, isLoading: loading } = trpc.statistik.ticketAnalyse.useQuery();
+    const stats = ticketAnalyseData; const loading = ticketAnalyseLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -979,31 +1156,25 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "ticketKategorien") {
-    const { data: stats, isLoading: loading } = trpc.statistik.ticketAnalyse.useQuery();
+    const stats = ticketAnalyseData; const loading = ticketAnalyseLoading;
     const kategorien = stats?.topKategorien ?? [];
+    const katColors = [CHART_COLORS.amber, CHART_COLORS.orange, CHART_COLORS.rose, CHART_COLORS.violet, CHART_COLORS.blue];
+    const bars = kategorien.map((k, idx) => ({
+      name: k.kategorie,
+      value: k.anzahl,
+      color: katColors[idx % katColors.length],
+    }));
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col">
-          <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-gray-500">Ticket-Kategorien</p>
-            <div className="ml-4 rounded-xl bg-amber-100 p-3">
-              <svg className="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3 flex-1 overflow-auto space-y-2">
+          <p className="text-sm font-medium text-gray-500">Ticket-Kategorien</p>
+          <div className="mt-3 flex-1">
             {loading ? (
               <p className="text-2xl font-bold text-gray-900">—</p>
             ) : kategorien.length === 0 ? (
               <p className="text-sm text-gray-400">Keine Ticketdaten vorhanden</p>
             ) : (
-              kategorien.map((k, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600 truncate max-w-[70%]">{k.kategorie}</span>
-                  <span className="text-xs font-semibold text-gray-900">{k.anzahl}</span>
-                </div>
-              ))
+              <HorizontalBarChart data={bars} size={size} />
             )}
           </div>
         </div>
@@ -1016,35 +1187,41 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "zaehlerVollstaendigkeit") {
-    const { data: stats, isLoading: loading } = trpc.statistik.zaehlerAnalyse.useQuery();
+    const stats = zaehlerAnalyseData; const loading = zaehlerAnalyseLoading;
     const quote = stats?.vollstaendigkeitsquote ?? 0;
-    const barColor = quote > 90 ? "bg-green-500" : quote > 70 ? "bg-yellow-500" : "bg-red-500";
+    const mainColor = quote > 90 ? CHART_COLORS.green : quote > 70 ? CHART_COLORS.yellow : CHART_COLORS.red;
+    const chartData = stats ? [
+      { name: "Mit Ablesung", value: stats.zaehlerMitAblesung, color: mainColor },
+      { name: "Ohne", value: stats.zaehlerGesamt - stats.zaehlerMitAblesung, color: CHART_COLORS.gray },
+    ] : [];
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Zaehler-Vollstaendigkeit</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
-                {loading ? "—" : `${quote.toFixed(1)} %`}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-cyan-100 p-3">
-              <svg className="h-5 w-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <div className="mt-3">
-            <div className="h-2.5 w-full rounded-full bg-gray-100">
-              <div className={`h-2.5 rounded-full ${barColor} transition-all duration-500`} style={{ width: `${Math.min(quote, 100)}%` }} />
-            </div>
-            {!isSmall && stats && (
-              <p className="mt-2 text-sm text-gray-500">
-                {stats.zaehlerMitAblesung} von {stats.zaehlerGesamt} Zaehlern mit Ablesung
-              </p>
-            )}
-          </div>
+        <div className="flex h-full flex-col">
+          <p className="text-sm font-medium text-gray-500">Zähler-Vollständigkeit</p>
+          {loading ? (
+            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+          ) : (
+            <>
+              <DonutChart
+                data={chartData}
+                innerLabel={`${quote.toFixed(0)}%`}
+                innerSublabel="erfasst"
+                size={size}
+              />
+              {!isSmall && stats && (
+                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: mainColor }} />
+                    {stats.zaehlerMitAblesung} erfasst
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-200" />
+                    {stats.zaehlerGesamt - stats.zaehlerMitAblesung} offen
+                  </span>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
     );
@@ -1055,7 +1232,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "kaltmieteProQm") {
-    const { data: stats, isLoading: loading } = trpc.statistik.mieteAnalyse.useQuery();
+    const stats = mieteAnalyseData; const loading = mieteAnalyseLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -1083,7 +1260,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "gesamtMiete") {
-    const { data: stats, isLoading: loading } = trpc.statistik.mieteAnalyse.useQuery();
+    const stats = mieteAnalyseData; const loading = mieteAnalyseLoading;
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex h-full flex-col justify-between">
@@ -1122,7 +1299,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "unzugeordneteZahlungen") {
-    const { data: stats, isLoading: loading } = trpc.statistik.datenqualitaet.useQuery();
+    const stats = datenqualitaetData; const loading = datenqualitaetLoading;
     const count = stats?.unzugeordneteZahlungen ?? 0;
     const hasIssues = count > 0;
     return (
@@ -1152,7 +1329,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "stammdatenLuecken") {
-    const { data: stats, isLoading: loading } = trpc.statistik.datenqualitaet.useQuery();
+    const stats = datenqualitaetData; const loading = datenqualitaetLoading;
     const luecken = stats?.stammdatenLuecken;
     const total = luecken
       ? (luecken.einheitenOhneFlaeche + luecken.mietverhaeltnisseOhneKaltmiete + luecken.objekteOhneAdresse + luecken.mieterOhneKontakt)
@@ -1193,6 +1370,185 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
               )}
             </div>
           )}
+        </div>
+      </div>
+    );
+  }
+
+  // ───────────────────────────────────────────────────────
+  // Zeitverlauf-Charts
+  // ───────────────────────────────────────────────────────
+
+  if (type === "sollIstVerlauf") {
+    const monate = sollIstMonatlichData; const loading = sollIstMonatlichLoading;
+    return (
+      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">Soll / Ist Verlauf</p>
+            <div className="flex gap-3 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
+                Soll
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+                Ist
+              </span>
+            </div>
+          </div>
+          <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
+            {loading || !monate ? (
+              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    formatter={(v) => formatCurrency(Number(v) || 0)}
+                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  />
+                  <Bar dataKey="soll" name="Soll" fill={CHART_COLORS.blue} radius={[3, 3, 0, 0]} barSize={isSmall ? 6 : 12} animationDuration={600} />
+                  <Bar dataKey="ist" name="Ist" fill={CHART_COLORS.green} radius={[3, 3, 0, 0]} barSize={isSmall ? 6 : 12} animationDuration={600} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "cashflowVerlauf") {
+    const monate = cashflowMonatlichData; const loading = cashflowMonatlichLoading;
+    return (
+      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">Cashflow Verlauf</p>
+            <div className="flex gap-3 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500" />
+                Cashflow
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+                Einnahmen
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-red-400" />
+                Ausgaben
+              </span>
+            </div>
+          </div>
+          <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
+            {loading || !monate ? (
+              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    formatter={(v) => formatCurrency(Number(v) || 0)}
+                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  />
+                  <Line type="monotone" dataKey="einnahmen" name="Einnahmen" stroke={CHART_COLORS.green} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} animationDuration={600} />
+                  <Line type="monotone" dataKey="ausgaben" name="Ausgaben" stroke={CHART_COLORS.red} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} animationDuration={600} />
+                  <Line type="monotone" dataKey="cashflow" name="Cashflow" stroke={CHART_COLORS.teal} strokeWidth={2.5} dot={{ r: 3, fill: CHART_COLORS.teal }} activeDot={{ r: 5 }} animationDuration={600} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "kostenVerlauf") {
+    const monate = kostenMonatlichData; const loading = kostenMonatlichLoading;
+    return (
+      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">Kosten Verlauf</p>
+            <div className="flex gap-3 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
+                BK
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange-500" />
+                HK
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-400" />
+                Sonst.
+              </span>
+            </div>
+          </div>
+          <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
+            {loading || !monate ? (
+              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <Tooltip
+                    formatter={(v) => formatCurrency(Number(v) || 0)}
+                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                  />
+                  <Bar dataKey="bk" name="BK" stackId="a" fill={CHART_COLORS.blue} barSize={isSmall ? 8 : 16} animationDuration={600} />
+                  <Bar dataKey="hk" name="HK" stackId="a" fill={CHART_COLORS.orange} barSize={isSmall ? 8 : 16} animationDuration={600} />
+                  <Bar dataKey="sonstige" name="Sonstige" stackId="a" fill={CHART_COLORS.grayDark} radius={[3, 3, 0, 0]} barSize={isSmall ? 8 : 16} animationDuration={600} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "ticketsVerlauf") {
+    const monate = ticketsMonatlichData; const loading = ticketsMonatlichLoading;
+    return (
+      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">Tickets Verlauf</p>
+            <div className="flex gap-3 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-amber-500" />
+                Neu
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />
+                Erledigt
+              </span>
+            </div>
+          </div>
+          <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
+            {loading || !monate ? (
+              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <Line type="monotone" dataKey="neu" name="Neue Tickets" stroke={CHART_COLORS.amber} strokeWidth={2.5} dot={{ r: 4, fill: CHART_COLORS.amber }} activeDot={{ r: 6 }} animationDuration={600} />
+                  <Line type="monotone" dataKey="abgeschlossen" name="Abgeschlossen" stroke={CHART_COLORS.green} strokeWidth={2} strokeDasharray="5 5" dot={{ r: 3, fill: CHART_COLORS.green }} activeDot={{ r: 5 }} animationDuration={600} />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </div>
         </div>
       </div>
     );

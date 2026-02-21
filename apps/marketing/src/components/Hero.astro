@@ -1,162 +1,187 @@
 ---
 ---
 
-<section class="hero-section">
+<section class="hero-section" data-dark>
+  <!-- Dot Grid Overlay -->
+  <div class="dot-grid" aria-hidden="true"></div>
+
   <!-- Glow Orbs -->
   <div class="orb orb-1" aria-hidden="true"></div>
   <div class="orb orb-2" aria-hidden="true"></div>
   <div class="orb orb-3" aria-hidden="true"></div>
 
+  <!-- Floating particles -->
+  <div class="particle" style="left:12%;bottom:22%;--delay:0s;--dur:6s;--dx:25px" aria-hidden="true"></div>
+  <div class="particle" style="left:22%;bottom:14%;--delay:1.8s;--dur:8s;--dx:-30px" aria-hidden="true"></div>
+  <div class="particle" style="left:42%;bottom:9%;--delay:0.6s;--dur:7s;--dx:35px" aria-hidden="true"></div>
+  <div class="particle" style="left:62%;bottom:17%;--delay:2.5s;--dur:5.5s;--dx:-22px" aria-hidden="true"></div>
+  <div class="particle" style="left:75%;bottom:11%;--delay:0.3s;--dur:9s;--dx:18px" aria-hidden="true"></div>
+  <div class="particle" style="left:86%;bottom:26%;--delay:2s;--dur:6.5s;--dx:-28px" aria-hidden="true"></div>
+
   <div class="hero-container">
+    <div class="hero-text">
     <!-- Badge -->
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      <span>Jetzt verfügbar — kostenlos starten</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
+    <div class="hero-badge-wrap">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Jetzt verfügbar — kostenlos starten</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
     </div>
 
-    <!-- Headline -->
+    <!-- Headline — line by line reveal -->
     <h1 class="hero-h1">
-      Ihre Hausverwaltung.<br />
-      <span class="gradient-text">Neu gedacht.</span>
+      <span class="line-wrap"><span class="h-line-1">Hausverwaltung,</span></span>
+      <span class="line-wrap"><span class="h-line-2">die wirklich</span></span>
+      <span class="line-wrap"><span class="h-line-3 gradient-text">funktioniert.</span></span>
     </h1>
 
     <!-- Subtext -->
-    <p class="hero-subtext">
-      PropGate ist die cloudbasierte Software für professionelle Immobilienverwaltung.
-      Objekte, Mieter, Bankimport, Mahnwesen und Tickets — alles in einem. DSGVO-konform.
-    </p>
-
-    <!-- CTA Buttons -->
-    <div class="hero-cta">
-      <a href="https://app.propgate.de/register" class="cta-primary">
-        Kostenlos starten
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
-      <a href="/features" class="cta-secondary">
-        Alle Features ansehen
-      </a>
+    <div class="hero-sub-wrap">
+      <p class="hero-subtext">
+        PropGate ist die cloudbasierte Software für professionelle Immobilienverwaltung.
+        Objekte, Mieter, Bankimport, Mahnwesen und Tickets — alles in einem. DSGVO-konform.
+      </p>
     </div>
 
-    <!-- Browser Mockup -->
-    <div class="browser-mockup">
-      <!-- Browser Chrome -->
-      <div class="browser-chrome">
-        <div class="traffic-lights">
-          <div class="tl tl-red"></div>
-          <div class="tl tl-yellow"></div>
-          <div class="tl tl-green"></div>
-        </div>
-        <div class="url-bar">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0110 0v4"></path>
+    <!-- CTA Buttons -->
+    <div class="hero-cta-wrap">
+      <div class="hero-cta">
+        <a href="https://app.propgate.de/register" class="cta-primary magnetic">
+          Kostenlos starten
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
-          <span>app.propgate.de/dashboard</span>
-        </div>
+        </a>
+        <a href="/features" class="cta-secondary">
+          Alle Features ansehen
+        </a>
       </div>
+    </div>
 
-      <!-- Dashboard Preview -->
-      <div class="dashboard-preview">
-        <!-- Sidebar -->
-        <div class="dash-sidebar">
-          <div class="dash-nav-item dash-nav-active">
-            <div class="dash-nav-icon"></div>
-            <div class="dash-nav-label"></div>
+    </div><!-- /hero-text -->
+
+    <!-- Browser Mockup -->
+    <div data-animate="scale" data-delay="4" class="browser-mockup-wrapper">
+      <div class="browser-mockup">
+        <!-- Browser Chrome -->
+        <div class="browser-chrome">
+          <div class="traffic-lights">
+            <div class="tl tl-red"></div>
+            <div class="tl tl-yellow"></div>
+            <div class="tl tl-green"></div>
           </div>
-          <div class="dash-nav-item">
-            <div class="dash-nav-icon"></div>
-            <div class="dash-nav-label"></div>
-          </div>
-          <div class="dash-nav-item">
-            <div class="dash-nav-icon"></div>
-            <div class="dash-nav-label"></div>
-          </div>
-          <div class="dash-nav-item">
-            <div class="dash-nav-icon"></div>
-            <div class="dash-nav-label"></div>
-          </div>
-          <div class="dash-nav-item">
-            <div class="dash-nav-icon"></div>
-            <div class="dash-nav-label"></div>
+          <div class="url-bar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0110 0v4"></path>
+            </svg>
+            <span>app.propgate.de/dashboard</span>
           </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="dash-main">
-          <!-- Header bar -->
-          <div class="dash-header-row">
-            <div class="dash-page-title"></div>
-            <div class="dash-header-btn"></div>
-          </div>
+        <!-- Dashboard Preview -->
+        <div class="dashboard-preview">
+          <div class="browser-scan-line"></div>
 
-          <!-- Stats -->
-          <div class="dash-stats">
-            <div class="dash-stat">
-              <div class="stat-label"></div>
-              <div class="stat-value stat-blue"></div>
-              <div class="stat-change stat-up"></div>
+          <!-- Sidebar -->
+          <div class="dash-sidebar">
+            <div class="dash-nav-item dash-nav-active">
+              <div class="dash-nav-icon"></div>
+              <div class="dash-nav-label"></div>
             </div>
-            <div class="dash-stat">
-              <div class="stat-label"></div>
-              <div class="stat-value stat-green"></div>
-              <div class="stat-change stat-up"></div>
+            <div class="dash-nav-item">
+              <div class="dash-nav-icon"></div>
+              <div class="dash-nav-label"></div>
             </div>
-            <div class="dash-stat">
-              <div class="stat-label"></div>
-              <div class="stat-value stat-orange"></div>
-              <div class="stat-change"></div>
+            <div class="dash-nav-item">
+              <div class="dash-nav-icon"></div>
+              <div class="dash-nav-label"></div>
             </div>
-            <div class="dash-stat">
-              <div class="stat-label"></div>
-              <div class="stat-value stat-purple"></div>
-              <div class="stat-change stat-up"></div>
+            <div class="dash-nav-item">
+              <div class="dash-nav-icon"></div>
+              <div class="dash-nav-label"></div>
+            </div>
+            <div class="dash-nav-item">
+              <div class="dash-nav-icon"></div>
+              <div class="dash-nav-label"></div>
             </div>
           </div>
 
-          <!-- Table -->
-          <div class="dash-table">
-            <div class="table-header">
-              <div class="th th-wide"></div>
-              <div class="th th-mid"></div>
-              <div class="th th-mid"></div>
-              <div class="th th-narrow"></div>
+          <!-- Main Content -->
+          <div class="dash-main">
+            <!-- Header bar -->
+            <div class="dash-header-row">
+              <div class="dash-page-title"></div>
+              <div class="dash-header-btn"></div>
             </div>
-            <div class="table-row">
-              <div class="td td-wide">
-                <div class="td-dot dot-green"></div>
-                <div class="td-text"></div>
+
+            <!-- Stats -->
+            <div class="dash-stats">
+              <div class="dash-stat">
+                <div class="stat-label"></div>
+                <div class="stat-value stat-blue"></div>
+                <div class="stat-change stat-up"></div>
               </div>
-              <div class="td td-mid"></div>
-              <div class="td td-mid td-green"></div>
-              <div class="td td-narrow">
-                <div class="td-badge"></div>
+              <div class="dash-stat">
+                <div class="stat-label"></div>
+                <div class="stat-value stat-green"></div>
+                <div class="stat-change stat-up"></div>
+              </div>
+              <div class="dash-stat">
+                <div class="stat-label"></div>
+                <div class="stat-value stat-orange"></div>
+                <div class="stat-change"></div>
+              </div>
+              <div class="dash-stat">
+                <div class="stat-label"></div>
+                <div class="stat-value stat-purple"></div>
+                <div class="stat-change stat-up"></div>
               </div>
             </div>
-            <div class="table-row">
-              <div class="td td-wide">
-                <div class="td-dot dot-blue"></div>
-                <div class="td-text"></div>
+
+            <!-- Table -->
+            <div class="dash-table">
+              <div class="table-header">
+                <div class="th th-wide"></div>
+                <div class="th th-mid"></div>
+                <div class="th th-mid"></div>
+                <div class="th th-narrow"></div>
               </div>
-              <div class="td td-mid"></div>
-              <div class="td td-mid td-blue"></div>
-              <div class="td td-narrow">
-                <div class="td-badge"></div>
+              <div class="table-row">
+                <div class="td td-wide">
+                  <div class="td-dot dot-green"></div>
+                  <div class="td-text"></div>
+                </div>
+                <div class="td td-mid"></div>
+                <div class="td td-mid td-green"></div>
+                <div class="td td-narrow">
+                  <div class="td-badge"></div>
+                </div>
               </div>
-            </div>
-            <div class="table-row">
-              <div class="td td-wide">
-                <div class="td-dot dot-orange"></div>
-                <div class="td-text"></div>
+              <div class="table-row">
+                <div class="td td-wide">
+                  <div class="td-dot dot-blue"></div>
+                  <div class="td-text"></div>
+                </div>
+                <div class="td td-mid"></div>
+                <div class="td td-mid td-blue"></div>
+                <div class="td td-narrow">
+                  <div class="td-badge"></div>
+                </div>
               </div>
-              <div class="td td-mid"></div>
-              <div class="td td-mid td-orange"></div>
-              <div class="td td-narrow">
-                <div class="td-badge"></div>
+              <div class="table-row">
+                <div class="td td-wide">
+                  <div class="td-dot dot-orange"></div>
+                  <div class="td-text"></div>
+                </div>
+                <div class="td td-mid"></div>
+                <div class="td td-mid td-orange"></div>
+                <div class="td td-narrow">
+                  <div class="td-badge"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -168,7 +193,7 @@
 
 <style>
   .hero-section {
-    background: #0a0a0f;
+    background: var(--bg);
     position: relative;
     overflow: hidden;
     padding: 6rem 1.5rem 5rem;
@@ -186,25 +211,25 @@
   }
 
   .orb-1 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(0, 102, 255, 0.25) 0%, transparent 70%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.45) 0%, transparent 70%);
     top: -200px;
     left: -100px;
   }
 
   .orb-2 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, transparent 70%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.35) 0%, transparent 70%);
     top: 10%;
     right: -150px;
   }
 
   .orb-3 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(77, 166, 255, 0.12) 0%, transparent 70%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(77, 166, 255, 0.3) 0%, transparent 70%);
     bottom: 5%;
     left: 30%;
   }
@@ -212,9 +237,18 @@
   .hero-container {
     position: relative;
     z-index: 1;
-    max-width: 960px;
+    max-width: 1400px;
     margin: 0 auto;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   /* Badge */
@@ -239,48 +273,36 @@
     border-radius: 50%;
     background: #0066ff;
     box-shadow: 0 0 8px rgba(0, 102, 255, 0.8);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
   }
 
   /* Headline */
   .hero-h1 {
-    font-size: clamp(3rem, 7vw, 5rem);
+    font-size: clamp(2.8rem, 7vw, 5.25rem);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.08;
     letter-spacing: -0.04em;
-    color: #ffffff;
-    margin-bottom: 1.5rem;
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, #0066ff 0%, #4da6ff 50%, #66b8ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--heading);
+    margin: 0 0 1.5rem;
+    padding: 0;
   }
 
   /* Subtext */
   .hero-subtext {
     font-size: 1.125rem;
     line-height: 1.7;
-    color: #a0a8b8;
-    max-width: 600px;
-    margin: 0 auto 2.5rem;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 0 2.5rem;
   }
 
   /* CTA */
   .hero-cta {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-bottom: 4rem;
+    margin-bottom: 0;
   }
 
   .cta-primary {
@@ -294,34 +316,36 @@
     font-weight: 600;
     padding: 0.875rem 1.75rem;
     border-radius: 10px;
-    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
-    box-shadow: 0 0 24px rgba(0, 102, 255, 0.3);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
   }
 
   .cta-primary:hover {
     background: #0052cc;
-    transform: translateY(-2px);
-    box-shadow: 0 0 32px rgba(0, 102, 255, 0.45);
   }
 
   .cta-secondary {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: #a0a8b8;
+    color: var(--text-muted);
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
     padding: 0.875rem 1.5rem;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
     transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   }
 
   .cta-secondary:hover {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    border-color: var(--border);
+    background: var(--bg-card);
+  }
+
+  /* Browser Mockup Wrapper */
+  .browser-mockup-wrapper {
+    width: 100%;
   }
 
   /* Browser Mockup */
@@ -334,8 +358,6 @@
       0 0 0 1px rgba(255, 255, 255, 0.05),
       0 40px 80px rgba(0, 0, 0, 0.5),
       0 0 60px rgba(0, 102, 255, 0.08);
-    max-width: 900px;
-    margin: 0 auto;
   }
 
   .browser-chrome {
@@ -388,6 +410,7 @@
     display: grid;
     grid-template-columns: 180px 1fr;
     height: 360px;
+    position: relative;
   }
 
   .dash-sidebar {
@@ -581,6 +604,27 @@
   .td-green { background: rgba(34, 197, 94, 0.15); border-radius: 4px; height: 8px; }
   .td-blue { background: rgba(0, 102, 255, 0.15); border-radius: 4px; height: 8px; }
   .td-orange { background: rgba(249, 115, 22, 0.15); border-radius: 4px; height: 8px; }
+
+  @media (max-width: 1100px) {
+    .hero-container {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .hero-text {
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-subtext {
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-cta {
+      justify-content: center;
+      margin-bottom: 0;
+    }
+  }
 
   @media (max-width: 768px) {
     .hero-section {
