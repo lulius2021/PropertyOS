@@ -190,8 +190,8 @@ body {
   opacity: 0;
   transform: translateY(48px);
   transition:
-    opacity  0.78s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.78s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity  1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 [data-animate="fade"] { transform: none; }
 [data-animate="scale"] { transform: scale(0.88) translateY(20px); }

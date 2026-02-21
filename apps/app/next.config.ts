@@ -19,8 +19,8 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
           {
-            key: "X-Frame-Options",
-            value: "SAMEORIGIN",
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'self' https://propgate.de https://www.propgate.de https://property-os-beige.vercel.app",
           },
           {
             key: "X-Content-Type-Options",
