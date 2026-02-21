@@ -330,7 +330,7 @@ export function CustomizableDashboard({ data, isLoading }: CustomizableDashboard
           onDragStop={handleDragStop}
           isDraggable={isEditing}
           isResizable={false}
-          compactType={false}
+          compactType={null}
           preventCollision={false}
           margin={[12, 12]}
           containerPadding={[0, 0]}
