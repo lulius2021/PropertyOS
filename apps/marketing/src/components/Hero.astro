@@ -65,6 +65,14 @@
 
     <!-- Browser Mockup -->
     <div data-animate="scale" data-delay="4" class="browser-mockup-wrapper">
+      <div class="demo-overlay" id="demo-overlay-btn" role="button" tabindex="0" aria-label="Live Demo starten">
+        <button class="demo-btn" id="demo-open-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          Live Demo starten
+        </button>
+      </div>
       <div class="browser-mockup">
         <!-- Browser Chrome -->
         <div class="browser-chrome">
@@ -346,6 +354,55 @@
   /* Browser Mockup Wrapper */
   .browser-mockup-wrapper {
     width: 100%;
+    position: relative;
+  }
+
+  /* Demo Overlay */
+  .demo-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(3px);
+    border-radius: 12px;
+    z-index: 10;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .demo-overlay:hover {
+    background: rgba(0, 0, 0, 0.32);
+  }
+
+  .demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    background: #0066ff;
+    color: #ffffff;
+    border: none;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    padding: 0.9rem 2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.15s ease;
+    box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.5), 0 8px 32px rgba(0, 102, 255, 0.4);
+    animation: btn-pulse 2.4s ease-in-out infinite;
+  }
+
+  .demo-btn:hover {
+    transform: scale(1.04);
+    background: #0052cc;
+    box-shadow: 0 0 0 6px rgba(0, 102, 255, 0.18), 0 12px 40px rgba(0, 102, 255, 0.5);
+    animation: none;
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.5), 0 8px 32px rgba(0, 102, 255, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(0, 102, 255, 0), 0 8px 32px rgba(0, 102, 255, 0.4); }
   }
 
   /* Browser Mockup */

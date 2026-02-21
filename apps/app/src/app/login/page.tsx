@@ -183,7 +183,7 @@ function LoginForm() {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           <a
-            href="https://propgate-marketing.vercel.app"
+            href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app"}
             className="text-blue-600 hover:text-blue-700"
           >
             &larr; Zurück zur Website
