@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import CTABanner from '../components/CTABanner.astro';
 import Footer from '../components/Footer.astro';
+import { APP_URL } from '../config/urls';
 
 const plans = [
   {
@@ -14,7 +15,7 @@ const plans = [
     yearlyTotal: '107,88',
     description: 'Für Einsteiger und kleine Portfolios.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=starter',
+    href: `${APP_URL}/register?plan=starter`,
     cta: 'Jetzt testen',
     features: [
       { text: 'Bis zu 5 Objekte & Einheiten', included: true },
@@ -42,7 +43,7 @@ const plans = [
     yearlyTotal: '323,88',
     description: 'Für wachsende Portfolios mit vollem Feature-Umfang.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=plus',
+    href: `${APP_URL}/register?plan=plus`,
     cta: 'Jetzt testen',
     features: [
       { text: 'Bis zu 20 Objekte & Einheiten', included: true },
@@ -66,7 +67,7 @@ const plans = [
     description: 'Für professionelle Verwalter mit größerem Portfolio.',
     featured: true,
     badge: 'Empfohlen',
-    href: 'https://app.propgate.de/register?plan=pro',
+    href: `${APP_URL}/register?plan=pro`,
     cta: 'Jetzt testen',
     features: [
       { text: 'Bis zu 60 Objekte & Einheiten', included: true },
@@ -89,7 +90,7 @@ const plans = [
     yearlyTotal: '1.609,20',
     description: 'Für große Verwaltungsunternehmen mit Team.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=unlimited',
+    href: `${APP_URL}/register?plan=unlimited`,
     cta: 'Jetzt testen',
     features: [
       { text: 'Unbegrenzt Objekte & Einheiten', included: true },

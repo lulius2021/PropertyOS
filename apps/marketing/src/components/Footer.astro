@@ -1,4 +1,5 @@
 ---
+import { APP_URL } from '../config/urls';
 const year = new Date().getFullYear();
 ---
 
@@ -28,7 +29,7 @@ const year = new Date().getFullYear();
           <li><a href="/features" class="footer-link">Features</a></li>
           <li><a href="/pricing" class="footer-link">Preise</a></li>
           <li><a href="/security" class="footer-link">Sicherheit</a></li>
-          <li><a href="https://app.propgate.de/register" class="footer-link">Kostenlos starten</a></li>
+          <li><a href={`${APP_URL}/register`} class="footer-link">Kostenlos starten</a></li>
         </ul>
       </div>
 

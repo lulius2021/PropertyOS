@@ -99,17 +99,20 @@ const ogImageURL = new URL(ogImage, Astro.site);
         );
 
         // Stagger parent: reveals children one by one
+        // Supports data-stagger-delay on the parent to override the per-item delay (ms)
         const staggerIO = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
+              const parent = entry.target as HTMLElement;
+              const stepMs = Number(parent.dataset.staggerDelay ?? 130);
               if (entry.isIntersecting) {
-                entry.target
+                parent
                   .querySelectorAll<HTMLElement>('[data-stagger]')
                   .forEach((child, i) => {
-                    setTimeout(() => child.classList.add('is-visible'), i * 130);
+                    setTimeout(() => child.classList.add('is-visible'), i * stepMs);
                   });
               } else {
-                entry.target
+                parent
                   .querySelectorAll<HTMLElement>('[data-stagger]')
                   .forEach((child) => child.classList.remove('is-visible'));
               }

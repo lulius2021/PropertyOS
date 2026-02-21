@@ -1,7 +1,8 @@
 ---
+import { APP_URL } from '../config/urls';
 ---
 
-<div id="demo-modal" class="demo-modal-backdrop" aria-modal="true" role="dialog" aria-label="Live Demo">
+<div id="demo-modal" class="demo-modal-backdrop" aria-modal="true" role="dialog" aria-label="Live Demo" data-app-url={APP_URL}>
   <div class="demo-modal-panel">
     <!-- Header -->
     <div class="demo-modal-header">
@@ -39,6 +40,14 @@
 </div>
 
 <style is:global>
+  body.demo-open {
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+  body.demo-open::-webkit-scrollbar {
+    display: none;
+  }
+
   .demo-modal-backdrop {
     position: fixed;
     inset: 0;
@@ -191,16 +200,17 @@
   function openDemo() {
     if (!modal || !iframe) return;
     if (!iframe.src) {
-      iframe.src = 'https://property-os-beige.vercel.app/demo-login';
+      const appUrl = document.getElementById('demo-modal')?.dataset.appUrl ?? 'https://app.propgate.de';
+      iframe.src = `${appUrl}/demo-login`;
     }
     modal.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('demo-open');
   }
 
   function closeDemo() {
     if (!modal) return;
     modal.classList.remove('is-open');
-    document.body.style.overflow = '';
+    document.body.classList.remove('demo-open');
     setTimeout(() => {
       if (iframe) iframe.src = '';
       if (loader) loader.classList.remove('hidden');

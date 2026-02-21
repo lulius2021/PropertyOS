@@ -1,4 +1,6 @@
 ---
+import { APP_URL } from '../config/urls';
+
 const plans = [
   {
     id: 'starter',
@@ -6,10 +8,12 @@ const plans = [
     limit: 'bis 5 Objekte',
     priceMonthly: '9,99',
     priceAnnual: '8,99',
-    description: 'Für Einsteiger mit kleinem Portfolio.',
+    description: 'Einsteiger-Plan für kleine Portfolios.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=starter',
-    cta: 'Kostenlos testen',
+    href: `${APP_URL}/register?plan=starter`,
+    cta: 'Plan wählen',
+    gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
+    iconBg: '#1a2332',
     features: [
       'Bis zu 5 Objekte & Einheiten',
       'Mieterverwaltung & Verträge',
@@ -18,6 +22,7 @@ const plans = [
       'Zählerverwaltung',
       'Dashboard & KPIs',
     ],
+    prevPlanLabel: null,
   },
   {
     id: 'plus',
@@ -25,18 +30,19 @@ const plans = [
     limit: 'bis 20 Objekte',
     priceMonthly: '29,99',
     priceAnnual: '26,99',
-    description: 'Für wachsende Portfolios mit mehr Features.',
+    description: 'Mehr Features für wachsende Portfolios.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=plus',
-    cta: 'Kostenlos testen',
+    href: `${APP_URL}/register?plan=plus`,
+    cta: 'Plan wählen',
+    gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
+    iconBg: '#1a2332',
     features: [
-      'Bis zu 20 Objekte & Einheiten',
-      'Alles aus Starter',
       'Ticketsystem',
       'CSV-Bankimport & Auto-Matching',
       'Dokumentenverwaltung',
       'Datenexport (CSV / Excel)',
     ],
+    prevPlanLabel: 'STARTER +',
   },
   {
     id: 'pro',
@@ -44,16 +50,19 @@ const plans = [
     limit: 'bis 60 Objekte',
     priceMonthly: '79,99',
     priceAnnual: '71,99',
-    description: 'Für professionelle Immobilienverwalter.',
+    description: 'Professionelle Verwaltung. Priority-Support. Volle Kontrolle.',
     featured: true,
     badge: 'Empfohlen',
-    href: 'https://app.propgate.de/register?plan=pro',
+    href: `${APP_URL}/register?plan=pro`,
     cta: 'Kostenlos testen',
+    gradient: 'linear-gradient(145deg, #001a4d 0%, #003080 40%, #0044aa 70%, #001f5c 100%)',
+    iconBg: '#0044aa',
     features: [
       'Bis zu 60 Objekte & Einheiten',
-      'Alles aus Plus',
       'Priority-Support',
+      'Erweiterte Auswertungen',
     ],
+    prevPlanLabel: 'STARTER & PLUS +',
   },
   {
     id: 'unlimited',
@@ -61,49 +70,41 @@ const plans = [
     limit: 'Unbegrenzte Objekte',
     priceMonthly: '149,00',
     priceAnnual: '134,10',
-    description: 'Für große Verwaltungsunternehmen.',
+    description: 'Für große Verwaltungsunternehmen mit Team.',
     featured: false,
-    href: 'https://app.propgate.de/register?plan=unlimited',
-    cta: 'Kostenlos testen',
+    href: 'mailto:hallo@propgate.de',
+    cta: 'Kontakt aufnehmen',
+    gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
+    iconBg: '#1a2332',
     features: [
       'Unbegrenzt Objekte & Einheiten',
-      'Alles aus Pro',
-      'Multi-User (Team-Zugang)',
-      'Rollenbasierte Zugriffsrechte',
+      'Multi-User & Rollenrechte',
       'API-Zugriff',
       'Dedizierter Account-Manager',
     ],
+    prevPlanLabel: 'STARTER, PLUS & PRO +',
   },
 ];
 
-const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const buildingIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M9 7h1m4 0h1M9 11h1m4 0h1"/></svg>`;
+const checkIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
 ---
 
 <section class="pricing-section" id="preise">
   <div class="pricing-container">
+
     <!-- Header -->
     <div class="section-header" data-animate="fade">
       <p class="section-eyebrow">Preise</p>
       <h2 class="section-h2">Transparent und fair</h2>
-      <p class="section-subtitle">
-        30 Tage kostenlos testen — keine Kreditkarte erforderlich.
-      </p>
-    </div>
-
-    <!-- Trial Banner -->
-    <div class="trial-banner" data-animate="fade">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-      </svg>
-      <span><strong>30 Tage Free Trial</strong> — Alle Features testen, kein Upgrade nötig, kein Risiko.</span>
+      <p class="section-subtitle">30 Tage kostenlos testen — keine Kreditkarte erforderlich.</p>
     </div>
 
     <!-- Billing Toggle -->
     <div class="billing-toggle-wrap" data-animate="fade">
       <div class="billing-toggle" role="group" aria-label="Abrechnungszeitraum">
-        <button class="toggle-btn is-active" data-period="monthly" id="toggle-monthly">
-          Monatlich
-        </button>
+        <button class="toggle-btn is-active" data-period="monthly" id="toggle-monthly">Monatlich</button>
         <button class="toggle-btn" data-period="annual" id="toggle-annual">
           Jährlich
           <span class="save-chip">2 Monate gratis</span>
@@ -111,126 +112,126 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
       </div>
     </div>
 
-    <!-- Plans -->
-    <div class="plans-grid" data-stagger-parent>
+    <!-- Plans Grid -->
+    <div class="plans-grid" id="pricing-grid">
       {plans.map((plan) => (
-        <div class={`plan-card ${plan.featured ? 'plan-featured' : ''}`} data-stagger>
-          {plan.featured && plan.badge && (
-            <div class="plan-badge">{plan.badge}</div>
-          )}
-          <div class="plan-header">
-            <div class="plan-name-row">
+        <div class={`card-float-wrap ${plan.featured ? 'card-float-featured' : ''}`}>
+          <div
+            class={`plan-card ${plan.featured ? 'plan-featured' : ''}`}
+            style={`--card-gradient: ${plan.gradient}; --icon-bg: ${plan.iconBg};`}
+          >
+            <!-- Card visual top area -->
+            <div class="card-visual">
+              <div class="card-icon" set:html={buildingIcon} />
+              {plan.featured && plan.badge && (
+                <span class="plan-badge">{plan.badge}</span>
+              )}
+              <div class="card-deco" aria-hidden="true" />
+            </div>
+
+            <!-- Card content -->
+            <div class="card-body">
               <h3 class="plan-name">{plan.name}</h3>
-              <span class="plan-limit">{plan.limit}</span>
+              <p class="plan-description">{plan.description}</p>
+
+              <div class="plan-price">
+                <span class="price-currency">€</span>
+                <span
+                  class="price-amount"
+                  data-monthly={plan.priceMonthly}
+                  data-annual={plan.priceAnnual}
+                >{plan.priceMonthly}</span>
+                <span class="price-period">/Monat</span>
+              </div>
+              <p class="price-note price-note-monthly">zzgl. MwSt., monatlich kündbar</p>
+              <p class="price-note price-note-annual" style="display:none">zzgl. MwSt., jährliche Zahlung</p>
+
+              <a
+                href={plan.href}
+                class={`plan-cta ${plan.featured ? 'plan-cta-primary' : plan.id === 'unlimited' ? 'plan-cta-contact' : 'plan-cta-secondary'}`}
+              >
+                {plan.id === 'unlimited' && <span set:html={mailIcon} />}
+                {plan.cta}
+              </a>
+
+              {plan.prevPlanLabel && (
+                <div class="features-divider">
+                  <span>{plan.prevPlanLabel}</span>
+                </div>
+              )}
+
+              <ul class="plan-features">
+                {plan.features.map((feature) => (
+                  <li class="feature-item">
+                    <span class="feature-check" set:html={checkIcon} />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p class="plan-description">{plan.description}</p>
-            <div class="plan-price">
-              <span class="price-currency">€</span>
-              <span class="price-amount" data-monthly={plan.priceMonthly} data-annual={plan.priceAnnual}>
-                {plan.priceMonthly}
-              </span>
-              <span class="price-period">/Monat</span>
-            </div>
-            <p class="price-note price-note-monthly">zzgl. MwSt., monatlich kündbar</p>
-            <p class="price-note price-note-annual" style="display:none">zzgl. MwSt., jährliche Zahlung</p>
           </div>
-
-          <a href={plan.href} class={`plan-cta ${plan.featured ? 'plan-cta-primary' : 'plan-cta-secondary'}`}>
-            {plan.cta}
-          </a>
-
-          <ul class="plan-features">
-            {plan.features.map((feature) => (
-              <li class="feature-item">
-                <span class="feature-check" set:html={checkIcon} />
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       ))}
     </div>
 
     <p class="pricing-note" data-animate="fade">
-      Alle Pläne starten mit 30 Tagen Free Trial · Keine Kreditkarte · Monatlich kündbar
-      · <a href="/pricing" class="pricing-link">Vollständiger Planvergleich →</a>
+      Alle Pläne mit 30 Tagen Free Trial · Keine Kreditkarte · Monatlich kündbar
     </p>
   </div>
 </section>
 
-<style>
+<style is:global>
   .pricing-section {
-    background: var(--bg);
-    padding: 5rem 1.5rem;
+    background: #07080f;
+    padding: 5rem 1.5rem 6rem;
   }
 
   .pricing-container {
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
   }
 
-  .section-header {
+  /* Header */
+  .pricing-section .section-header {
     text-align: center;
     margin-bottom: 2rem;
   }
 
-  .section-eyebrow {
-    font-size: 0.875rem;
+  .pricing-section .section-eyebrow {
+    font-size: 0.8125rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #0066ff;
+    color: #4da6ff;
     margin-bottom: 0.75rem;
   }
 
-  .section-h2 {
-    font-size: clamp(2rem, 4vw, 2.75rem);
+  .pricing-section .section-h2 {
+    font-size: clamp(1.875rem, 4vw, 2.625rem);
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.03em;
-    color: var(--heading);
-    margin-bottom: 0.75rem;
+    color: #f0f4ff;
+    margin-bottom: 0.625rem;
   }
 
-  .section-subtitle {
-    font-size: 1.0625rem;
-    color: var(--text-muted);
+  .pricing-section .section-subtitle {
+    font-size: 1rem;
+    color: #6b7a99;
     line-height: 1.6;
   }
 
-  /* Trial Banner */
-  .trial-banner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.625rem;
-    background: rgba(0, 102, 255, 0.06);
-    border: 1px solid rgba(0, 102, 255, 0.15);
-    color: #1a3a6b;
-    font-size: 0.9375rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .trial-banner svg {
-    color: #0066ff;
-    flex-shrink: 0;
-  }
-
-  /* Billing Toggle */
+  /* Toggle */
   .billing-toggle-wrap {
     display: flex;
     justify-content: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
   }
 
   .billing-toggle {
     display: inline-flex;
-    background: #f3f4f6;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     padding: 4px;
     gap: 2px;
@@ -244,7 +245,7 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
     border-radius: 7px;
     border: none;
     background: transparent;
-    color: #6b7280;
+    color: #6b7a99;
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -252,24 +253,24 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
   }
 
   .toggle-btn.is-active {
-    background: #ffffff;
-    color: #0f0f1a;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f4ff;
     font-weight: 600;
   }
 
   .save-chip {
     display: inline-block;
-    background: #dcfce7;
-    color: #166534;
-    font-size: 0.75rem;
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    font-size: 0.7rem;
     font-weight: 600;
     padding: 0.15rem 0.5rem;
     border-radius: 100px;
     white-space: nowrap;
+    border: 1px solid rgba(34, 197, 94, 0.2);
   }
 
-  /* Plans Grid */
+  /* Grid */
   .plans-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -277,157 +278,314 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
     align-items: start;
   }
 
+  /* ── Float keyframes (on wrapper — no conflict with entry reveal) ── */
+  @keyframes float-a {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-20px); }
+  }
+  @keyframes float-b {
+    0%, 100% { transform: translateY(-8px); }
+    50%       { transform: translateY(16px); }
+  }
+  @keyframes float-c {
+    0%, 100% { transform: translateY(-6px); }
+    50%       { transform: translateY(18px); }
+  }
+  @keyframes float-d {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-16px); }
+  }
+
+  /* Wrapper: owns float animation (transform only) */
+  .card-float-wrap { position: relative; }
+  .card-float-wrap:nth-child(1) { animation: float-a 5.2s ease-in-out infinite; }
+  .card-float-wrap:nth-child(2) { animation: float-b 6.1s ease-in-out infinite; }
+  .card-float-wrap:nth-child(3) { animation: float-c 4.8s ease-in-out infinite; }
+  .card-float-wrap:nth-child(4) { animation: float-d 5.7s ease-in-out infinite; }
+  .card-float-wrap:hover         { animation-play-state: paused; }
+
+  /* Featured wrapper: extends slightly above/below others */
+  .card-float-featured {
+    margin-top: -1.25rem;
+    margin-bottom: -1.25rem;
+    z-index: 1;
+  }
+
+  /* ── Plan card: entry reveal (opacity + slide-up, owns no float) ── */
   .plan-card {
-    background: var(--bg-card);
-    border: 1.5px solid var(--border-card);
-    border-radius: 14px;
-    padding: 1.5rem;
+    background: var(--card-gradient);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
     position: relative;
-    transition: box-shadow 0.2s ease;
+    /* Start hidden + shifted down */
+    opacity: 0;
+    transform: translateY(70px) scale(0.96);
+    transition:
+      opacity   1.15s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.2s ease;
+  }
+
+  .plan-card.is-revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
   .plan-card:hover {
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   }
 
+  /* Featured card */
   .plan-featured {
-    border-color: #0066ff;
-    border-width: 2px;
-    box-shadow:
-      0 0 0 4px rgba(0, 102, 255, 0.05),
-      0 10px 36px rgba(0, 102, 255, 0.12);
+    border-color: rgba(0, 102, 255, 0.35);
+    box-shadow: 0 0 0 1px rgba(0, 102, 255, 0.15), 0 24px 60px rgba(0, 40, 120, 0.35);
+  }
+
+  .plan-featured:hover {
+    box-shadow: 0 0 0 1px rgba(0, 102, 255, 0.25), 0 32px 70px rgba(0, 40, 120, 0.5);
+  }
+
+  /* Card visual top */
+  .card-visual {
+    position: relative;
+    padding: 1.5rem 1.5rem 0;
+    min-height: 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--icon-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #93c5fd;
+    flex-shrink: 0;
+  }
+
+  .plan-featured .card-icon {
+    background: rgba(0, 102, 255, 0.25);
+    border-color: rgba(0, 102, 255, 0.4);
+    color: #60a5fa;
+  }
+
+  /* Decorative shape top-right */
+  .card-deco {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 80px;
+    height: 80px;
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transform: rotate(15deg);
+    pointer-events: none;
+  }
+
+  .plan-featured .card-deco {
+    border-color: rgba(0, 102, 255, 0.2);
+    width: 90px;
+    height: 90px;
   }
 
   .plan-badge {
     position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0066ff;
-    color: #ffffff;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: rgba(255, 255, 255, 0.12);
+    color: #f0f4ff;
     font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.625rem;
     border-radius: 100px;
-    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    z-index: 1;
   }
 
-  .plan-header {
-    margin-bottom: 1.25rem;
-  }
-
-  .plan-name-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.375rem;
+  /* Card body */
+  .card-body {
+    padding: 1.125rem 1.5rem 1.5rem;
   }
 
   .plan-name {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--heading);
-    letter-spacing: -0.02em;
-  }
-
-  .plan-featured .plan-name {
-    color: #0066ff;
-  }
-
-  .plan-limit {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #9ca3af;
-    white-space: nowrap;
+    color: #f0f4ff;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.375rem;
+    line-height: 1.2;
   }
 
   .plan-description {
     font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 1rem;
-    line-height: 1.5;
+    color: #6b7a99;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
   }
 
+  .plan-featured .plan-description {
+    color: #8aa3cc;
+  }
+
+  /* Price */
   .plan-price {
     display: flex;
     align-items: baseline;
     gap: 0.1rem;
+    margin-bottom: 0.25rem;
   }
 
   .price-currency {
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: var(--heading);
-    margin-top: 0.25rem;
+    color: #cbd5e1;
+    line-height: 1;
+    padding-top: 2px;
   }
 
   .price-amount {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 800;
-    color: var(--heading);
+    color: #f0f4ff;
     line-height: 1;
     letter-spacing: -0.04em;
+    display: inline-block;
   }
 
+  @keyframes price-out-up {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-28px) scale(0.85); }
+  }
+  @keyframes price-in-up {
+    0%   { opacity: 0; transform: translateY(28px) scale(0.85); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes price-out-down {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(28px) scale(0.85); }
+  }
+  @keyframes price-in-down {
+    0%   { opacity: 0; transform: translateY(-28px) scale(0.85); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .price-amount.anim-out-up   { animation: price-out-up   0.18s ease-in forwards; }
+  .price-amount.anim-in-up    { animation: price-in-up    0.22s ease-out forwards; }
+  .price-amount.anim-out-down { animation: price-out-down 0.18s ease-in forwards; }
+  .price-amount.anim-in-down  { animation: price-in-down  0.22s ease-out forwards; }
+
+  /* Save chip pop animation */
+  @keyframes chip-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+  .save-chip.popping { animation: chip-pop 0.35s ease-out; }
+
   .price-period {
-    font-size: 0.875rem;
-    color: #9ca3af;
-    margin-left: 0.125rem;
+    font-size: 0.9375rem;
+    color: #6b7a99;
+    margin-left: 0.25rem;
   }
 
   .price-note {
     font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 0.25rem;
+    color: #4a5568;
+    margin-bottom: 1.25rem;
   }
 
+  /* CTA */
   .plan-cta {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     text-align: center;
     text-decoration: none;
     font-size: 0.9375rem;
     font-weight: 600;
-    padding: 0.6875rem 1rem;
-    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
     margin-bottom: 1.25rem;
     transition: all 0.15s ease;
-  }
-
-  .plan-cta-primary {
-    background: #0066ff;
-    color: #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 102, 255, 0.3);
-  }
-
-  .plan-cta-primary:hover {
-    background: #0052cc;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0, 102, 255, 0.4);
+    letter-spacing: -0.01em;
   }
 
   .plan-cta-secondary {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1.5px solid var(--border-card);
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .plan-cta-secondary:hover {
-    background: var(--bg-card);
-    border-color: var(--border);
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f4ff;
   }
 
+  .plan-cta-primary {
+    background: linear-gradient(135deg, #0066ff 0%, #0044cc 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 102, 255, 0.4);
+  }
+
+  .plan-cta-primary:hover {
+    background: linear-gradient(135deg, #0077ff 0%, #0052e0 100%);
+    box-shadow: 0 6px 28px rgba(0, 102, 255, 0.55);
+    transform: translateY(-1px);
+  }
+
+  .plan-cta-contact {
+    background: rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .plan-cta-contact:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f4ff;
+  }
+
+  /* Features divider */
+  .features-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .features-divider::before,
+  .features-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .features-divider span {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #4a5568;
+    white-space: nowrap;
+  }
+
+  /* Features list */
   .plan-features {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    padding-top: 1.125rem;
+    gap: 0.5625rem;
   }
 
   .feature-item {
@@ -435,36 +593,40 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
     align-items: flex-start;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--text-muted);
-    line-height: 1.4;
+    color: #6b7a99;
+    line-height: 1.45;
+  }
+
+  .plan-featured .feature-item {
+    color: #8aa3cc;
   }
 
   .feature-check {
-    color: #0066ff;
+    color: #4a5568;
     flex-shrink: 0;
     margin-top: 1px;
   }
 
+  .plan-featured .feature-check {
+    color: #3b82f6;
+  }
+
   .pricing-note {
     text-align: center;
-    font-size: 0.875rem;
-    color: #9ca3af;
-    margin-top: 2rem;
+    font-size: 0.8125rem;
+    color: #374151;
+    margin-top: 3rem;
+    letter-spacing: 0.01em;
   }
 
-  .pricing-link {
-    color: #0066ff;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .pricing-link:hover {
-    text-decoration: underline;
-  }
-
-  @media (max-width: 1280px) {
+  /* Responsive */
+  @media (max-width: 1200px) {
     .plans-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+    .card-float-featured {
+      margin-top: 0;
+      margin-bottom: 0;
     }
   }
 
@@ -476,20 +638,104 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
 </style>
 
 <script>
+  // ── Card reveal: Pro first (index 2), then Starter, Plus, Unlimited ────────
+  const grid = document.getElementById('pricing-grid');
+  // Cards are inside .card-float-wrap, query .plan-card directly
+  const cards = grid ? Array.from(grid.querySelectorAll<HTMLElement>('.plan-card')) : [];
+
+  // Reveal order: Pro (2) → Starter (0) → Plus (1) → Unlimited (3)
+  const revealOrder = [2, 0, 1, 3];
+
+  function revealCards() {
+    revealOrder.forEach((cardIndex, staggerStep) => {
+      const card = cards[cardIndex];
+      if (!card) return;
+      // Stagger: 200ms between each card
+      setTimeout(() => card.classList.add('is-revealed'), staggerStep * 200);
+    });
+  }
+
+  if (grid) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          revealCards();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(grid);
+  }
+
+  // ── Price scramble animation ──────────────────────────────────────────────
+  const DIGITS = '0123456789';
+  const FRAMES = 22;
+  const FRAME_MS = 28;
+
+  function scramblePrice(el: HTMLElement, target: string) {
+    let frame = 0;
+    // Blur in
+    el.style.transition = 'filter 0.12s, transform 0.12s';
+    el.style.filter = 'blur(5px)';
+    el.style.transform = 'scale(0.82)';
+
+    setTimeout(() => {
+      const interval = setInterval(() => {
+        frame++;
+        const progress = frame / FRAMES;
+
+        el.textContent = target.split('').map((char, i) => {
+          if (char === ',' || char === '.') return char;
+          // Each digit settles left-to-right staggered
+          const settleAt = i / target.replace(/[^0-9]/g, '').length;
+          if (progress >= settleAt + 0.45) return char;
+          return DIGITS[Math.floor(Math.random() * 10)];
+        }).join('');
+
+        // Progressively un-blur
+        const blurVal = Math.max(0, 5 - progress * 7);
+        const scaleVal = 0.82 + progress * 0.18;
+        el.style.filter = `blur(${blurVal}px)`;
+        el.style.transform = `scale(${scaleVal})`;
+
+        if (frame >= FRAMES) {
+          clearInterval(interval);
+          el.textContent = target;
+          el.style.filter = '';
+          el.style.transform = '';
+        }
+      }, FRAME_MS);
+    }, 120);
+  }
+
+  // ── Toggle ────────────────────────────────────────────────────────────────
   const monthlyBtn = document.getElementById('toggle-monthly');
-  const annualBtn = document.getElementById('toggle-annual');
+  const annualBtn  = document.getElementById('toggle-annual');
+  const saveChip   = document.querySelector<HTMLElement>('.save-chip');
+  let currentPeriod = 'monthly';
 
   function setPeriod(period: string) {
+    if (period === currentPeriod) return;
     const isAnnual = period === 'annual';
+    currentPeriod = period;
 
     monthlyBtn?.classList.toggle('is-active', !isAnnual);
     annualBtn?.classList.toggle('is-active', isAnnual);
 
-    document.querySelectorAll<HTMLElement>('.price-amount').forEach((el) => {
-      el.textContent = isAnnual
+    document.querySelectorAll<HTMLElement>('.price-amount').forEach((el, i) => {
+      const newVal = isAnnual
         ? (el.dataset.annual ?? el.dataset.monthly ?? '')
         : (el.dataset.monthly ?? '');
+      setTimeout(() => scramblePrice(el, newVal), i * 55);
     });
+
+    if (isAnnual && saveChip) {
+      saveChip.classList.remove('popping');
+      void saveChip.offsetWidth;
+      saveChip.classList.add('popping');
+      saveChip.addEventListener('animationend', () => saveChip.classList.remove('popping'), { once: true });
+    }
 
     document.querySelectorAll<HTMLElement>('.price-note-monthly').forEach((el) => {
       el.style.display = isAnnual ? 'none' : '';
@@ -500,5 +746,5 @@ const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
   }
 
   monthlyBtn?.addEventListener('click', () => setPeriod('monthly'));
-  annualBtn?.addEventListener('click', () => setPeriod('annual'));
+  annualBtn?.addEventListener('click',  () => setPeriod('annual'));
 </script>

@@ -7,12 +7,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import {
+  AuthCard, AuthInput, AuthButton, AuthError,
+  MailIcon, LockIcon, EyeIcon,
+} from "@/components/auth/AuthCard";
 
 const loginSchema = z.object({
-  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+  email: z.string().email("Bitte eine gültige E-Mail-Adresse eingeben"),
   password: z.string().min(1, "Passwort ist erforderlich"),
 });
-
 type LoginFormData = z.infer<typeof loginSchema>;
 
 function LoginForm() {
@@ -20,62 +23,43 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
       });
-
       if (result?.error) {
-        // Handle account lockout error
         if (result.error.includes("ACCOUNT_LOCKED")) {
           const minutes = result.error.split(":")[1] || "15";
-          setError(
-            `Ihr Account wurde gesperrt. Bitte versuchen Sie es in ${minutes} Minuten erneut.`
-          );
+          setError(`Ihr Account wurde gesperrt. Bitte versuchen Sie es in ${minutes} Minuten erneut.`);
         } else {
           setError("Ungültige E-Mail oder Passwort");
         }
       } else if (result?.ok) {
-        // Check if 2FA is needed - fetch session to check
         const sessionRes = await fetch("/api/auth/session");
         const session = await sessionRes.json();
-
-        if (
-          session?.user?.needsTwoFactor &&
-          !session?.user?.twoFactorVerified
-        ) {
+        if (session?.user?.needsTwoFactor && !session?.user?.twoFactorVerified) {
           router.push("/verify-2fa");
         } else {
-          const callbackUrl =
-            searchParams.get("callbackUrl") || "/dashboard";
-          router.push(callbackUrl);
+          router.push(searchParams.get("callbackUrl") || "/dashboard");
         }
         router.refresh();
       }
     } catch (err: any) {
       if (err?.message?.includes("429") || err?.status === 429) {
-        setError(
-          "Zu viele Anmeldeversuche. Bitte warten Sie einen Moment."
-        );
+        setError("Zu viele Anmeldeversuche. Bitte warten Sie einen Moment.");
       } else {
-        setError(
-          "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-        );
+        setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
       }
     } finally {
       setIsLoading(false);
@@ -83,126 +67,91 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="mb-4 flex justify-center">
-            <img
-              src="/logos/logo.png"
-              alt="PropGate"
-              className="h-16 w-16 rounded-xl"
-            />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">PropGate</h1>
-          <p className="mt-2 text-gray-600">Anmelden am Dashboard</p>
-        </div>
-
-        <div className="rounded-lg border bg-white p-8 shadow-lg">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {error && (
-              <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">
-                {error}
-              </div>
-            )}
-
-            {searchParams.get("reset") === "success" && (
-              <div className="rounded-md bg-green-50 p-4 text-sm text-green-800">
-                Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie
-                sich an.
-              </div>
-            )}
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                E-Mail
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                {...register("email")}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Passwort
-                </label>
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-700"
-                >
-                  Passwort vergessen?
-                </Link>
-              </div>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                {...register("password")}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-            >
-              {isLoading ? "Wird angemeldet..." : "Anmelden"}
-            </button>
-          </form>
-
-          {process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true" && (
-            <div className="mt-6 text-center text-sm text-gray-600">
-              <p>Demo-Zugang für Entwicklung:</p>
-              <p className="mt-1 font-mono text-xs">
-                admin@demo.de / demo1234
-              </p>
-            </div>
-          )}
-        </div>
-
-        <p className="mt-6 text-center text-sm text-gray-600">
-          <a
-            href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app"}
-            className="text-blue-600 hover:text-blue-700"
-          >
-            &larr; Zurück zur Website
-          </a>
+    <AuthCard>
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h1 className="text-[2.25rem] font-bold tracking-tight text-white">Anmelden</h1>
+        <p className="mt-2 text-[0.9375rem] leading-relaxed text-[#6b7a99]">
+          Melden Sie sich an und verwalten Sie Ihr Immobilienportfolio nahtlos weiter.
         </p>
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+        <AuthError message={error} />
+
+        {searchParams.get("reset") === "success" && (
+          <div className="rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+            Passwort erfolgreich zurückgesetzt. Bitte melden Sie sich an.
+          </div>
+        )}
+
+        <AuthInput
+          icon={<MailIcon />}
+          type="email"
+          autoComplete="email"
+          placeholder="E-Mail-Adresse"
+          {...register("email")}
+        />
+        {errors.email && <p className="px-2 text-xs text-red-400">{errors.email.message}</p>}
+
+        <AuthInput
+          icon={<LockIcon />}
+          type={showPw ? "text" : "password"}
+          autoComplete="current-password"
+          placeholder="Passwort"
+          {...register("password")}
+          trailing={
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              className="text-[#0066ff] transition hover:text-[#4da6ff]"
+              tabIndex={-1}
+            >
+              <EyeIcon off={!showPw} />
+            </button>
+          }
+        />
+        {errors.password && <p className="px-2 text-xs text-red-400">{errors.password.message}</p>}
+
+        <div className="flex justify-end pb-1">
+          <Link href="/forgot-password" className="text-sm text-[#0066ff] hover:text-[#4da6ff] transition">
+            Passwort vergessen?
+          </Link>
+        </div>
+
+        <AuthButton loading={isLoading}>
+          {isLoading ? "Wird angemeldet…" : "Anmelden"}
+        </AuthButton>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-[#4a5568]">
+        Noch kein Account?{" "}
+        <Link href="/register" className="font-semibold text-[#0066ff] hover:text-[#4da6ff] transition">
+          Registrieren
+        </Link>
+      </p>
+
+      <p className="mt-4 text-center">
+        <a
+          href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app"}
+          className="text-xs text-[#3d4d66] hover:text-[#6b7a99] transition"
+        >
+          ← Zurück zur Website
+        </a>
+      </p>
+
+      {process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true" && (
+        <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-center">
+          <p className="text-xs text-[#4a5568]">Demo: <span className="font-mono text-[#6b7a99]">admin@demo.de / demo1234</span></p>
+        </div>
+      )}
+    </AuthCard>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-          <div className="text-gray-500">Laden...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07080f]"><div className="text-[#4a5568]">Laden…</div></div>}>
       <LoginForm />
     </Suspense>
   );

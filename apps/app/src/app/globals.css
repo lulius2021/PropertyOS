@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+/* Spinning card border */
+@keyframes border-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.auth-border-spin {
+  position: absolute;
+  width: 250%;
+  height: 250%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 40deg,
+    #0066ff 57deg,
+    #60aaff 90deg,
+    #0066ff 123deg,
+    transparent 140deg,
+    transparent 360deg
+  );
+  animation: border-spin 8s linear infinite;
+}
+
+/* Override browser autofill yellow background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #0a0e17 inset;
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
