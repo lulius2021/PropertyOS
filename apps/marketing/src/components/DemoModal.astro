@@ -4,233 +4,1239 @@ import { APP_URL } from '../config/urls';
 
 <div id="demo-modal" class="demo-modal-backdrop" aria-modal="true" role="dialog" aria-label="Live Demo" data-app-url={APP_URL}>
   <div class="demo-modal-panel">
-    <!-- Header -->
+
+    <!-- Modal Header (dark shell) -->
     <div class="demo-modal-header">
       <div class="demo-modal-title">
         <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
           <rect width="32" height="32" rx="8" fill="#0066ff"/>
-          <path d="M10 16C10 12.686 12.686 10 16 10s6 2.686 6 6-2.686 6-6 6-6-2.686-6-6z" fill="white" opacity="0.3"/>
           <path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm-1 11.5v-7l5 3.5-5 3.5z" fill="white"/>
         </svg>
         <span>PropGate <strong>Live Demo</strong></span>
       </div>
-      <div class="demo-badge">Demo &middot; admin@demo.de</div>
+      <div class="demo-badge">Demo · admin@demo.de</div>
       <button class="demo-close-btn" id="demo-close" aria-label="Demo schließen">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
 
-    <!-- Body -->
+    <!-- Static Demo App (light theme) -->
     <div class="demo-modal-body">
-      <div class="demo-loader" id="demo-loader">
-        <div class="demo-spinner"></div>
-        <p>App wird geladen…</p>
-      </div>
-      <iframe
-        id="demo-iframe"
-        src=""
-        allow="fullscreen"
-        title="PropGate Live Demo"
-        class="demo-iframe"
-      ></iframe>
-    </div>
+      <div class="da-app">
+
+        <!-- ── Sidebar ─────────────────────────────── -->
+        <aside class="da-sidebar">
+          <div class="da-brand">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0066ff"/><path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm-1 11.5v-7l5 3.5-5 3.5z" fill="white"/></svg>
+            <span class="da-brand-name">Prop<span class="da-brand-accent">Gate</span></span>
+          </div>
+
+          <div class="da-tenant-selector">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Demo Immobilien GmbH</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+
+          <nav class="da-nav">
+            <button class="da-nav-btn is-active" data-view="dashboard">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              Dashboard
+            </button>
+            <button class="da-nav-btn" data-view="objekte">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Objekte
+            </button>
+            <button class="da-nav-btn" data-view="einheiten">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+              Einheiten
+            </button>
+            <button class="da-nav-btn" data-view="mieter">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Mieter
+            </button>
+            <button class="da-nav-btn" data-view="vertraege">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Verträge
+            </button>
+            <button class="da-nav-btn" data-view="sollstellungen">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+              Sollstellungen
+            </button>
+            <button class="da-nav-btn" data-view="bank">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Bank
+            </button>
+            <button class="da-nav-btn" data-view="mahnungen">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Mahnungen
+              <span class="da-nav-badge">2</span>
+            </button>
+            <button class="da-nav-btn" data-view="tickets">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              Tickets
+              <span class="da-nav-badge">1</span>
+            </button>
+            <button class="da-nav-btn" data-view="kosten">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+              Kosten
+            </button>
+            <button class="da-nav-btn" data-view="zaehler">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Zähler
+            </button>
+            <button class="da-nav-btn" data-view="kredite">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 2 7 22 7"/></svg>
+              Kredite
+            </button>
+
+            <div class="da-nav-sep"></div>
+
+            <button class="da-nav-btn" data-view="reporting">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Reporting
+            </button>
+            <button class="da-nav-btn" data-view="einstellungen">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Einstellungen
+            </button>
+          </nav>
+
+          <div class="da-sidebar-user">
+            <div class="da-avatar">DM</div>
+            <div class="da-user-meta">
+              <div class="da-user-name">Demo Nutzer</div>
+              <div class="da-user-role">Administrator</div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ── Right side: Topbar + Pages ─────────── -->
+        <div class="da-right">
+
+          <!-- Topbar -->
+          <header class="da-topbar">
+            <span class="da-topbar-title">Demo Immobilien GmbH</span>
+            <div class="da-topbar-actions">
+              <button class="da-topbar-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </button>
+              <div class="da-topbar-user">
+                <div class="da-avatar da-avatar-sm">DM</div>
+                <span class="da-topbar-username">Demo Nutzer</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </header>
+
+          <!-- Pages -->
+          <main class="da-main">
+
+            <!-- ── Dashboard ───────────────────── -->
+            <div class="da-view is-active" id="da-v-dashboard">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Übersicht</h1>
+                  <p class="da-page-sub">Januar 2025 · Alle Objekte</p>
+                </div>
+                <button class="da-btn da-btn-sec">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Bericht exportieren
+                </button>
+              </div>
+
+              <!-- Colored KPI cards (like real app) -->
+              <div class="da-kpi-grid">
+                <div class="da-kpi-card da-kpi-blue">
+                  <div class="da-kpi-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div class="da-kpi-val">4</div>
+                  <div class="da-kpi-lbl">Objekte</div>
+                </div>
+                <div class="da-kpi-card da-kpi-green">
+                  <div class="da-kpi-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+                  </div>
+                  <div class="da-kpi-val">21</div>
+                  <div class="da-kpi-lbl">Einheiten</div>
+                </div>
+                <div class="da-kpi-card da-kpi-orange">
+                  <div class="da-kpi-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <div class="da-kpi-val">€ 1.430</div>
+                  <div class="da-kpi-lbl">Rückstände</div>
+                </div>
+                <div class="da-kpi-card da-kpi-red">
+                  <div class="da-kpi-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  </div>
+                  <div class="da-kpi-val">1</div>
+                  <div class="da-kpi-lbl">Tickets offen</div>
+                </div>
+              </div>
+
+              <!-- Second row: Revenue chart + Vermietungsquote -->
+              <div class="da-row-2">
+                <!-- Revenue chart -->
+                <div class="da-card da-card-chart" style="flex:2">
+                  <div class="da-card-hd">
+                    <span class="da-card-title">Mieteinnahmen</span>
+                    <span class="da-chip">Aug 24 – Jan 25</span>
+                  </div>
+                  <div class="da-chart-body">
+                    <div class="da-bar-chart">
+                      <div class="da-bar-col"><div class="da-bar" style="height:72%"></div><span class="da-bar-lbl">Aug</span></div>
+                      <div class="da-bar-col"><div class="da-bar" style="height:77%"></div><span class="da-bar-lbl">Sep</span></div>
+                      <div class="da-bar-col"><div class="da-bar" style="height:80%"></div><span class="da-bar-lbl">Okt</span></div>
+                      <div class="da-bar-col"><div class="da-bar" style="height:82%"></div><span class="da-bar-lbl">Nov</span></div>
+                      <div class="da-bar-col"><div class="da-bar" style="height:79%"></div><span class="da-bar-lbl">Dez</span></div>
+                      <div class="da-bar-col da-bar-active"><div class="da-bar" style="height:86%"></div><span class="da-bar-lbl da-bar-lbl-active">Jan</span></div>
+                    </div>
+                    <div class="da-chart-footer">
+                      <span class="da-chart-total">€ 12.450 <span class="da-chart-sub">/ Monat</span></span>
+                      <span class="da-chart-delta da-up-text">↑ +2,3 %</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vermietungsquote -->
+                <div class="da-card" style="flex:1">
+                  <div class="da-card-hd">
+                    <span class="da-card-title">Vermietungsquote</span>
+                  </div>
+                  <div class="da-quota-body">
+                    <div class="da-quota-circle">
+                      <svg viewBox="0 0 36 36" class="da-quota-svg">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#16a34a" stroke-width="3"
+                          stroke-dasharray="90.5 9.5" stroke-dashoffset="25" stroke-linecap="round"/>
+                      </svg>
+                      <div class="da-quota-pct">90,5<span>%</span></div>
+                    </div>
+                    <div class="da-quota-stats">
+                      <div class="da-quota-stat"><span class="da-dot da-dot-green"></span>19 vermietet</div>
+                      <div class="da-quota-stat"><span class="da-dot da-dot-gray"></span>2 leer</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Handlungsbedarf -->
+                <div class="da-card" style="flex:1">
+                  <div class="da-card-hd">
+                    <span class="da-card-title">Handlungsbedarf</span>
+                    <span class="da-chip da-chip-red">3</span>
+                  </div>
+                  <div class="da-action-list">
+                    <div class="da-action-item da-action-red">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      <span>Heizung defekt – Hauptstr. 12</span>
+                    </div>
+                    <div class="da-action-item da-action-orange">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <span>Mahnung fällig – T. Weber</span>
+                    </div>
+                    <div class="da-action-item da-action-orange">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <span>Überfällig – S. Klein (Dez 24)</span>
+                    </div>
+                    <div class="da-action-item da-action-gray">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/></svg>
+                      <span>2 Einheiten unvermietet</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Transactions -->
+              <div class="da-card">
+                <div class="da-card-hd">
+                  <span class="da-card-title">Letzte Zahlungen</span>
+                  <button class="da-link-btn" data-view="bank">Alle anzeigen →</button>
+                </div>
+                <table class="da-table">
+                  <thead><tr><th>Datum</th><th>Mieter</th><th>Verwendung</th><th>Betrag</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>15.01.25</td><td>Max Müller</td><td>Miete Januar 2025 · Hauptstr. 12</td><td class="da-td-num">€ 850</td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>15.01.25</td><td>Anna Schmidt</td><td>Miete Januar 2025 · Hauptstr. 12</td><td class="da-td-num">€ 920</td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>14.01.25</td><td>Lisa Braun</td><td>Miete Januar 2025 · Gartenweg 5</td><td class="da-td-num">€ 1.100</td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>02.01.25</td><td>Thomas Weber</td><td>Miete Januar 2025 · Gartenweg 5</td><td class="da-td-num">€ 750</td><td><span class="da-badge da-badge-orange">Ausstehend</span></td></tr>
+                    <tr><td>28.12.24</td><td>Sarah Klein</td><td>Miete Dezember 2024 · Gartenweg 5</td><td class="da-td-num">€ 680</td><td><span class="da-badge da-badge-red">Überfällig</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Objekte ──────────────────────── -->
+            <div class="da-view" id="da-v-objekte">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Objekte</h1>
+                  <p class="da-page-sub">4 Objekte · 21 Einheiten gesamt</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Objekt hinzufügen
+                </button>
+              </div>
+              <div class="da-obj-grid">
+                <div class="da-obj-card">
+                  <div class="da-obj-map">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div class="da-obj-info">
+                    <div class="da-obj-addr">Hauptstraße 12</div>
+                    <div class="da-obj-city">10115 Berlin</div>
+                    <div class="da-obj-meta">
+                      <span>4 Einheiten</span>
+                      <span class="da-badge da-badge-green">Vollvermietet</span>
+                    </div>
+                    <div class="da-obj-revenue">€ 3.650 <span>/ Mo.</span></div>
+                  </div>
+                </div>
+                <div class="da-obj-card">
+                  <div class="da-obj-map">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div class="da-obj-info">
+                    <div class="da-obj-addr">Gartenweg 5</div>
+                    <div class="da-obj-city">80331 München</div>
+                    <div class="da-obj-meta">
+                      <span>6 Einheiten</span>
+                      <span class="da-badge da-badge-orange">1 Leerstand</span>
+                    </div>
+                    <div class="da-obj-revenue">€ 4.260 <span>/ Mo.</span></div>
+                  </div>
+                </div>
+                <div class="da-obj-card">
+                  <div class="da-obj-map">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div class="da-obj-info">
+                    <div class="da-obj-addr">Berliner Allee 33</div>
+                    <div class="da-obj-city">20099 Hamburg</div>
+                    <div class="da-obj-meta">
+                      <span>8 Einheiten</span>
+                      <span class="da-badge da-badge-green">Vollvermietet</span>
+                    </div>
+                    <div class="da-obj-revenue">€ 3.540 <span>/ Mo.</span></div>
+                  </div>
+                </div>
+                <div class="da-obj-card">
+                  <div class="da-obj-map">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  </div>
+                  <div class="da-obj-info">
+                    <div class="da-obj-addr">Rosenweg 7</div>
+                    <div class="da-obj-city">60313 Frankfurt</div>
+                    <div class="da-obj-meta">
+                      <span>3 Einheiten</span>
+                      <span class="da-badge da-badge-orange">1 Leerstand</span>
+                    </div>
+                    <div class="da-obj-revenue">€ 1.000 <span>/ Mo.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Einheiten ────────────────────── -->
+            <div class="da-view" id="da-v-einheiten">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Einheiten</h1>
+                  <p class="da-page-sub">21 Einheiten · 19 vermietet · 2 leer</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Einheit hinzufügen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Einheit</th><th>Objekt</th><th>Typ</th><th>Größe</th><th>Miete</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>EG links</strong></td><td class="da-muted">Hauptstr. 12</td><td>Wohnung</td><td>72 m²</td><td>€ 850</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>EG rechts</strong></td><td class="da-muted">Hauptstr. 12</td><td>Wohnung</td><td>68 m²</td><td>€ 820</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>1. OG rechts</strong></td><td class="da-muted">Hauptstr. 12</td><td>Wohnung</td><td>78 m²</td><td>€ 920</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>2. OG links</strong></td><td class="da-muted">Hauptstr. 12</td><td>Wohnung</td><td>74 m²</td><td>€ 880</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>EG</strong></td><td class="da-muted">Gartenweg 5</td><td>Wohnung</td><td>65 m²</td><td>€ 750</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>1. OG</strong></td><td class="da-muted">Gartenweg 5</td><td>Wohnung</td><td>88 m²</td><td>€ 1.100</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>2. OG</strong></td><td class="da-muted">Gartenweg 5</td><td>Wohnung</td><td>55 m²</td><td>–</td><td><span class="da-badge da-badge-gray">Leer</span></td></tr>
+                    <tr><td><strong>3. OG</strong></td><td class="da-muted">Gartenweg 5</td><td>Wohnung</td><td>58 m²</td><td>€ 680</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>EG</strong></td><td class="da-muted">Berliner Allee 33</td><td>Gewerbe</td><td>95 m²</td><td>€ 890</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>1. OG</strong></td><td class="da-muted">Berliner Allee 33</td><td>Wohnung</td><td>82 m²</td><td>€ 980</td><td><span class="da-badge da-badge-green">Vermietet</span></td></tr>
+                    <tr><td><strong>Rosenweg 7 · EG</strong></td><td class="da-muted">Rosenweg 7</td><td>Wohnung</td><td>70 m²</td><td>–</td><td><span class="da-badge da-badge-gray">Leer</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Mieter ───────────────────────── -->
+            <div class="da-view" id="da-v-mieter">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Mieter</h1>
+                  <p class="da-page-sub">19 aktive Mietverhältnisse</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Mieter hinzufügen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Name</th><th>Einheit</th><th>Kaltmiete</th><th>Vertrag seit</th><th>Vertrag bis</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Max Müller</strong></td><td class="da-muted">Hauptstr. 12 · EG li.</td><td>€ 850</td><td>01.03.2022</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Anna Schmidt</strong></td><td class="da-muted">Hauptstr. 12 · 1. OG re.</td><td>€ 920</td><td>15.07.2021</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Petra Bauer</strong></td><td class="da-muted">Hauptstr. 12 · 2. OG li.</td><td>€ 880</td><td>01.09.2023</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Thomas Weber</strong></td><td class="da-muted">Gartenweg 5 · EG</td><td>€ 750</td><td>01.06.2020</td><td>unbefristet</td><td><span class="da-badge da-badge-red">Mahnung</span></td></tr>
+                    <tr><td><strong>Lisa Braun</strong></td><td class="da-muted">Gartenweg 5 · 1. OG</td><td>€ 1.100</td><td>01.11.2022</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Sarah Klein</strong></td><td class="da-muted">Gartenweg 5 · 3. OG</td><td>€ 680</td><td>15.02.2023</td><td>unbefristet</td><td><span class="da-badge da-badge-red">Mahnung</span></td></tr>
+                    <tr><td><strong>Klaus Fischer</strong></td><td class="da-muted">Berliner Allee 33 · EG</td><td>€ 890</td><td>01.04.2021</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Monika Schulz</strong></td><td class="da-muted">Berliner Allee 33 · 1. OG</td><td>€ 980</td><td>01.08.2022</td><td>unbefristet</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Verträge ─────────────────────── -->
+            <div class="da-view" id="da-v-vertraege">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Verträge</h1>
+                  <p class="da-page-sub">19 aktive Mietverträge</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Vertrag hinzufügen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Mieter</th><th>Einheit</th><th>Kaltmiete</th><th>NK-Vorauszahlung</th><th>Beginn</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Max Müller</strong></td><td class="da-muted">Hauptstr. 12 · EG li.</td><td>€ 850</td><td>€ 200</td><td>01.03.2022</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Anna Schmidt</strong></td><td class="da-muted">Hauptstr. 12 · 1. OG re.</td><td>€ 920</td><td>€ 210</td><td>15.07.2021</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Thomas Weber</strong></td><td class="da-muted">Gartenweg 5 · EG</td><td>€ 750</td><td>€ 180</td><td>01.06.2020</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Lisa Braun</strong></td><td class="da-muted">Gartenweg 5 · 1. OG</td><td>€ 1.100</td><td>€ 240</td><td>01.11.2022</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                    <tr><td><strong>Klaus Fischer</strong></td><td class="da-muted">Berliner Allee 33 · EG</td><td>€ 890</td><td>€ 195</td><td>01.04.2021</td><td><span class="da-badge da-badge-green">Aktiv</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Sollstellungen ──────────────── -->
+            <div class="da-view" id="da-v-sollstellungen">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Sollstellungen</h1>
+                  <p class="da-page-sub">Januar 2025 · 19 Mieter</p>
+                </div>
+                <button class="da-btn da-btn-sec">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Exportieren
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Mieter</th><th>Einheit</th><th>Kaltmiete</th><th>Nebenkosten</th><th>Gesamt</th><th>Eingegangen</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Max Müller</strong></td><td class="da-muted">Hauptstr. 12 · EG li.</td><td>€ 850</td><td>€ 200</td><td>€ 1.050</td><td>€ 1.050</td><td><span class="da-badge da-badge-green">Vollständig</span></td></tr>
+                    <tr><td><strong>Anna Schmidt</strong></td><td class="da-muted">Hauptstr. 12 · 1. OG</td><td>€ 920</td><td>€ 210</td><td>€ 1.130</td><td>€ 1.130</td><td><span class="da-badge da-badge-green">Vollständig</span></td></tr>
+                    <tr><td><strong>Thomas Weber</strong></td><td class="da-muted">Gartenweg 5 · EG</td><td>€ 750</td><td>€ 180</td><td>€ 930</td><td>€ 0</td><td><span class="da-badge da-badge-red">Offen</span></td></tr>
+                    <tr><td><strong>Lisa Braun</strong></td><td class="da-muted">Gartenweg 5 · 1. OG</td><td>€ 1.100</td><td>€ 240</td><td>€ 1.340</td><td>€ 1.340</td><td><span class="da-badge da-badge-green">Vollständig</span></td></tr>
+                    <tr><td><strong>Sarah Klein</strong></td><td class="da-muted">Gartenweg 5 · 3. OG</td><td>€ 680</td><td>€ 150</td><td>€ 830</td><td>€ 0</td><td><span class="da-badge da-badge-red">Offen</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Bank ────────────────────────── -->
+            <div class="da-view" id="da-v-bank">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Bank</h1>
+                  <p class="da-page-sub">CSV-Kontoauszug · Auto-Matching</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+                  CSV importieren
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Datum</th><th>Beschreibung</th><th>Mieter</th><th>Betrag</th><th>Matching</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr><td>15.01.25</td><td>Miete Jan 25 Hauptstr 12</td><td>Max Müller</td><td class="da-td-num da-green-text">+ € 850</td><td><span class="da-badge da-badge-green">Auto</span></td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>15.01.25</td><td>Miete Jan 2025</td><td>Anna Schmidt</td><td class="da-td-num da-green-text">+ € 920</td><td><span class="da-badge da-badge-green">Auto</span></td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>14.01.25</td><td>Miete 01/25 Gartenweg</td><td>Lisa Braun</td><td class="da-td-num da-green-text">+ € 1.100</td><td><span class="da-badge da-badge-green">Auto</span></td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>12.01.25</td><td>Hausgeld Jan</td><td>Petra Bauer</td><td class="da-td-num da-green-text">+ € 880</td><td><span class="da-badge da-badge-blue">Manuell</span></td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>10.01.25</td><td>Handwerker Rechnung</td><td>–</td><td class="da-td-num da-red-text">− € 420</td><td><span class="da-badge da-badge-gray">Kosten</span></td><td><span class="da-badge da-badge-green">Gebucht</span></td></tr>
+                    <tr><td>02.01.25</td><td>Gartenweg 5 Miete</td><td>Thomas Weber</td><td class="da-td-num">€ 750</td><td><span class="da-badge da-badge-gray">–</span></td><td><span class="da-badge da-badge-orange">Ausstehend</span></td></tr>
+                    <tr><td>28.12.24</td><td>Dez 24 Miete</td><td>Sarah Klein</td><td class="da-td-num">€ 680</td><td><span class="da-badge da-badge-gray">–</span></td><td><span class="da-badge da-badge-red">Überfällig</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Mahnungen ───────────────────── -->
+            <div class="da-view" id="da-v-mahnungen">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Mahnungen</h1>
+                  <p class="da-page-sub">2 offene Mahnvorgänge</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Mahnung erstellen
+                </button>
+              </div>
+              <div class="da-alert-banner">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>2 Zahlungen sind überfällig. Mahnbriefe können direkt erstellt und als PDF exportiert werden.</span>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Mieter</th><th>Einheit</th><th>Betrag</th><th>Fällig seit</th><th>Mahnstufe</th><th>Aktion</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Thomas Weber</strong></td>
+                      <td class="da-muted">Gartenweg 5 · EG</td>
+                      <td>€ 750</td>
+                      <td>01.01.2025</td>
+                      <td><span class="da-badge da-badge-orange">1. Mahnung</span></td>
+                      <td>
+                        <button class="da-tbl-btn">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          PDF
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sarah Klein</strong></td>
+                      <td class="da-muted">Gartenweg 5 · 3. OG</td>
+                      <td>€ 680</td>
+                      <td>15.12.2024</td>
+                      <td><span class="da-badge da-badge-red">2. Mahnung</span></td>
+                      <td>
+                        <button class="da-tbl-btn">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          PDF
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Tickets ──────────────────────── -->
+            <div class="da-view" id="da-v-tickets">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Tickets</h1>
+                  <p class="da-page-sub">1 offen · 1 in Bearbeitung</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Ticket erstellen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>#</th><th>Betreff</th><th>Mieter</th><th>Objekt</th><th>Priorität</th><th>Status</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td class="da-id-cell">#7</td>
+                      <td><div><strong>Heizung defekt</strong></div><div class="da-muted" style="font-size:0.75rem">Gemeldet: 14.01.25</div></td>
+                      <td>Max Müller</td>
+                      <td class="da-muted">Hauptstr. 12 · EG li.</td>
+                      <td><span class="da-badge da-badge-red">Hoch</span></td>
+                      <td><span class="da-badge da-badge-orange">Offen</span></td>
+                    </tr>
+                    <tr>
+                      <td class="da-id-cell">#6</td>
+                      <td><div><strong>Türschloss klemmt</strong></div><div class="da-muted" style="font-size:0.75rem">Gemeldet: 10.01.25</div></td>
+                      <td>Lisa Braun</td>
+                      <td class="da-muted">Gartenweg 5 · 1. OG</td>
+                      <td><span class="da-badge da-badge-blue">Mittel</span></td>
+                      <td><span class="da-badge da-badge-blue">In Bearbeitung</span></td>
+                    </tr>
+                    <tr>
+                      <td class="da-id-cell">#5</td>
+                      <td><div><strong>Wasserhahn tropft</strong></div><div class="da-muted" style="font-size:0.75rem">Gemeldet: 28.12.24</div></td>
+                      <td>Thomas Weber</td>
+                      <td class="da-muted">Gartenweg 5 · EG</td>
+                      <td><span class="da-badge da-badge-gray">Niedrig</span></td>
+                      <td><span class="da-badge da-badge-green">Erledigt</span></td>
+                    </tr>
+                    <tr>
+                      <td class="da-id-cell">#4</td>
+                      <td><div><strong>Fenster undicht</strong></div><div class="da-muted" style="font-size:0.75rem">Gemeldet: 12.12.24</div></td>
+                      <td>Anna Schmidt</td>
+                      <td class="da-muted">Hauptstr. 12 · 1. OG</td>
+                      <td><span class="da-badge da-badge-blue">Mittel</span></td>
+                      <td><span class="da-badge da-badge-green">Erledigt</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Kosten ───────────────────────── -->
+            <div class="da-view" id="da-v-kosten">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Kosten</h1>
+                  <p class="da-page-sub">Betriebskosten & Reparaturen</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Kosten erfassen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Datum</th><th>Kategorie</th><th>Beschreibung</th><th>Objekt</th><th>Betrag</th></tr></thead>
+                  <tbody>
+                    <tr><td>10.01.25</td><td>Reparatur</td><td>Heizung Wartung</td><td class="da-muted">Hauptstr. 12</td><td class="da-td-num">€ 420</td></tr>
+                    <tr><td>05.01.25</td><td>Verwaltung</td><td>Hausmeisterservice</td><td class="da-muted">Gartenweg 5</td><td class="da-td-num">€ 250</td></tr>
+                    <tr><td>02.01.25</td><td>Versicherung</td><td>Gebäudeversicherung Q1</td><td class="da-muted">Alle</td><td class="da-td-num">€ 1.200</td></tr>
+                    <tr><td>28.12.24</td><td>Reparatur</td><td>Türschloss Austausch</td><td class="da-muted">Berliner Allee 33</td><td class="da-td-num">€ 185</td></tr>
+                    <tr><td>15.12.24</td><td>Sonstiges</td><td>Müllentsorgung</td><td class="da-muted">Rosenweg 7</td><td class="da-td-num">€ 80</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Zähler ───────────────────────── -->
+            <div class="da-view" id="da-v-zaehler">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Zähler</h1>
+                  <p class="da-page-sub">Strom, Wasser, Gas · 21 Zähler</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Ablesung erfassen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Zähler-Nr.</th><th>Typ</th><th>Einheit</th><th>Letzter Stand</th><th>Datum</th><th>Verbrauch</th></tr></thead>
+                  <tbody>
+                    <tr><td class="da-id-cell">Z-2401</td><td>Strom</td><td class="da-muted">Hauptstr. 12 · EG li.</td><td>12.450 kWh</td><td>01.01.25</td><td>340 kWh</td></tr>
+                    <tr><td class="da-id-cell">Z-2402</td><td>Wasser</td><td class="da-muted">Hauptstr. 12 · EG li.</td><td>245 m³</td><td>01.01.25</td><td>12 m³</td></tr>
+                    <tr><td class="da-id-cell">Z-2403</td><td>Gas</td><td class="da-muted">Gartenweg 5 · EG</td><td>3.820 m³</td><td>01.01.25</td><td>88 m³</td></tr>
+                    <tr><td class="da-id-cell">Z-2404</td><td>Strom</td><td class="da-muted">Berliner Allee 33 · EG</td><td>8.100 kWh</td><td>01.01.25</td><td>210 kWh</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Kredite ──────────────────────── -->
+            <div class="da-view" id="da-v-kredite">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Kredite</h1>
+                  <p class="da-page-sub">Finanzierungen & Darlehen</p>
+                </div>
+                <button class="da-btn da-btn-pri">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Kredit hinzufügen
+                </button>
+              </div>
+              <div class="da-card">
+                <table class="da-table">
+                  <thead><tr><th>Bank</th><th>Objekt</th><th>Darlehensbetrag</th><th>Restschuld</th><th>Rate / Mo.</th><th>Zinssatz</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Deutsche Bank</strong></td><td class="da-muted">Hauptstr. 12</td><td>€ 280.000</td><td>€ 210.450</td><td>€ 1.180</td><td>2,15 %</td></tr>
+                    <tr><td><strong>Sparkasse</strong></td><td class="da-muted">Gartenweg 5</td><td>€ 350.000</td><td>€ 298.200</td><td>€ 1.490</td><td>2,45 %</td></tr>
+                    <tr><td><strong>Volksbank</strong></td><td class="da-muted">Berliner Allee 33</td><td>€ 420.000</td><td>€ 385.100</td><td>€ 1.750</td><td>1,98 %</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Reporting ────────────────────── -->
+            <div class="da-view" id="da-v-reporting">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Reporting</h1>
+                  <p class="da-page-sub">Geschäftsjahr 2024</p>
+                </div>
+                <button class="da-btn da-btn-sec">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Bericht exportieren
+                </button>
+              </div>
+              <div class="da-kpi-grid da-kpi-grid-3">
+                <div class="da-report-kpi">
+                  <div class="da-report-kpi-lbl">Mieteinnahmen 2024</div>
+                  <div class="da-report-kpi-val">€ 148.740</div>
+                  <div class="da-up-text" style="font-size:0.75rem">↑ +4,2 % ggü. Vorjahr</div>
+                </div>
+                <div class="da-report-kpi">
+                  <div class="da-report-kpi-lbl">Betriebskosten 2024</div>
+                  <div class="da-report-kpi-val">€ 24.380</div>
+                  <div class="da-muted" style="font-size:0.75rem">16,4 % der Einnahmen</div>
+                </div>
+                <div class="da-report-kpi">
+                  <div class="da-report-kpi-lbl">Nettorendite</div>
+                  <div class="da-report-kpi-val">4,8 %</div>
+                  <div class="da-up-text" style="font-size:0.75rem">↑ +0,3 % ggü. Vorjahr</div>
+                </div>
+              </div>
+              <div class="da-card da-card-chart">
+                <div class="da-card-hd">
+                  <span class="da-card-title">Einnahmen vs. Ausgaben 2024</span>
+                  <span class="da-chip">Monatlich</span>
+                </div>
+                <div class="da-chart-body">
+                  <div class="da-bar-chart da-bar-chart-duo">
+                    <div class="da-bar-col"><div class="da-bar" style="height:75%"></div><div class="da-bar da-bar-cost" style="height:18%"></div><span class="da-bar-lbl">Jan</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:75%"></div><div class="da-bar da-bar-cost" style="height:14%"></div><span class="da-bar-lbl">Feb</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:77%"></div><div class="da-bar da-bar-cost" style="height:16%"></div><span class="da-bar-lbl">Mär</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:78%"></div><div class="da-bar da-bar-cost" style="height:20%"></div><span class="da-bar-lbl">Apr</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:80%"></div><div class="da-bar da-bar-cost" style="height:15%"></div><span class="da-bar-lbl">Mai</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:79%"></div><div class="da-bar da-bar-cost" style="height:17%"></div><span class="da-bar-lbl">Jun</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:81%"></div><div class="da-bar da-bar-cost" style="height:13%"></div><span class="da-bar-lbl">Jul</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:80%"></div><div class="da-bar da-bar-cost" style="height:19%"></div><span class="da-bar-lbl">Aug</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:82%"></div><div class="da-bar da-bar-cost" style="height:14%"></div><span class="da-bar-lbl">Sep</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:83%"></div><div class="da-bar da-bar-cost" style="height:16%"></div><span class="da-bar-lbl">Okt</span></div>
+                    <div class="da-bar-col"><div class="da-bar" style="height:82%"></div><div class="da-bar da-bar-cost" style="height:18%"></div><span class="da-bar-lbl">Nov</span></div>
+                    <div class="da-bar-col da-bar-active"><div class="da-bar" style="height:84%"></div><div class="da-bar da-bar-cost" style="height:15%"></div><span class="da-bar-lbl da-bar-lbl-active">Dez</span></div>
+                  </div>
+                  <div class="da-legend">
+                    <span class="da-legend-item"><span class="da-legend-dot" style="background:#0066ff"></span>Einnahmen</span>
+                    <span class="da-legend-item"><span class="da-legend-dot" style="background:#ef4444"></span>Ausgaben</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Einstellungen ────────────────── -->
+            <div class="da-view" id="da-v-einstellungen">
+              <div class="da-page-hd">
+                <div>
+                  <h1 class="da-page-title">Einstellungen</h1>
+                  <p class="da-page-sub">Konto & Verwaltungseinstellungen</p>
+                </div>
+              </div>
+              <div class="da-settings-grid">
+                <div class="da-card da-settings-card">
+                  <div class="da-settings-card-title">Profil</div>
+                  <div class="da-form-row">
+                    <label class="da-label">Name</label>
+                    <div class="da-input-fake">Demo Nutzer</div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">E-Mail</label>
+                    <div class="da-input-fake">admin@demo.de</div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">Rolle</label>
+                    <div class="da-input-fake">Administrator</div>
+                  </div>
+                </div>
+                <div class="da-card da-settings-card">
+                  <div class="da-settings-card-title">Unternehmen</div>
+                  <div class="da-form-row">
+                    <label class="da-label">Firmenname</label>
+                    <div class="da-input-fake">Demo Immobilien GmbH</div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">Adresse</label>
+                    <div class="da-input-fake">Musterstraße 1, 10115 Berlin</div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">USt-IdNr.</label>
+                    <div class="da-input-fake">DE 123 456 789</div>
+                  </div>
+                </div>
+                <div class="da-card da-settings-card">
+                  <div class="da-settings-card-title">Plan & Abrechnung</div>
+                  <div class="da-form-row">
+                    <label class="da-label">Aktueller Plan</label>
+                    <div class="da-input-fake" style="display:flex;align-items:center;gap:0.5rem">Enterprise <span class="da-badge da-badge-blue" style="font-size:0.7rem">Aktiv</span></div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">Objekte</label>
+                    <div class="da-input-fake">4 / unbegrenzt</div>
+                  </div>
+                  <div class="da-form-row">
+                    <label class="da-label">Nächste Rechnung</label>
+                    <div class="da-input-fake">01.02.2025</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </main>
+        </div><!-- /da-right -->
+      </div><!-- /da-app -->
+    </div><!-- /demo-modal-body -->
   </div>
 </div>
 
 <style is:global>
-  body.demo-open {
-    overflow: hidden;
-    scrollbar-width: none;
-  }
-  body.demo-open::-webkit-scrollbar {
-    display: none;
-  }
+  body.demo-open { overflow: hidden; scrollbar-width: none; }
+  body.demo-open::-webkit-scrollbar { display: none; }
 
+  /* ── Modal shell ────────────────────────────────── */
   .demo-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.72);
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.72);
     backdrop-filter: blur(6px);
     z-index: 9000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     padding: 1.5rem;
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0; pointer-events: none;
     transition: opacity 0.28s ease;
   }
-
-  .demo-modal-backdrop.is-open {
-    opacity: 1;
-    pointer-events: all;
-  }
+  .demo-modal-backdrop.is-open { opacity: 1; pointer-events: all; }
 
   .demo-modal-panel {
     background: #111218;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 16px;
-    width: 100%;
-    max-width: 1400px;
-    height: 94vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    width: 100%; max-width: 1400px; height: 94vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
     transform: scale(0.95);
     transition: transform 0.28s ease;
   }
+  .demo-modal-backdrop.is-open .demo-modal-panel { transform: scale(1); }
 
-  .demo-modal-backdrop.is-open .demo-modal-panel {
-    transform: scale(1);
-  }
-
-  /* Header */
   .demo-modal-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0 1.25rem;
-    height: 52px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    background: #0f1015;
-    flex-shrink: 0;
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0 1.25rem; height: 52px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: #0f1015; flex-shrink: 0;
   }
-
   .demo-modal-title {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    color: #e5e7eb;
-    font-size: 0.9375rem;
+    display: flex; align-items: center; gap: 0.625rem;
+    color: #e5e7eb; font-size: 0.9375rem;
   }
-
-  .demo-modal-title strong {
-    color: #fff;
-  }
-
+  .demo-modal-title strong { color: #fff; }
   .demo-badge {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: #4da6ff;
-    background: rgba(0, 102, 255, 0.12);
-    border: 1px solid rgba(0, 102, 255, 0.25);
-    padding: 0.2rem 0.625rem;
-    border-radius: 100px;
-    margin-left: auto;
+    font-size: 0.8125rem; font-weight: 500;
+    color: #4da6ff; background: rgba(0,102,255,0.12);
+    border: 1px solid rgba(0,102,255,0.25);
+    padding: 0.2rem 0.625rem; border-radius: 100px; margin-left: auto;
   }
-
   .demo-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #9ca3af;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    color: #9ca3af; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .demo-close-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+  .demo-modal-body { flex: 1; overflow: hidden; position: relative; }
+
+  /* ── App layout ─────────────────────────────────── */
+  .da-app {
+    display: flex; height: 100%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px; color: #111827;
+    background: #f9fafb;
   }
 
-  .demo-close-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-  }
-
-  /* Body */
-  .demo-modal-body {
-    flex: 1;
-    position: relative;
+  /* ── Sidebar ─────────────────────────────────────── */
+  .da-sidebar {
+    width: 240px; flex-shrink: 0;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    display: flex; flex-direction: column;
     overflow: hidden;
   }
+  .da-brand {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    flex-shrink: 0;
+  }
+  .da-brand-name { font-size: 1.0625rem; font-weight: 700; color: #111827; letter-spacing: -0.025em; }
+  .da-brand-accent { color: #0066ff; }
 
-  .demo-loader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    background: #111218;
-    color: #6b7280;
-    font-size: 0.9375rem;
-    z-index: 1;
-    transition: opacity 0.3s ease;
+  .da-tenant-selector {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.75rem; margin: 0.5rem 0.5rem 0;
+    border-radius: 8px; background: #f9fafb;
+    border: 1px solid #e5e7eb; color: #374151;
+    font-size: 0.8125rem; font-weight: 500; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .da-tenant-selector svg:first-child { color: #0066ff; flex-shrink: 0; }
+
+  .da-nav {
+    flex: 1; padding: 0.375rem 0.5rem;
+    display: flex; flex-direction: column; gap: 1px;
+    overflow-y: auto;
+  }
+  .da-nav::-webkit-scrollbar { width: 4px; }
+  .da-nav::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
+
+  .da-nav-btn {
+    display: flex; align-items: center; gap: 0.625rem;
+    padding: 0.5rem 0.75rem; border-radius: 7px;
+    border: none; background: none;
+    color: #6b7280; font-size: 0.8125rem; font-weight: 500;
+    cursor: pointer; text-align: left; width: 100%;
+    font-family: inherit;
+    transition: background 0.1s, color 0.1s;
+    position: relative;
+  }
+  .da-nav-btn:hover { background: #f3f4f6; color: #374151; }
+  .da-nav-btn.is-active { background: #eff6ff; color: #1d4ed8; }
+  .da-nav-btn svg { flex-shrink: 0; }
+
+  .da-nav-badge {
+    margin-left: auto;
+    background: #fef2f2; color: #dc2626;
+    font-size: 0.6875rem; font-weight: 700;
+    padding: 0.1rem 0.4rem; border-radius: 100px;
+  }
+  .da-nav-btn.is-active .da-nav-badge { background: #dbeafe; color: #1d4ed8; }
+
+  .da-nav-sep {
+    height: 1px; background: #f3f4f6;
+    margin: 0.375rem 0.75rem;
   }
 
-  .demo-loader.hidden {
-    opacity: 0;
-    pointer-events: none;
+  .da-sidebar-user {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 0.625rem;
+    flex-shrink: 0;
   }
-
-  .demo-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255, 255, 255, 0.08);
-    border-top-color: #0066ff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  .da-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #0066ff; color: #fff;
+    font-size: 0.6875rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
+  .da-avatar-sm { width: 28px; height: 28px; font-size: 0.625rem; }
+  .da-user-name { font-size: 0.8125rem; font-weight: 600; color: #111827; }
+  .da-user-meta { }
+  .da-user-role { font-size: 0.6875rem; color: #9ca3af; margin-top: 1px; }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
+  /* ── Right side ──────────────────────────────────── */
+  .da-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Topbar ─────────────────────────────────────── */
+  .da-topbar {
+    height: 56px; flex-shrink: 0;
+    background: #ffffff; border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; gap: 1rem;
   }
+  .da-topbar-title { font-size: 0.875rem; font-weight: 600; color: #374151; }
+  .da-topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+  .da-topbar-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 8px;
+    border: 1px solid #e5e7eb; background: #fff;
+    color: #6b7280; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .da-topbar-btn:hover { background: #f3f4f6; }
+  .da-topbar-user {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.375rem 0.625rem; border-radius: 8px;
+    border: 1px solid #e5e7eb; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .da-topbar-user:hover { background: #f9fafb; }
+  .da-topbar-username { font-size: 0.8125rem; font-weight: 500; color: #374151; }
 
-  .demo-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
+  /* ── Main content area ───────────────────────────── */
+  .da-main { flex: 1; overflow: hidden; position: relative; background: #f9fafb; }
+
+  .da-view {
+    display: none; height: 100%; overflow-y: auto;
+    padding: 1.5rem 1.75rem;
+  }
+  .da-view.is-active { display: block; }
+  .da-view::-webkit-scrollbar { width: 5px; }
+  .da-view::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+  /* ── Page header ─────────────────────────────────── */
+  .da-page-hd {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 1.25rem; gap: 1rem;
+  }
+  .da-page-title { font-size: 1.25rem; font-weight: 700; color: #111827; letter-spacing: -0.025em; }
+  .da-page-sub { font-size: 0.8125rem; color: #9ca3af; margin-top: 0.2rem; }
+
+  /* ── Buttons ─────────────────────────────────────── */
+  .da-btn {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.5rem 1rem; border-radius: 8px; border: none;
+    font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+    font-family: inherit; white-space: nowrap; flex-shrink: 0;
+    transition: opacity 0.12s;
+  }
+  .da-btn:hover { opacity: 0.85; }
+  .da-btn-pri { background: #0066ff; color: #fff; }
+  .da-btn-sec { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+
+  .da-link-btn {
+    font-size: 0.8125rem; color: #0066ff; background: none; border: none;
+    cursor: pointer; font-family: inherit; font-weight: 500;
+  }
+  .da-link-btn:hover { text-decoration: underline; }
+
+  /* ── Dashboard KPI cards (colored) ──────────────── */
+  .da-kpi-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem; margin-bottom: 0.875rem;
+  }
+  .da-kpi-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .da-kpi-card {
+    border-radius: 10px; padding: 1rem 1.125rem;
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .da-kpi-blue  { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+  .da-kpi-green { background: linear-gradient(135deg, #15803d, #22c55e); }
+  .da-kpi-orange{ background: linear-gradient(135deg, #c2410c, #f97316); }
+  .da-kpi-red   { background: linear-gradient(135deg, #b91c1c, #ef4444); }
+  .da-kpi-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.2); margin-bottom: 0.75rem;
+  }
+  .da-kpi-val { font-size: 1.625rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.25rem; }
+  .da-kpi-lbl { font-size: 0.8125rem; opacity: 0.85; font-weight: 500; }
+
+  /* ── Row-2 (chart + quota + actions) ────────────── */
+  .da-row-2 {
+    display: flex; gap: 0.75rem; margin-bottom: 0.875rem;
+    align-items: stretch;
+  }
+  .da-row-2 > * { min-width: 0; }
+
+  /* ── Card ───────────────────────────────────────── */
+  .da-card {
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 10px; overflow: hidden; margin-bottom: 0.875rem;
+  }
+  .da-card:last-child { margin-bottom: 0; }
+  .da-card-chart { padding: 0; }
+  .da-card-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.875rem 1.125rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .da-card-title { font-size: 0.875rem; font-weight: 600; color: #111827; }
+  .da-chip {
+    font-size: 0.6875rem; color: #6b7280;
+    background: #f3f4f6; padding: 0.2rem 0.5rem; border-radius: 6px;
+  }
+  .da-chip-red { background: #fef2f2; color: #dc2626; }
+
+  /* ── Bar chart ──────────────────────────────────── */
+  .da-chart-body { padding: 1rem 1.125rem 0.875rem; }
+  .da-bar-chart {
+    display: flex; align-items: flex-end; gap: 0.375rem;
+    height: 80px;
+  }
+  .da-bar-chart-duo { gap: 0.25rem; }
+  .da-bar-col {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 0.375rem; height: 100%;
+  }
+  .da-bar {
+    width: 100%; border-radius: 3px 3px 0 0;
+    background: #dbeafe; align-self: flex-end;
+    transition: background 0.12s;
+  }
+  .da-bar-cost { background: #fee2e2; }
+  .da-bar-col:hover .da-bar { background: #bfdbfe; }
+  .da-bar-col.da-bar-active .da-bar { background: #0066ff; }
+  .da-bar-lbl { font-size: 0.625rem; color: #9ca3af; white-space: nowrap; }
+  .da-bar-lbl-active { color: #0066ff; font-weight: 600; }
+  .da-chart-footer {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-top: 0.625rem;
+  }
+  .da-chart-total { font-size: 1.125rem; font-weight: 700; color: #111827; }
+  .da-chart-sub { font-size: 0.8125rem; font-weight: 400; color: #9ca3af; margin-left: 0.25rem; }
+  .da-chart-delta { font-size: 0.8125rem; font-weight: 600; }
+  .da-up-text { color: #16a34a; }
+  .da-red-text { color: #dc2626; }
+  .da-green-text { color: #16a34a; }
+
+  .da-legend { display: flex; gap: 1rem; margin-top: 0.625rem; }
+  .da-legend-item { display: flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: #6b7280; }
+  .da-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Vermietungsquote ────────────────────────────── */
+  .da-quota-body {
+    padding: 1rem 1.125rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  }
+  .da-quota-circle { position: relative; width: 80px; height: 80px; }
+  .da-quota-svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+  .da-quota-pct {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 700; color: #111827;
+  }
+  .da-quota-pct span { font-size: 0.6875rem; font-weight: 500; color: #6b7280; }
+  .da-quota-stats { display: flex; flex-direction: column; gap: 0.375rem; width: 100%; }
+  .da-quota-stat { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: #374151; }
+  .da-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .da-dot-green { background: #16a34a; }
+  .da-dot-gray  { background: #d1d5db; }
+
+  /* ── Action list ─────────────────────────────────── */
+  .da-action-list { padding: 0.625rem 1.125rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .da-action-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.8125rem; padding: 0.375rem 0.5rem; border-radius: 6px;
+  }
+  .da-action-item svg { flex-shrink: 0; }
+  .da-action-red  { color: #dc2626; background: #fef2f2; }
+  .da-action-orange { color: #ea580c; background: #fff7ed; }
+  .da-action-gray { color: #6b7280; background: #f9fafb; }
+
+  /* ── Table ───────────────────────────────────────── */
+  .da-table { width: 100%; border-collapse: collapse; }
+  .da-table th {
+    text-align: left; font-size: 0.6875rem; font-weight: 600;
+    color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.625rem 1.125rem;
+    background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  .da-table td {
+    padding: 0.6875rem 1.125rem;
+    font-size: 0.8125rem; color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    white-space: nowrap;
+  }
+  .da-table tr:last-child td { border-bottom: none; }
+  .da-table tbody tr:hover td { background: #f9fafb; }
+  .da-table td strong { color: #111827; font-weight: 500; }
+  .da-muted { color: #9ca3af !important; }
+  .da-td-num { font-variant-numeric: tabular-nums; }
+  .da-id-cell { color: #9ca3af; font-size: 0.75rem; font-weight: 600; }
+
+  /* ── Badges ──────────────────────────────────────── */
+  .da-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.175rem 0.5rem; border-radius: 100px;
+    font-size: 0.6875rem; font-weight: 600; white-space: nowrap;
+  }
+  .da-badge-green  { background: #dcfce7; color: #15803d; }
+  .da-badge-red    { background: #fee2e2; color: #dc2626; }
+  .da-badge-orange { background: #ffedd5; color: #c2410c; }
+  .da-badge-blue   { background: #dbeafe; color: #1d4ed8; }
+  .da-badge-gray   { background: #f3f4f6; color: #6b7280; }
+
+  /* ── Alert banner ────────────────────────────────── */
+  .da-alert-banner {
+    display: flex; align-items: center; gap: 0.625rem;
+    background: #fff7ed; border: 1px solid #fed7aa;
+    border-radius: 8px; padding: 0.75rem 1rem;
+    font-size: 0.8125rem; color: #c2410c; margin-bottom: 0.875rem;
+  }
+  .da-alert-banner svg { flex-shrink: 0; }
+
+  /* ── Table action button ─────────────────────────── */
+  .da-tbl-btn {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.3rem 0.625rem; border-radius: 6px;
+    border: 1px solid #e5e7eb; background: #fff;
+    color: #374151; font-size: 0.75rem; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.1s;
+  }
+  .da-tbl-btn:hover { background: #f3f4f6; }
+
+  /* ── Objekte cards ────────────────────────────────── */
+  .da-obj-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem; margin-bottom: 0.875rem;
+  }
+  .da-obj-card {
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .da-obj-map {
+    background: #f9fafb; border-bottom: 1px solid #f3f4f6;
+    height: 80px; display: flex; align-items: center; justify-content: center;
+  }
+  .da-obj-info { padding: 1rem 1.125rem; }
+  .da-obj-addr { font-size: 0.9375rem; font-weight: 600; color: #111827; }
+  .da-obj-city { font-size: 0.8125rem; color: #9ca3af; margin-top: 0.125rem; margin-bottom: 0.625rem; }
+  .da-obj-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8125rem; color: #6b7280; }
+  .da-obj-revenue { font-size: 1rem; font-weight: 700; color: #111827; }
+  .da-obj-revenue span { font-size: 0.8125rem; font-weight: 400; color: #9ca3af; }
+
+  /* ── Reporting KPI ────────────────────────────────── */
+  .da-report-kpi {
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 10px; padding: 1rem 1.125rem; margin-bottom: 0.875rem;
+  }
+  .da-report-kpi-lbl { font-size: 0.75rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+  .da-report-kpi-val { font-size: 1.625rem; font-weight: 700; color: #111827; letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+
+  /* ── Settings ─────────────────────────────────────── */
+  .da-settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
+  .da-settings-card { padding: 1.125rem; }
+  .da-settings-card-title { font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.875rem; padding-bottom: 0.625rem; border-bottom: 1px solid #f3f4f6; }
+  .da-form-row { margin-bottom: 0.75rem; }
+  .da-form-row:last-child { margin-bottom: 0; }
+  .da-label { display: block; font-size: 0.75rem; font-weight: 500; color: #6b7280; margin-bottom: 0.25rem; }
+  .da-input-fake {
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 7px;
+    padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: #374151;
   }
 </style>
 
 <script>
-  const openBtn = document.getElementById('demo-open-btn');
+  // ── Modal open / close ─────────────────────────────
+  const openBtn    = document.getElementById('demo-open-btn');
   const overlayBtn = document.getElementById('demo-overlay-btn');
-  const modal = document.getElementById('demo-modal');
-  const iframe = document.getElementById('demo-iframe') as HTMLIFrameElement | null;
-  const closeBtn = document.getElementById('demo-close');
-  const loader = document.getElementById('demo-loader');
+  const modal      = document.getElementById('demo-modal');
+  const closeBtn   = document.getElementById('demo-close');
 
-  function openDemo() {
-    if (!modal || !iframe) return;
-    if (!iframe.src) {
-      const appUrl = document.getElementById('demo-modal')?.dataset.appUrl ?? 'https://app.propgate.de';
-      iframe.src = `${appUrl}/demo-login`;
-    }
-    modal.classList.add('is-open');
-    document.body.classList.add('demo-open');
-  }
-
-  function closeDemo() {
-    if (!modal) return;
-    modal.classList.remove('is-open');
-    document.body.classList.remove('demo-open');
-    setTimeout(() => {
-      if (iframe) iframe.src = '';
-      if (loader) loader.classList.remove('hidden');
-    }, 300);
-  }
-
-  iframe?.addEventListener('load', () => {
-    loader?.classList.add('hidden');
-  });
+  function openDemo()  { modal?.classList.add('is-open');    document.body.classList.add('demo-open'); }
+  function closeDemo() { modal?.classList.remove('is-open'); document.body.classList.remove('demo-open'); }
 
   openBtn?.addEventListener('click', openDemo);
   overlayBtn?.addEventListener('click', openDemo);
-  overlayBtn?.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') openDemo();
-  });
+  overlayBtn?.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') openDemo(); });
   closeBtn?.addEventListener('click', closeDemo);
-  modal?.addEventListener('click', (e: MouseEvent) => {
-    if (e.target === modal) closeDemo();
+  modal?.addEventListener('click', (e: MouseEvent) => { if (e.target === modal) closeDemo(); });
+  document.addEventListener('keydown', (e: KeyboardEvent) => { if (e.key === 'Escape') closeDemo(); });
+
+  // ── Nav switching ──────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.da-nav-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      if (!view) return;
+      document.querySelectorAll('.da-nav-btn').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      document.querySelectorAll('.da-view').forEach((v) => v.classList.remove('is-active'));
+      document.getElementById(`da-v-${view}`)?.classList.add('is-active');
+    });
   });
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'Escape') closeDemo();
+
+  // ── Dashboard "Alle anzeigen" link ────────────────
+  document.querySelectorAll<HTMLElement>('.da-link-btn[data-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      if (!view) return;
+      const navBtn = document.querySelector<HTMLElement>(`.da-nav-btn[data-view="${view}"]`);
+      navBtn?.click();
+    });
   });
 </script>

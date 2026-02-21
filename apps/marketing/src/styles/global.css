@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+/* Freeze all animations & transitions during theme switch */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* Pin entrance animations at their final visible state during switch */
+html.theme-switching .header-animate,
+html.theme-switching .h-line-1,
+html.theme-switching .h-line-2,
+html.theme-switching .h-line-3,
+html.theme-switching .hero-badge-wrap,
+html.theme-switching .hero-sub-wrap,
+html.theme-switching .hero-cta-wrap,
+html.theme-switching .browser-mockup,
+html.theme-switching [data-animate],
+html.theme-switching [data-stagger-parent] > * {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* After first theme switch: permanently freeze one-shot entrance animations */
+html[data-anim-done] .header-pill,
+html[data-anim-done] .header-animate,
+html[data-anim-done] .h-line-1,
+html[data-anim-done] .h-line-2,
+html[data-anim-done] .h-line-3,
+html[data-anim-done] .hero-badge-wrap,
+html[data-anim-done] .hero-sub-wrap,
+html[data-anim-done] .hero-cta-wrap,
+html[data-anim-done] .browser-mockup {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Step-number pop animation: freeze after switch */
+html[data-anim-done] [data-stagger].is-visible .step-number {
+  animation: none !important;
+}
+
+
 /* ═══════════════════════════════════════
    THEME TOKENS
 ═══════════════════════════════════════ */
@@ -254,13 +299,13 @@ body {
 .gradient-text {
   background: linear-gradient(
     90deg,
-    #1a80ff  0%,
-    #80d0ff  25%,
-    #ffffff  40%,
-    #80d0ff  55%,
-    #1a80ff  75%,
-    #80d0ff  90%,
-    #1a80ff  100%
+    #0044cc  0%,
+    #0066ff  25%,
+    #1a80ff  40%,
+    #0066ff  55%,
+    #0044cc  75%,
+    #0066ff  90%,
+    #0044cc  100%
   );
   background-size: 250% auto;
   -webkit-background-clip: text;

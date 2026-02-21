@@ -1,23 +1,87 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 
-export function AuthCard({ children }: { children: ReactNode }) {
+export function AuthCard({ children, wide }: { children: ReactNode; wide?: boolean }) {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const t = document.documentElement.getAttribute('data-theme');
+    setTheme(t === 'light' ? 'light' : 'dark');
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('propgate-theme', next); } catch {}
+  };
+
+  const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app";
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07080f] px-4 py-10">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--auth-bg)] px-4 py-10">
+      {/* Theme toggle — top-right corner */}
+      {mounted && (
+        <button
+          onClick={toggleTheme}
+          className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--auth-input-border)] bg-[var(--auth-card)] text-[var(--auth-icon)] transition-all duration-200 hover:border-[#0066ff]/40 hover:text-[var(--auth-heading)] hover:shadow-[0_0_12px_rgba(0,102,255,0.15)]"
+          aria-label="Farbschema wechseln"
+        >
+          {theme === 'dark' ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          )}
+        </button>
+      )}
+
       {/* Background glows */}
       <div className="pointer-events-none absolute bottom-0 left-0 h-[55vh] w-[55vw] -translate-x-1/4 translate-y-1/4 rounded-full bg-[#0066ff]/10 blur-[140px]" />
       <div className="pointer-events-none absolute right-0 top-0 h-[35vh] w-[35vw] translate-x-1/4 -translate-y-1/4 rounded-full bg-[#0066ff]/[0.06] blur-[90px]" />
 
-      {/* Card with spinning border */}
-      <div className="relative w-full max-w-[480px] overflow-hidden rounded-[22px] p-[1.5px] shadow-[0_32px_80px_rgba(0,0,0,0.6)]">
-        {/* Rotating gradient border */}
-        <div className="auth-border-spin" />
-        {/* Card inner */}
-        <div className="relative rounded-[21px] bg-[#0d1117] p-10">
-{children}
+      {/* Card column: back button + card stacked */}
+      <div className={`relative flex w-full flex-col items-center gap-3 ${wide ? "max-w-[620px]" : "max-w-[480px]"}`}>
+
+        {/* Back to website — above the card */}
+        <div className="w-full">
+          <a
+            href={mounted ? `${marketingUrl}?theme=${theme}` : marketingUrl}
+            aria-label="Zurück zur Website"
+            className="auth-back-btn group inline-flex items-center gap-2 rounded-full border border-[#0066ff]/30 bg-[#0066ff]/10 py-2 pl-3 pr-4 text-sm font-medium text-[#4da6ff] shadow-[0_0_16px_rgba(0,102,255,0.12)] transition-all duration-300 hover:border-[#0066ff]/60 hover:bg-[#0066ff]/20 hover:shadow-[0_0_24px_rgba(0,102,255,0.28)] hover:text-white"
+          >
+            {/* Arrow — slides left on hover */}
+            <span className="flex items-center transition-transform duration-300 group-hover:-translate-x-0.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </span>
+            <span>Zurück zur Website</span>
+          </a>
         </div>
-      </div>
+
+        {/* Card with spinning border */}
+        <div className="auth-card-wrap relative w-full overflow-hidden rounded-[22px] p-[1.5px]">
+          {/* Rotating gradient border */}
+          <div className="auth-border-spin" />
+          {/* Card inner */}
+          <div className="relative rounded-[21px] bg-[var(--auth-card)] p-10">
+            {children}
+          </div>
+        </div>
+
+      </div>{/* end card column */}
     </div>
   );
 }
@@ -33,12 +97,12 @@ export function AuthInput({
 }) {
   return (
     <div className="relative">
-      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#3d4d66]">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--auth-icon)]">
         {icon}
       </span>
       <input
         {...props}
-        className="w-full rounded-full border border-white/[0.08] bg-[#0a0e17] py-3 pl-11 pr-4 text-[0.9375rem] text-white placeholder:text-[#3d4d66] focus:border-[#0066ff]/60 focus:outline-none focus:ring-1 focus:ring-[#0066ff]/25 transition"
+        className="auth-input-field w-full rounded-full border py-3 pl-11 pr-4 text-[0.9375rem] focus:border-[#0066ff]/60 focus:outline-none focus:ring-1 focus:ring-[#0066ff]/25 transition"
       />
       {trailing && (
         <span className="absolute right-4 top-1/2 -translate-y-1/2">

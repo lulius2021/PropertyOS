@@ -54,3 +54,15 @@ apps/app/prisma/migrations/**/*.sql
 
 # OS
 Thumbs.db
+
+# Astro build output (generated into apps/app/public/ at build time)
+apps/app/public/_astro/
+apps/app/public/*.html
+apps/app/public/*.xml
+apps/app/public/pricing/
+apps/app/public/impressum/
+apps/app/public/datenschutz/
+apps/app/public/features/
+apps/app/public/blog/
+apps/app/public/security/
+apps/app/public/neuheiten/

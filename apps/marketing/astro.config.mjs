@@ -7,7 +7,8 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://propgate.de',
-  server: { port: 3000 },
+  outDir: '../app/public',
+  server: { port: 4321 },
   vite: {
     plugins: [tailwindcss()],
   },

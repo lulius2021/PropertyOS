@@ -1,11 +1,14 @@
 ---
 import '../styles/global.css';
+import { APP_URL } from '../config/urls';
 
 interface Props {
   title: string;
   description?: string;
   ogImage?: string;
   noindex?: boolean;
+  forceDark?: boolean;
+  forceLight?: boolean;
 }
 
 const {
@@ -13,6 +16,8 @@ const {
   description = 'PropGate – Moderne Immobilienverwaltungssoftware. Cloudbasierte Software für operativen Tagesbetrieb: Objektverwaltung, Bankimport, Mahnwesen, Tickets & mehr. DSGVO-konform.',
   ogImage = '/og-image.png',
   noindex = false,
+  forceDark = false,
+  forceLight = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -68,19 +73,61 @@ const ogImageURL = new URL(ogImage, Astro.site);
     <meta name="theme-color" content="#0066ff" />
 
     <!-- Anti-flash theme detection (runs before render) -->
-    <script is:inline>
+    <script is:inline define:vars={{ forceDark, forceLight }}>
       (function () {
-        var stored = localStorage.getItem('propgate-theme');
-        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = stored || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
+        if (forceDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.setAttribute('data-force-dark', '');
+        } else if (forceLight) {
+          document.documentElement.setAttribute('data-theme', 'light');
+          document.documentElement.setAttribute('data-force-light', '');
+        } else {
+          var urlTheme = new URLSearchParams(window.location.search).get('theme');
+          var stored = localStorage.getItem('propgate-theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = urlTheme || stored || (prefersDark ? 'dark' : 'light');
+          if (urlTheme) {
+            localStorage.setItem('propgate-theme', urlTheme);
+            try {
+              var url = new URL(window.location.href);
+              url.searchParams.delete('theme');
+              window.history.replaceState({}, '', url.pathname + (url.search || ''));
+            } catch (e) {}
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        }
       })();
     </script>
+    {forceDark && <style>{'[data-force-dark] .theme-toggle { display: none !important; }'}</style>}
+    {forceLight && <style>{'[data-force-light] .theme-toggle { display: none !important; }'}</style>}
   </head>
-  <body class="antialiased">
+  <body class="antialiased" data-app-url={APP_URL}>
     <!-- Theme wipe overlay -->
     <div id="theme-overlay" aria-hidden="true"></div>
     <slot />
+
+    <!-- Sync theme to all app links so login/register open with the same theme -->
+    <script is:inline>
+      (function () {
+        var appUrl = document.body.getAttribute('data-app-url') || '';
+        function updateAppThemeLinks() {
+          if (!appUrl) return;
+          var theme = document.documentElement.getAttribute('data-theme') || 'dark';
+          document.querySelectorAll('a').forEach(function (a) {
+            var href = a.getAttribute('href') || '';
+            if (!href.startsWith(appUrl)) return;
+            try {
+              var url = new URL(href, location.href);
+              url.searchParams.set('theme', theme);
+              a.setAttribute('href', url.toString());
+            } catch (e) {}
+          });
+        }
+        updateAppThemeLinks();
+        window.__updateAppThemeLinks = updateAppThemeLinks;
+      })();
+    </script>
+
     <script>
       (function () {
         // ── Intersection Observer scroll reveals ──────────────

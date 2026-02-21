@@ -17,22 +17,6 @@ const plans = [
     featured: false,
     href: `${APP_URL}/register?plan=starter`,
     cta: 'Jetzt testen',
-    features: [
-      { text: 'Bis zu 5 Objekte & Einheiten', included: true },
-      { text: 'Mieterverwaltung & Verträge', included: true },
-      { text: 'Sollstellungen & Kautionsverwaltung', included: true },
-      { text: 'Zahlungs-Tracking & Offene Posten', included: true },
-      { text: 'Mahnwesen', included: true },
-      { text: 'Zählerverwaltung', included: true },
-      { text: 'Dashboard & KPIs', included: true },
-      { text: 'E-Mail-Support', included: true },
-      { text: 'Ticketsystem', included: false },
-      { text: 'CSV-Bankimport & Auto-Matching', included: false },
-      { text: 'Dokumentenverwaltung', included: false },
-      { text: 'Datenexport (CSV / Excel)', included: false },
-      { text: 'Multi-User / Team-Zugang', included: false },
-      { text: 'API-Zugriff', included: false },
-    ],
   },
   {
     id: 'plus',
@@ -41,21 +25,11 @@ const plans = [
     priceMonthly: '29,99',
     priceAnnual: '26,99',
     yearlyTotal: '323,88',
-    description: 'Für wachsende Portfolios mit vollem Feature-Umfang.',
-    featured: false,
+    description: 'Für wachsende Portfolios — alle Features inklusive.',
+    featured: true,
+    badge: 'Empfohlen',
     href: `${APP_URL}/register?plan=plus`,
-    cta: 'Jetzt testen',
-    features: [
-      { text: 'Bis zu 20 Objekte & Einheiten', included: true },
-      { text: 'Alle Starter-Features', included: true },
-      { text: 'Ticketsystem mit Status-Workflow', included: true },
-      { text: 'CSV-Bankimport & Auto-Matching', included: true },
-      { text: 'Dokumentenverwaltung', included: true },
-      { text: 'Datenexport (CSV / Excel)', included: true },
-      { text: 'Priority-Support', included: true },
-      { text: 'Multi-User / Team-Zugang', included: false },
-      { text: 'API-Zugriff', included: false },
-    ],
+    cta: 'Kostenlos testen',
   },
   {
     id: 'pro',
@@ -65,21 +39,9 @@ const plans = [
     priceAnnual: '71,99',
     yearlyTotal: '863,88',
     description: 'Für professionelle Verwalter mit größerem Portfolio.',
-    featured: true,
-    badge: 'Empfohlen',
+    featured: false,
     href: `${APP_URL}/register?plan=pro`,
     cta: 'Jetzt testen',
-    features: [
-      { text: 'Bis zu 60 Objekte & Einheiten', included: true },
-      { text: 'Alle Plus-Features', included: true },
-      { text: 'Ticketsystem mit Status-Workflow', included: true },
-      { text: 'CSV-Bankimport & Auto-Matching', included: true },
-      { text: 'Dokumentenverwaltung', included: true },
-      { text: 'Datenexport (CSV / Excel)', included: true },
-      { text: 'Priority-Support mit schnellerer Reaktion', included: true },
-      { text: 'Multi-User / Team-Zugang', included: false },
-      { text: 'API-Zugriff', included: false },
-    ],
   },
   {
     id: 'unlimited',
@@ -92,21 +54,8 @@ const plans = [
     featured: false,
     href: `${APP_URL}/register?plan=unlimited`,
     cta: 'Jetzt testen',
-    features: [
-      { text: 'Unbegrenzt Objekte & Einheiten', included: true },
-      { text: 'Alle Pro-Features', included: true },
-      { text: 'Multi-User (unbegrenzt Nutzer)', included: true },
-      { text: 'Rollenbasierte Zugriffsrechte', included: true },
-      { text: 'Admin / Sachbearbeiter / ReadOnly', included: true },
-      { text: 'API-Zugriff', included: true },
-      { text: 'Dedizierter Account-Manager', included: true },
-      { text: 'SLA-Garantie', included: true },
-    ],
   },
 ];
-
-const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
-const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
 ---
 
 <Layout
@@ -150,7 +99,6 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
             </button>
             <button class="toggle-btn" data-period="annual" id="toggle-annual">
               Jährlich
-              <span class="save-chip">2 Monate gratis</span>
             </button>
           </div>
         </div>
@@ -197,17 +145,13 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
                 {plan.cta}
               </a>
 
-              <ul class="plan-features">
-                {plan.features.map((feature) => (
-                  <li class={`feature-item ${feature.included ? 'feature-included' : 'feature-missing'}`}>
-                    <span
-                      class={feature.included ? 'feature-check' : 'feature-cross'}
-                      set:html={feature.included ? checkIcon : crossIcon}
-                    />
-                    <span>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
+              <div class="plan-limit-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>{plan.limit}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -371,7 +315,8 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
 
   .billing-toggle {
     display: inline-flex;
-    background: #e5e7eb;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 4px;
     gap: 2px;
@@ -385,7 +330,7 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     border-radius: 9px;
     border: none;
     background: transparent;
-    color: #6b7280;
+    color: #6b7a99;
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -394,22 +339,29 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
   }
 
   .toggle-btn.is-active {
-    background: #ffffff;
-    color: #0f0f1a;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     font-weight: 600;
   }
 
   .save-chip {
     display: inline-block;
-    background: #dcfce7;
-    color: #15803d;
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.15rem 0.5rem;
     border-radius: 100px;
     white-space: nowrap;
   }
+
+  @keyframes chip-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+  .save-chip.popping { animation: chip-pop 0.35s ease-out; }
 
   /* Plans Grid */
   .plans-grid {
@@ -484,8 +436,8 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
   .plan-limit-chip {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #6b7280;
-    background: #f3f4f6;
+    color: #6b7a99;
+    background: rgba(255, 255, 255, 0.07);
     padding: 0.2rem 0.5rem;
     border-radius: 100px;
     white-space: nowrap;
@@ -582,30 +534,29 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
     border-color: var(--border);
   }
 
-  .plan-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .plan-limit-box {
     display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    padding-top: 1.25rem;
-  }
-
-  .feature-item {
-    display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.45;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-muted);
   }
 
-  .feature-included { color: var(--text-muted); }
-  .feature-missing { color: #d1d5db; }
+  .plan-limit-box svg {
+    color: #0066ff;
+    flex-shrink: 0;
+  }
 
-  .feature-check { color: #0066ff; flex-shrink: 0; margin-top: 1px; }
-  .feature-cross { color: #e5e7eb; flex-shrink: 0; margin-top: 1px; }
+  .plan-featured .plan-limit-box {
+    background: rgba(0, 102, 255, 0.08);
+    border-color: rgba(0, 102, 255, 0.2);
+    color: #0066ff;
+  }
 
   .pricing-note {
     text-align: center;
@@ -658,14 +609,14 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
 
   /* FAQ */
   .faq-section {
-    border-top: 1px solid rgba(0, 0, 0, 0.07);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     padding-top: 4rem;
   }
 
   .faq-title {
     font-size: clamp(1.75rem, 3vw, 2.25rem);
     font-weight: 700;
-    color: #0f0f1a;
+    color: var(--heading);
     letter-spacing: -0.03em;
     margin-bottom: 2.5rem;
     text-align: center;
@@ -714,23 +665,130 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
       flex-direction: column;
     }
   }
+
+  /* ── Light theme overrides ── */
+  :global(html[data-theme="light"]) .hero-badge {
+    background: rgba(0, 102, 255, 0.08);
+    color: #0052cc;
+    border-color: rgba(0, 102, 255, 0.2);
+  }
+
+  :global(html[data-theme="light"]) .billing-toggle {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  :global(html[data-theme="light"]) .toggle-btn {
+    color: #5a6478;
+  }
+
+  :global(html[data-theme="light"]) .toggle-btn.is-active {
+    background: #ffffff;
+    color: #0f0f1a;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  :global(html[data-theme="light"]) .save-chip {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+  }
+
+  :global(html[data-theme="light"]) .plan-limit-chip {
+    background: rgba(0, 0, 0, 0.06);
+    color: #5a6478;
+  }
+
+  :global(html[data-theme="light"]) .plan-limit-box {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #4a5568;
+  }
+
+  :global(html[data-theme="light"]) .plan-featured .plan-limit-box {
+    background: rgba(0, 102, 255, 0.06);
+    border-color: rgba(0, 102, 255, 0.18);
+    color: #0052cc;
+  }
+
+  :global(html[data-theme="light"]) .faq-section {
+    border-top-color: rgba(0, 0, 0, 0.08);
+  }
+
+  :global(html[data-theme="light"]) .pricing-note {
+    color: #8a94a8;
+  }
+
+  :global(html[data-theme="light"]) .annual-total {
+    color: #15803d;
+  }
 </style>
 
 <script>
   const monthlyBtn = document.getElementById('toggle-monthly');
-  const annualBtn = document.getElementById('toggle-annual');
+  const annualBtn  = document.getElementById('toggle-annual');
+  const saveChip   = document.querySelector<HTMLElement>('.save-chip');
+  let currentPeriod = 'monthly';
 
+  // ── Price scramble animation ──────────────────────────────────────────────
+  const DIGITS = '0123456789';
+  const FRAMES = 22;
+  const FRAME_MS = 28;
+
+  function scramblePrice(el: HTMLElement, target: string) {
+    let frame = 0;
+    el.style.transition = 'filter 0.12s, transform 0.12s';
+    el.style.filter = 'blur(5px)';
+    el.style.transform = 'scale(0.82)';
+
+    setTimeout(() => {
+      const interval = window.setInterval(() => {
+        frame++;
+        const progress = frame / FRAMES;
+
+        el.textContent = target.split('').map((char, i) => {
+          if (char === ',' || char === '.') return char;
+          const settleAt = i / target.replace(/[^0-9]/g, '').length;
+          if (progress >= settleAt + 0.45) return char;
+          return DIGITS[Math.floor(Math.random() * 10)];
+        }).join('');
+
+        const blurVal = Math.max(0, 5 - progress * 7);
+        const scaleVal = 0.82 + progress * 0.18;
+        el.style.filter = `blur(${blurVal}px)`;
+        el.style.transform = `scale(${scaleVal})`;
+
+        if (frame >= FRAMES) {
+          clearInterval(interval);
+          el.textContent = target;
+          el.style.filter = '';
+          el.style.transform = '';
+        }
+      }, FRAME_MS);
+    }, 120);
+  }
+
+  // ── Toggle ────────────────────────────────────────────────────────────────
   function setPeriod(period: string) {
+    if (period === currentPeriod) return;
     const isAnnual = period === 'annual';
+    currentPeriod = period;
 
     monthlyBtn?.classList.toggle('is-active', !isAnnual);
     annualBtn?.classList.toggle('is-active', isAnnual);
 
-    document.querySelectorAll<HTMLElement>('.price-amount').forEach((el) => {
-      el.textContent = isAnnual
+    document.querySelectorAll<HTMLElement>('.price-amount').forEach((el, i) => {
+      const newVal = isAnnual
         ? (el.dataset.annual ?? el.dataset.monthly ?? '')
         : (el.dataset.monthly ?? '');
+      setTimeout(() => scramblePrice(el, newVal), i * 55);
     });
+
+    if (isAnnual && saveChip) {
+      saveChip.classList.remove('popping');
+      void saveChip.offsetWidth;
+      saveChip.classList.add('popping');
+      saveChip.addEventListener('animationend', () => saveChip.classList.remove('popping'), { once: true });
+    }
 
     document.querySelectorAll<HTMLElement>('.price-note-monthly').forEach((el) => {
       el.style.display = isAnnual ? 'none' : '';
@@ -741,5 +799,5 @@ const crossIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" s
   }
 
   monthlyBtn?.addEventListener('click', () => setPeriod('monthly'));
-  annualBtn?.addEventListener('click', () => setPeriod('annual'));
+  annualBtn?.addEventListener('click',  () => setPeriod('annual'));
 </script>

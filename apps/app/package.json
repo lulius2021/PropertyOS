@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 4321",
+    "prebuild": "pnpm --filter=marketing build",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

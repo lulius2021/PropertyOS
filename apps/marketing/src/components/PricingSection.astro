@@ -14,15 +14,6 @@ const plans = [
     cta: 'Plan wählen',
     gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
     iconBg: '#1a2332',
-    features: [
-      'Bis zu 5 Objekte & Einheiten',
-      'Mieterverwaltung & Verträge',
-      'Zahlungs-Tracking & Offene Posten',
-      'Mahnwesen',
-      'Zählerverwaltung',
-      'Dashboard & KPIs',
-    ],
-    prevPlanLabel: null,
   },
   {
     id: 'plus',
@@ -30,19 +21,13 @@ const plans = [
     limit: 'bis 20 Objekte',
     priceMonthly: '29,99',
     priceAnnual: '26,99',
-    description: 'Mehr Features für wachsende Portfolios.',
-    featured: false,
+    description: 'Für wachsende Portfolios — alle Features inklusive.',
+    featured: true,
+    badge: 'Empfohlen',
     href: `${APP_URL}/register?plan=plus`,
-    cta: 'Plan wählen',
-    gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
-    iconBg: '#1a2332',
-    features: [
-      'Ticketsystem',
-      'CSV-Bankimport & Auto-Matching',
-      'Dokumentenverwaltung',
-      'Datenexport (CSV / Excel)',
-    ],
-    prevPlanLabel: 'STARTER +',
+    cta: 'Kostenlos testen',
+    gradient: 'linear-gradient(145deg, #001a4d 0%, #003080 40%, #0044aa 70%, #001f5c 100%)',
+    iconBg: '#0044aa',
   },
   {
     id: 'pro',
@@ -50,19 +35,12 @@ const plans = [
     limit: 'bis 60 Objekte',
     priceMonthly: '79,99',
     priceAnnual: '71,99',
-    description: 'Professionelle Verwaltung. Priority-Support. Volle Kontrolle.',
-    featured: true,
-    badge: 'Empfohlen',
+    description: 'Für professionelle Verwalter mit größerem Portfolio.',
+    featured: false,
     href: `${APP_URL}/register?plan=pro`,
-    cta: 'Kostenlos testen',
-    gradient: 'linear-gradient(145deg, #001a4d 0%, #003080 40%, #0044aa 70%, #001f5c 100%)',
-    iconBg: '#0044aa',
-    features: [
-      'Bis zu 60 Objekte & Einheiten',
-      'Priority-Support',
-      'Erweiterte Auswertungen',
-    ],
-    prevPlanLabel: 'STARTER & PLUS +',
+    cta: 'Plan wählen',
+    gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
+    iconBg: '#1a2332',
   },
   {
     id: 'unlimited',
@@ -76,18 +54,10 @@ const plans = [
     cta: 'Kontakt aufnehmen',
     gradient: 'linear-gradient(135deg, #0d1117 0%, #111827 100%)',
     iconBg: '#1a2332',
-    features: [
-      'Unbegrenzt Objekte & Einheiten',
-      'Multi-User & Rollenrechte',
-      'API-Zugriff',
-      'Dedizierter Account-Manager',
-    ],
-    prevPlanLabel: 'STARTER, PLUS & PRO +',
   },
 ];
 
-const buildingIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M9 7h1m4 0h1M9 11h1m4 0h1"/></svg>`;
-const checkIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const buildingIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
 const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`;
 ---
 
@@ -107,7 +77,6 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
         <button class="toggle-btn is-active" data-period="monthly" id="toggle-monthly">Monatlich</button>
         <button class="toggle-btn" data-period="annual" id="toggle-annual">
           Jährlich
-          <span class="save-chip">2 Monate gratis</span>
         </button>
       </div>
     </div>
@@ -154,20 +123,13 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
                 {plan.cta}
               </a>
 
-              {plan.prevPlanLabel && (
-                <div class="features-divider">
-                  <span>{plan.prevPlanLabel}</span>
-                </div>
-              )}
-
-              <ul class="plan-features">
-                {plan.features.map((feature) => (
-                  <li class="feature-item">
-                    <span class="feature-check" set:html={checkIcon} />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <div class="plan-limit-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>{plan.limit}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -554,61 +516,33 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
     color: #f0f4ff;
   }
 
-  /* Features divider */
-  .features-divider {
+  /* Object limit box */
+  .plan-limit-box {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.875rem;
-  }
-
-  .features-divider::before,
-  .features-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.07);
-  }
-
-  .features-divider span {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: #4a5568;
-    white-space: nowrap;
-  }
-
-  /* Features list */
-  .plan-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5625rem;
-  }
-
-  .feature-item {
-    display: flex;
-    align-items: flex-start;
     gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #6b7a99;
-    line-height: 1.45;
-  }
-
-  .plan-featured .feature-item {
+    padding: 0.6875rem 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9375rem;
+    font-weight: 600;
     color: #8aa3cc;
   }
 
-  .feature-check {
+  .plan-limit-box svg {
     color: #4a5568;
     flex-shrink: 0;
-    margin-top: 1px;
   }
 
-  .plan-featured .feature-check {
-    color: #3b82f6;
+  .plan-featured .plan-limit-box {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #c8deff;
+  }
+
+  .plan-featured .plan-limit-box svg {
+    color: #60a5fa;
   }
 
   .pricing-note {
@@ -635,6 +569,103 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
       grid-template-columns: 1fr;
     }
   }
+
+  /* ── Light theme ──────────────────────────────────────────── */
+  html[data-theme="light"] .pricing-section {
+    background: var(--bg);
+  }
+
+  html[data-theme="light"] .pricing-section .section-h2 {
+    color: #0f1020;
+  }
+
+  html[data-theme="light"] .pricing-section .section-subtitle {
+    color: #5a6478;
+  }
+
+  /* Toggle */
+  html[data-theme="light"] .billing-toggle {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.09);
+  }
+
+  html[data-theme="light"] .toggle-btn {
+    color: #5a6478;
+  }
+
+  html[data-theme="light"] .toggle-btn.is-active {
+    background: #ffffff;
+    color: #0f1020;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Non-featured cards */
+  html[data-theme="light"] .plan-card:not(.plan-featured) {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured):hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .card-icon {
+    background: #eef2ff;
+    border-color: rgba(0, 0, 0, 0.07);
+    color: #0066ff;
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .card-deco {
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .plan-name {
+    color: #0f1020;
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .plan-description {
+    color: #5a6478;
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .price-currency,
+  html[data-theme="light"] .plan-card:not(.plan-featured) .price-amount {
+    color: #0f1020;
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .price-period,
+  html[data-theme="light"] .plan-card:not(.plan-featured) .price-note {
+    color: #8a94a8;
+  }
+
+  /* CTAs on non-featured */
+  html[data-theme="light"] .plan-cta-secondary,
+  html[data-theme="light"] .plan-cta-contact {
+    background: rgba(0, 0, 0, 0.04);
+    color: #1e2640;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  html[data-theme="light"] .plan-cta-secondary:hover,
+  html[data-theme="light"] .plan-cta-contact:hover {
+    background: rgba(0, 0, 0, 0.07);
+    color: #0f1020;
+  }
+
+  /* Features divider */
+  html[data-theme="light"] .plan-card:not(.plan-featured) .plan-limit-box {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #4a5568;
+  }
+
+  html[data-theme="light"] .plan-card:not(.plan-featured) .plan-limit-box svg {
+    color: #0066ff;
+  }
+
+  html[data-theme="light"] .pricing-note {
+    color: #8a94a8;
+  }
 </style>
 
 <script>
@@ -643,8 +674,8 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
   // Cards are inside .card-float-wrap, query .plan-card directly
   const cards = grid ? Array.from(grid.querySelectorAll<HTMLElement>('.plan-card')) : [];
 
-  // Reveal order: Pro (2) → Starter (0) → Plus (1) → Unlimited (3)
-  const revealOrder = [2, 0, 1, 3];
+  // Reveal order: Plus (1) → Starter (0) → Pro (2) → Unlimited (3)
+  const revealOrder = [1, 0, 2, 3];
 
   function revealCards() {
     revealOrder.forEach((cardIndex, staggerStep) => {
@@ -681,7 +712,7 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
     el.style.transform = 'scale(0.82)';
 
     setTimeout(() => {
-      const interval = setInterval(() => {
+      const interval = window.setInterval(() => {
         frame++;
         const progress = frame / FRAMES;
 

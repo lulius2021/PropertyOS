@@ -5,7 +5,7 @@ import { validatePassword } from "@/lib/password-policy";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password, plan } = await req.json();
+    const { name, company, phone: _phone, email, password, plan } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
         role: "ADMIN",
         tenant: {
           create: {
-            name: `${name}'s Workspace`,
-            plan: plan || "starter",
+            name: company?.trim() || `${name}'s Workspace`,
+            plan: plan || "trial",
           },
         },
       },

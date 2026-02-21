@@ -25,19 +25,63 @@
   animation: border-spin 8s linear infinite;
 }
 
-/* Override browser autofill yellow background */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #0a0e17 inset;
-  -webkit-text-fill-color: #ffffff;
-  caret-color: #ffffff;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
+/* Auth page — dark (default) theme variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --auth-bg: #07080f;
+  --auth-card: #0d1117;
+  --auth-input-bg: #0a0e17;
+  --auth-input-border: rgba(255, 255, 255, 0.08);
+  --auth-input-text: #ffffff;
+  --auth-input-placeholder: #3d4d66;
+  --auth-icon: #3d4d66;
+  --auth-heading: #ffffff;
+  --auth-text-sub: #6b7a99;
+  --auth-text-muted: #4a5568;
+  --auth-text-link: #3d4d66;
+  --auth-card-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Auth page — light theme overrides */
+html[data-theme="light"] {
+  --auth-bg: #eef2ff;
+  --auth-card: #ffffff;
+  --auth-input-bg: #f5f8ff;
+  --auth-input-border: rgba(0, 0, 0, 0.12);
+  --auth-input-text: #0f0f1a;
+  --auth-input-placeholder: #9ca3af;
+  --auth-icon: #aab4c4;
+  --auth-heading: #0f0f1a;
+  --auth-text-sub: #5a6478;
+  --auth-text-muted: #8a94a8;
+  --auth-text-link: #9ca3af;
+  --auth-card-shadow: 0 32px 80px rgba(0, 0, 0, 0.1);
+}
+
+/* Auth input — theme-aware border/bg/color */
+.auth-input-field {
+  background: var(--auth-input-bg);
+  border-color: var(--auth-input-border);
+  color: var(--auth-input-text);
+}
+.auth-input-field::placeholder {
+  color: var(--auth-input-placeholder);
+}
+
+/* Auth card wrapper — theme-aware shadow */
+.auth-card-wrap {
+  box-shadow: var(--auth-card-shadow);
+}
+
+/* Override browser autofill yellow background — uses theme variables */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--auth-input-bg, #0a0e17) inset;
+  -webkit-text-fill-color: var(--auth-input-text, #ffffff);
+  caret-color: var(--auth-input-text, #ffffff);
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 @theme inline {

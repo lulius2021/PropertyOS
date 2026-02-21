@@ -70,8 +70,8 @@ function LoginForm() {
     <AuthCard>
       {/* Header */}
       <div className="mb-8 text-center">
-        <h1 className="text-[2.25rem] font-bold tracking-tight text-white">Anmelden</h1>
-        <p className="mt-2 text-[0.9375rem] leading-relaxed text-[#6b7a99]">
+        <h1 className="text-[2.25rem] font-bold tracking-tight text-[var(--auth-heading)]">Anmelden</h1>
+        <p className="mt-2 text-[0.9375rem] leading-relaxed text-[var(--auth-text-sub)]">
           Melden Sie sich an und verwalten Sie Ihr Immobilienportfolio nahtlos weiter.
         </p>
       </div>
@@ -124,20 +124,11 @@ function LoginForm() {
         </AuthButton>
       </form>
 
-      <p className="mt-6 text-center text-sm text-[#4a5568]">
+      <p className="mt-6 text-center text-sm text-[var(--auth-text-muted)]">
         Noch kein Account?{" "}
         <Link href="/register" className="font-semibold text-[#0066ff] hover:text-[#4da6ff] transition">
           Registrieren
         </Link>
-      </p>
-
-      <p className="mt-4 text-center">
-        <a
-          href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app"}
-          className="text-xs text-[#3d4d66] hover:text-[#6b7a99] transition"
-        >
-          ← Zurück zur Website
-        </a>
       </p>
 
       {process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true" && (
@@ -151,7 +142,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07080f]"><div className="text-[#4a5568]">Laden…</div></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[var(--auth-bg)]"><div className="text-[var(--auth-text-muted)]">Laden…</div></div>}>
       <LoginForm />
     </Suspense>
   );

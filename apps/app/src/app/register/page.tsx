@@ -8,30 +8,80 @@ import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { validatePassword } from "@/lib/password-policy";
 import {
   AuthCard, AuthInput, AuthButton, AuthError,
-  MailIcon, LockIcon, EyeIcon, UserIcon,
+  MailIcon, LockIcon, EyeIcon, UserIcon, ShieldIcon,
 } from "@/components/auth/AuthCard";
 
-const PLANS = {
-  starter:      { label: "Starter",      price: "9,99 €/Monat" },
-  plus:         { label: "Plus",         price: "29,99 €/Monat" },
-  pro:          { label: "Pro",          price: "79,99 €/Monat" },
-  unlimited:    { label: "Unlimited",    price: "149,00 €/Monat" },
-  professional: { label: "Professional", price: "29 €/Monat" },
-  enterprise:   { label: "Enterprise",   price: "99 €/Monat" },
-} as const;
+const PhoneIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.52 6.17 19.79 19.79 0 01.47 4.26 2 2 0 012.4 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+  </svg>
+);
+
+const BuildingIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="15" rx="2"/>
+    <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+    <line x1="12" y1="12" x2="12" y2="12.01"/>
+  </svg>
+);
+
+// ── Plan data ────────────────────────────────────────────────────
+const PAID_PLANS = [
+  {
+    id: "starter",
+    label: "Starter",
+    priceMonthly: "9,99",
+    priceAnnual: "8,99",
+    limit: "bis 5 Objekte",
+  },
+  {
+    id: "plus",
+    label: "Plus",
+    priceMonthly: "29,99",
+    priceAnnual: "26,99",
+    limit: "bis 20 Objekte",
+  },
+  {
+    id: "pro",
+    label: "Pro",
+    priceMonthly: "79,99",
+    priceAnnual: "71,99",
+    limit: "bis 60 Objekte",
+    badge: "Empfohlen",
+  },
+  {
+    id: "unlimited",
+    label: "Unlimited",
+    priceMonthly: "149,00",
+    priceAnnual: "134,10",
+    limit: "Unbegrenzt",
+  },
+] as const;
+
+type PlanId = "trial" | (typeof PAID_PLANS)[number]["id"];
+type Billing = "monthly" | "annual";
+
+function formatPhone(raw: string) {
+  return raw.replace(/[^\d\s+\-()]/g, "");
+}
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const plan = (searchParams.get("plan") ?? "starter") as keyof typeof PLANS;
+  const urlPlan = searchParams.get("plan") as PlanId | null;
 
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [selectedPlan, setSelectedPlan] = useState<PlanId>(
+    urlPlan === "trial" || PAID_PLANS.some((p) => p.id === urlPlan) ? (urlPlan ?? "trial") : "trial"
+  );
+  const [billing, setBilling] = useState<Billing>("monthly");
+
+  const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
   const set = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [field]: e.target.value }));
+    setForm((f) => ({ ...f, [field]: field === "phone" ? formatPhone(e.target.value) : e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +93,15 @@ function RegisterForm() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, plan }),
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          phone: form.phone,
+          email: form.email,
+          password: form.password,
+          plan: selectedPlan,
+          billing: selectedPlan === "trial" ? null : billing,
+        }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Registrierung fehlgeschlagen"); return; }
@@ -57,34 +115,184 @@ function RegisterForm() {
     }
   };
 
-  const planInfo = PLANS[plan] ?? PLANS.starter;
+  const isTrial = selectedPlan === "trial";
 
   return (
-    <AuthCard>
-      <div className="mb-8 text-center">
-        <h1 className="text-[2.25rem] font-bold tracking-tight text-white">Account erstellen</h1>
-        <p className="mt-2 text-[0.9375rem] leading-relaxed text-[#6b7a99]">
-          Starten Sie jetzt und verwalten Sie Ihr Portfolio professionell.
+    <AuthCard wide>
+      {/* Header */}
+      <div className="mb-6 text-center">
+        <h1 className="text-[2rem] font-bold tracking-tight text-[var(--auth-heading)]">Account erstellen</h1>
+        <p className="mt-1.5 text-[0.9rem] leading-relaxed text-[var(--auth-text-sub)]">
+          Starten Sie jetzt mit PropGate — keine Kreditkarte erforderlich.
         </p>
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[#0066ff]/25 bg-[#0066ff]/10 px-3 py-1">
-          <span className="text-xs font-medium text-[#4da6ff]">{planInfo.label}</span>
-          <span className="text-xs text-[#3d4d66]">·</span>
-          <span className="text-xs text-[#4da6ff]">{planInfo.price}</span>
+      </div>
+
+      {/* ── Plan selector ─────────────────────────────────────── */}
+      <div className="mb-5 space-y-3">
+
+        {/* Free Trial — full-width banner */}
+        <button
+          type="button"
+          onClick={() => setSelectedPlan("trial")}
+          className={[
+            "relative w-full overflow-hidden rounded-2xl border px-4 py-3.5 text-left transition-all duration-150",
+            isTrial
+              ? "border-[#0066ff]/50 bg-[#0066ff]/10 shadow-[0_0_0_1px_rgba(0,102,255,0.25)]"
+              : "border-[var(--auth-input-border)] bg-[var(--auth-input-bg)] hover:border-[#0066ff]/30",
+          ].join(" ")}
+        >
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-[#0066ff]/5 to-transparent" />
+          <div className="relative flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className={[
+                "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border",
+                isTrial ? "border-[#0066ff]/40 bg-[#0066ff]/15 text-[#4da6ff]" : "border-[var(--auth-input-border)] bg-[var(--auth-card)] text-[var(--auth-icon)]",
+              ].join(" ")}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4"/>
+                </svg>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-bold ${isTrial ? "text-[#4da6ff]" : "text-[var(--auth-heading)]"}`}>
+                    30 Tage kostenlos testen
+                  </span>
+                  <span className={[
+                    "rounded-full px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide",
+                    isTrial ? "bg-[#0066ff]/20 text-[#4da6ff]" : "bg-[var(--auth-input-border)] text-[var(--auth-text-muted)]",
+                  ].join(" ")}>
+                    Free Trial
+                  </span>
+                </div>
+                <div className={`mt-0.5 text-[0.75rem] ${isTrial ? "text-[#4da6ff]/70" : "text-[var(--auth-text-muted)]"}`}>
+                  Alle Pro-Features · Kein Abo · Endet automatisch
+                </div>
+              </div>
+            </div>
+            <div className={[
+              "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+              isTrial ? "border-[#0066ff] bg-[#0066ff]" : "border-[var(--auth-input-border)] bg-transparent",
+            ].join(" ")}>
+              {isTrial && (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              )}
+            </div>
+          </div>
+        </button>
+
+        {/* Divider + billing toggle */}
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-[var(--auth-input-border)]" />
+          <span className="shrink-0 text-[0.7rem] font-medium text-[var(--auth-text-muted)]">oder Plan wählen</span>
+          <div className="h-px flex-1 bg-[var(--auth-input-border)]" />
+        </div>
+
+        {/* Billing toggle */}
+        <div className="flex items-center justify-center gap-1 rounded-full border border-[var(--auth-input-border)] bg-[var(--auth-input-bg)] p-1">
+          <button
+            type="button"
+            onClick={() => setBilling("monthly")}
+            className={[
+              "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
+              billing === "monthly"
+                ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm"
+                : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
+            ].join(" ")}
+          >
+            Monatlich
+          </button>
+          <button
+            type="button"
+            onClick={() => setBilling("annual")}
+            className={[
+              "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
+              billing === "annual"
+                ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm"
+                : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
+            ].join(" ")}
+          >
+            Jährlich
+            <span className={[
+              "ml-1.5 rounded-full px-1.5 py-0.5 text-[0.6rem] font-bold",
+              billing === "annual" ? "bg-[#0066ff]/15 text-[#4da6ff]" : "bg-[var(--auth-input-border)] text-[var(--auth-text-muted)]",
+            ].join(" ")}>
+              −10%
+            </span>
+          </button>
+        </div>
+
+        {/* Paid plans — 2×2 grid */}
+        <div className="grid grid-cols-2 gap-2">
+          {PAID_PLANS.map((plan) => {
+            const active = selectedPlan === plan.id;
+            const price = billing === "annual" ? plan.priceAnnual : plan.priceMonthly;
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                onClick={() => setSelectedPlan(plan.id)}
+                className={[
+                  "relative rounded-2xl border px-3.5 py-3 text-left transition-all duration-150",
+                  active
+                    ? "border-[#0066ff]/60 bg-[#0066ff]/10 shadow-[0_0_0_1px_rgba(0,102,255,0.3)]"
+                    : "border-[var(--auth-input-border)] bg-[var(--auth-input-bg)] hover:border-[#0066ff]/30",
+                ].join(" ")}
+              >
+                {"badge" in plan && plan.badge && (
+                  <span className="absolute -top-2 right-2.5 rounded-full bg-[#0066ff] px-2 py-0.5 text-[0.6rem] font-bold text-white">
+                    {plan.badge}
+                  </span>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-semibold ${active ? "text-[#4da6ff]" : "text-[var(--auth-heading)]"}`}>
+                    {plan.label}
+                  </span>
+                  <span className={`text-[0.68rem] font-medium ${active ? "text-[#4da6ff]" : "text-[var(--auth-text-muted)]"}`}>
+                    {price} €/Mo.
+                  </span>
+                </div>
+                <div className="mt-0.5 flex items-center justify-between">
+                  <span className={`text-[0.7rem] ${active ? "text-[#4da6ff]/70" : "text-[var(--auth-text-muted)]"}`}>
+                    {plan.limit}
+                  </span>
+                  {billing === "annual" && (
+                    <span className={`text-[0.6rem] font-semibold ${active ? "text-[#4da6ff]" : "text-[var(--auth-text-muted)]"}`}>
+                      −10%
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
+      {/* ── Form ──────────────────────────────────────────────── */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <AuthError message={error} />
 
-        <AuthInput
-          icon={<UserIcon />}
-          type="text"
-          required
-          value={form.name}
-          onChange={set("name")}
-          placeholder="Vollständiger Name"
-          autoComplete="name"
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <AuthInput
+            icon={<UserIcon />}
+            type="text"
+            required
+            value={form.name}
+            onChange={set("name")}
+            placeholder="Ihr Name"
+            autoComplete="name"
+          />
+          <AuthInput
+            icon={<BuildingIcon />}
+            type="text"
+            value={form.company}
+            onChange={set("company")}
+            placeholder="Unternehmen"
+            autoComplete="organization"
+          />
+        </div>
 
         <AuthInput
           icon={<MailIcon />}
@@ -94,6 +302,15 @@ function RegisterForm() {
           onChange={set("email")}
           placeholder="E-Mail-Adresse"
           autoComplete="email"
+        />
+
+        <AuthInput
+          icon={<PhoneIcon />}
+          type="tel"
+          value={form.phone}
+          onChange={set("phone")}
+          placeholder="Telefon (optional)"
+          autoComplete="tel"
         />
 
         <div className="space-y-1">
@@ -121,33 +338,36 @@ function RegisterForm() {
 
         <div className="pt-1">
           <AuthButton loading={loading}>
-            {loading ? "Account wird erstellt…" : "Kostenlos starten"}
+            {loading
+              ? "Account wird erstellt…"
+              : isTrial
+              ? "30 Tage gratis starten"
+              : `Jetzt ${billing === "annual" ? "jährlich" : "monatlich"} starten`}
           </AuthButton>
         </div>
       </form>
 
-      <p className="mt-6 text-center text-sm text-[#4a5568]">
+      {isTrial && (
+        <p className="mt-3 flex items-start gap-1.5 rounded-xl border border-[#0066ff]/15 bg-[#0066ff]/8 px-3 py-2.5 text-[0.75rem] text-[#4da6ff]/80">
+          <ShieldIcon />
+          <span>30 Tage alle Pro-Features kostenlos. Keine Kreditkarte. Danach wählen Sie einen passenden Plan.</span>
+        </p>
+      )}
+
+      <p className="mt-5 text-center text-sm text-[var(--auth-text-muted)]">
         Bereits einen Account?{" "}
         <Link href="/login" className="font-semibold text-[#0066ff] hover:text-[#4da6ff] transition">
           Anmelden
         </Link>
       </p>
 
-      <p className="mt-4 text-center">
-        <a
-          href={process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app"}
-          className="text-xs text-[#3d4d66] hover:text-[#6b7a99] transition"
-        >
-          ← Zurück zur Website
-        </a>
-      </p>
     </AuthCard>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#07080f]"><div className="text-[#4a5568]">Laden…</div></div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[var(--auth-bg)]"><div className="text-[var(--auth-text-muted)]">Laden…</div></div>}>
       <RegisterForm />
     </Suspense>
   );

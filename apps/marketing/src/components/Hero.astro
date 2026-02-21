@@ -712,4 +712,101 @@ import { APP_URL } from '../config/urls';
       grid-template-columns: 1fr;
     }
   }
+
+  /* ── Light theme: browser mockup ─────────────────────────── */
+  html[data-theme="light"] .browser-mockup {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 40px 80px rgba(0, 0, 0, 0.12),
+      0 0 60px rgba(0, 102, 255, 0.06);
+  }
+
+  html[data-theme="light"] .browser-chrome {
+    background: #f3f4f6;
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+  }
+
+  html[data-theme="light"] .url-bar {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #9ca3af;
+  }
+
+  html[data-theme="light"] .dash-sidebar {
+    background: #f9fafb;
+    border-right-color: rgba(0, 0, 0, 0.07);
+  }
+
+  html[data-theme="light"] .dash-nav-icon {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  html[data-theme="light"] .dash-nav-active {
+    background: rgba(0, 102, 255, 0.08);
+  }
+
+  html[data-theme="light"] .dash-nav-active .dash-nav-icon {
+    background: rgba(0, 102, 255, 0.5);
+  }
+
+  html[data-theme="light"] .dash-nav-label {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  html[data-theme="light"] .dash-nav-active .dash-nav-label {
+    background: rgba(0, 102, 255, 0.3);
+  }
+
+  html[data-theme="light"] .dash-main {
+    background: #ffffff;
+  }
+
+  html[data-theme="light"] .dash-page-title {
+    background: rgba(0, 0, 0, 0.12);
+  }
+
+  html[data-theme="light"] .dash-stat {
+    background: #f9fafb;
+    border-color: rgba(0, 0, 0, 0.07);
+  }
+
+  html[data-theme="light"] .stat-label {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  html[data-theme="light"] .stat-change {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  html[data-theme="light"] .dash-table {
+    background: #f9fafb;
+    border-color: rgba(0, 0, 0, 0.07);
+  }
+
+  html[data-theme="light"] .table-header {
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom-color: rgba(0, 0, 0, 0.07);
+  }
+
+  html[data-theme="light"] .th {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  html[data-theme="light"] .table-row {
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+  }
+
+  html[data-theme="light"] .td-text {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  html[data-theme="light"] .td-badge {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  html[data-theme="light"] .scan-line {
+    display: none;
+  }
 </style>

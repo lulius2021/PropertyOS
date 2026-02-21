@@ -24,7 +24,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
+      {/* Anti-flash: read propgate-theme from localStorage before first paint */}
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var u=new URLSearchParams(window.location.search).get('theme');var s=localStorage.getItem('propgate-theme');var t=u||s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(u)localStorage.setItem('propgate-theme',u);document.documentElement.setAttribute('data-theme',t);}catch(e){}})()` }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <TRPCProvider>{children}</TRPCProvider>
       </body>
