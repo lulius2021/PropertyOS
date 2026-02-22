@@ -268,14 +268,14 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
       orderBy: { mahnDatum: "desc" },
     });
 
-    let empfohleneStudfe: Mahnstufe;
+    let empfohleneStufe: Mahnstufe;
 
     if (!letzteMahnung) {
       // Keine Mahnung vorhanden
       if (tageUeberfaellig >= 14) {
-        empfohleneStudfe = "MAHNUNG_1";
+        empfohleneStufe = "MAHNUNG_1";
       } else {
-        empfohleneStudfe = "ERINNERUNG";
+        empfohleneStufe = "ERINNERUNG";
       }
     } else {
       // Mahnung vorhanden, Eskalation prüfen
@@ -285,17 +285,17 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
       );
 
       if (letzteMahnung.mahnstufe === "ERINNERUNG" && tageUeberfaellig >= 14) {
-        empfohleneStudfe = "MAHNUNG_1";
+        empfohleneStufe = "MAHNUNG_1";
       } else if (
         letzteMahnung.mahnstufe === "MAHNUNG_1" &&
         tageUeberfaellig >= 28
       ) {
-        empfohleneStudfe = "MAHNUNG_2";
+        empfohleneStufe = "MAHNUNG_2";
       } else if (
         letzteMahnung.mahnstufe === "MAHNUNG_2" &&
         tageUeberfaellig >= 42
       ) {
-        empfohleneStudfe = "MAHNUNG_3";
+        empfohleneStufe = "MAHNUNG_3";
       } else {
         continue; // Noch keine Eskalation nötig
       }
