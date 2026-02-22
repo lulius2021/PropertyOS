@@ -108,18 +108,6 @@ function getAuthRateLimit(pathname: string): { limit: number; window: number } |
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirect logged-in users from / to /dashboard
-  if (pathname === "/") {
-    const sessionToken = request.cookies.get(
-      process.env.NODE_ENV === "production"
-        ? "__Secure-authjs.session-token"
-        : "authjs.session-token"
-    );
-    if (sessionToken) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-  }
-
   // Skip rate limiting in local development
   if (process.env.NODE_ENV === "development") {
     return NextResponse.next();
