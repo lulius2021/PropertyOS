@@ -302,9 +302,14 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
 
   // Handlungsbedarf Widget
   if (type === "handlungsbedarf") {
-    const hasAlerts = !isLoading && data?.unklareZahlungen > 0;
+    const items = [
+      { label: "Zahlungen unklar", count: data?.unklareZahlungen ?? 0, href: "/bank" },
+      { label: "Offene Tickets", count: data?.offeneTickets ?? 0, href: "/tickets" },
+      { label: "Offene Mahnungen", count: data?.offeneMahnungen ?? 0, href: "/mahnungen" },
+      { label: "Offene Sollstellungen", count: data?.offeneSollstellungen ?? 0, href: "/sollstellungen" },
+    ].filter((item) => item.count > 0);
 
-    if (!hasAlerts) {
+    if (!isLoading && items.length === 0) {
       return (
         <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex h-full items-center justify-center">
@@ -323,34 +328,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     }
 
     return (
-      <Link
-        href="/bank"
-        className="block h-full rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm transition-colors hover:bg-yellow-100"
-      >
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-yellow-700">Handlungsbedarf</p>
-              <p className={`mt-2 font-bold text-yellow-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
-                {data.unklareZahlungen}
-              </p>
-            </div>
-            <div className="ml-4 rounded-xl bg-yellow-200 p-3">
-              <svg className="h-5 w-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-          </div>
-          {!isSmall && (
-            <>
-              <p className="mt-1 text-sm text-yellow-700">Zahlungen nicht zugeordnet</p>
-              <p className="mt-3 text-sm font-medium text-yellow-800">
-                Jetzt in der Bank-Inbox zuordnen →
-              </p>
-            </>
-          )}
+      <div className="h-full rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-700">
+          Handlungsbedarf
+        </h3>
+        <div className="space-y-1">
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-yellow-100"
+            >
+              <span className="text-sm text-yellow-800">{item.label}</span>
+              <span className="text-sm font-bold text-yellow-900">{item.count}</span>
+            </Link>
+          ))}
         </div>
-      </Link>
+      </div>
     );
   }
 

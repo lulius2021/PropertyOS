@@ -316,7 +316,7 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
       objekt: mv.einheit.objekt,
       offenerBetrag: offenerBetrag.toNumber(),
       tageUeberfaellig,
-      empfohleneStudfe,
+      empfohleneStufe,
       letzteMahnung,
     });
   }

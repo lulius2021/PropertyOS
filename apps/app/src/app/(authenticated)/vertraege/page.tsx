@@ -1,21 +1,11 @@
 "use client";
 
 import { trpc } from "@/lib/trpc/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { FileText, Search, Calendar, Euro } from "lucide-react";
+import { FileText, Search, Calendar, Euro, Plus } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { NeuerVertragModal } from "@/components/vertraege/NeuerVertragModal";
 
 export default function VertraegePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +14,7 @@ export default function VertraegePage() {
   const [mieterTypFilter, setMieterTypFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("einzug");
   const [selectedObjekte, setSelectedObjekte] = useState<string[]>([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const { data: vertraege, isLoading } = trpc.vertraege.list.useQuery();
   const { data: stats } = trpc.vertraege.stats.useQuery();
@@ -86,63 +77,41 @@ export default function VertraegePage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "AKTIV":
-        return "bg-green-100 text-green-800";
-      case "UNTERSCHRIEBEN":
-        return "bg-blue-100 text-blue-800";
-      case "VERSANDT":
-        return "bg-purple-100 text-purple-800";
-      case "GENERIERT":
-        return "bg-yellow-100 text-yellow-800";
-      case "ENTWURF":
-        return "bg-gray-100 text-gray-800";
-      case "BEENDET":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+      case "AKTIV": return "bg-green-100 text-green-800";
+      case "UNTERSCHRIEBEN": return "bg-blue-100 text-blue-800";
+      case "VERSANDT": return "bg-purple-100 text-purple-800";
+      case "GENERIERT": return "bg-yellow-100 text-yellow-800";
+      case "ENTWURF": return "bg-gray-100 text-gray-800";
+      case "BEENDET": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "AKTIV":
-        return "Aktiv";
-      case "UNTERSCHRIEBEN":
-        return "Unterschrieben";
-      case "VERSANDT":
-        return "Versandt";
-      case "GENERIERT":
-        return "Generiert";
-      case "ENTWURF":
-        return "Entwurf";
-      case "BEENDET":
-        return "Beendet";
-      default:
-        return status;
+      case "AKTIV": return "Aktiv";
+      case "UNTERSCHRIEBEN": return "Unterschrieben";
+      case "VERSANDT": return "Versandt";
+      case "GENERIERT": return "Generiert";
+      case "ENTWURF": return "Entwurf";
+      case "BEENDET": return "Beendet";
+      default: return status;
     }
   };
 
   const getKautionStatusLabel = (status: string) => {
     switch (status) {
-      case "AUSSTEHEND":
-        return "Ausstehend";
-      case "TEILZAHLUNG":
-        return "Teilzahlung";
-      case "VOLLSTAENDIG":
-        return "Vollständig";
-      case "HINTERLEGT_BANK":
-        return "Bei Bank hinterlegt";
-      case "ZURUECKGEZAHLT":
-        return "Zurückgezahlt";
-      default:
-        return status;
+      case "AUSSTEHEND": return "Ausstehend";
+      case "TEILZAHLUNG": return "Teilzahlung";
+      case "VOLLSTAENDIG": return "Vollständig";
+      case "HINTERLEGT_BANK": return "Bei Bank hinterlegt";
+      case "ZURUECKGEZAHLT": return "Zurückgezahlt";
+      default: return status;
     }
   };
 
   const getMieterName = (mieter: any) => {
-    if (mieter.typ === "GEWERBE" && mieter.firma) {
-      return mieter.firma;
-    }
+    if (mieter.typ === "GEWERBE" && mieter.firma) return mieter.firma;
     return `${mieter.vorname || ""} ${mieter.nachname}`.trim();
   };
 
@@ -156,11 +125,20 @@ export default function VertraegePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Mietverträge</h1>
-        <p className="text-muted-foreground">
-          Verwalten Sie Ihre Mietverhältnisse und Verträge
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Mietverträge</h1>
+          <p className="text-muted-foreground">
+            Verwalten Sie Ihre Mietverhältnisse und Verträge
+          </p>
+        </div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4" />
+          Neuer Vertrag
+        </button>
       </div>
 
       {/* Statistics */}
@@ -353,15 +331,11 @@ export default function VertraegePage() {
                     <div className="font-medium text-gray-900">{v.kaltmiete} €</div>
                   </div>
                   <div>
-                    <div className="text-gray-600 mb-1">
-                      BK-Vorauszahlung
-                    </div>
+                    <div className="text-gray-600 mb-1">BK-Vorauszahlung</div>
                     <div className="font-medium text-gray-900">{v.bkVorauszahlung} €</div>
                   </div>
                   <div>
-                    <div className="text-gray-600 mb-1">
-                      HK-Vorauszahlung
-                    </div>
+                    <div className="text-gray-600 mb-1">HK-Vorauszahlung</div>
                     <div className="font-medium text-gray-900">{v.hkVorauszahlung} €</div>
                   </div>
                   <div>
@@ -420,11 +394,22 @@ export default function VertraegePage() {
 
       {filteredVertraege?.length === 0 && (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-8">
-          <div className="text-center text-gray-500">
-            Keine Mietverträge gefunden
+          <div className="text-center">
+            <FileText className="mx-auto h-10 w-10 text-gray-300 mb-3" />
+            <p className="text-gray-500 font-medium">Keine Mietverträge gefunden</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Legen Sie Ihr erstes Mietverhältnis mit dem Button oben rechts an.
+            </p>
           </div>
         </div>
       )}
+
+      {/* Modal */}
+      <NeuerVertragModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => {}}
+      />
     </div>
   );
 }

@@ -2,12 +2,15 @@
 
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
+import NeueSollstellungModal from "@/components/sollstellungen/NeueSollstellungModal";
 
 export default function SollstellungenPage() {
   const [statusFilter, setStatusFilter] = useState<
     "OFFEN" | "TEILWEISE_BEZAHLT" | "BEZAHLT" | "STORNIERT" | undefined
   >();
+  const [showModal, setShowModal] = useState(false);
 
+  const utils = trpc.useUtils();
   const { data: sollstellungen, isLoading } =
     trpc.sollstellungen.list.useQuery({ status: statusFilter });
   const { data: stats } = trpc.sollstellungen.stats.useQuery();
@@ -25,7 +28,10 @@ export default function SollstellungenPage() {
             Verwaltung aller Zahlungsforderungen
           </p>
         </div>
-        <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+        <button
+          onClick={() => setShowModal(true)}
+          className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+        >
           + Neue Sollstellung
         </button>
       </div>
@@ -197,6 +203,16 @@ export default function SollstellungenPage() {
           </table>
         </div>
       )}
+
+      <NeueSollstellungModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onSuccess={() => {
+          setShowModal(false);
+          void utils.sollstellungen.list.invalidate();
+          void utils.sollstellungen.stats.invalidate();
+        }}
+      />
     </div>
   );
 }

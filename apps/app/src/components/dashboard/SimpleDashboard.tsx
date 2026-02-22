@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Responsive, WidthProvider, Layout } from "react-grid-layout";
 import { Widget } from "./widgets/Widget";
 import { WidgetLibrary } from "./WidgetLibrary";
+import { VerlaufModal } from "./VerlaufModal";
 import { WIDGET_DEFINITIONS } from "./widgets/definitions";
 import { WidgetType, WidgetSize } from "./widgets/types";
 import "react-grid-layout/css/styles.css";
@@ -57,6 +58,7 @@ export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS);
   const [isEditing, setIsEditing] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
+  const [verlaufWidget, setVerlaufWidget] = useState<{ type: string; name: string } | null>(null);
 
   // Layout für react-grid-layout mit FESTEN Größen
   const layout: Layout[] = useMemo(
@@ -195,46 +197,58 @@ export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {
           containerPadding={[0, 0]}
           draggableCancel=".no-drag"
         >
-          {widgets.map((widget) => (
-            <div key={widget.i} className="relative">
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  pointerEvents: isEditing ? 'none' : 'auto'
-                }}
-              >
-                <Widget type={widget.type as any} size={widget.size} data={data} isLoading={isLoading} />
-              </div>
-              {isEditing && (
-                <>
-                  {/* Overlay um Klicks zu blockieren */}
-                  <div
-                    className="absolute inset-0 cursor-move"
-                    style={{ pointerEvents: 'auto' }}
-                  />
-                  {/* X-Button */}
+          {widgets.map((widget) => {
+            const widgetName = WIDGET_DEFINITIONS.find((d) => d.type === widget.type)?.name ?? widget.type;
+            return (
+              /*
+               * [&>div]:pb-10 adds bottom-padding to Widget's own card div (the direct child),
+               * so the card visually extends 40px at the bottom — that's where the Verlauf
+               * button sits. The button is INSIDE the card border, not outside it.
+               */
+              <div key={widget.i} className={`relative ${!isEditing ? "[&>div]:pb-10" : ""}`}>
+                <Widget
+                  type={widget.type as any}
+                  size={widget.size}
+                  data={data}
+                  isLoading={isLoading}
+                />
+
+                {/* Verlauf button — inside the card's padded bottom area */}
+                {!isEditing && (
                   <button
+                    className="no-drag absolute bottom-2.5 left-1/2 z-10 -translate-x-1/2 flex items-center gap-1.5 rounded-full border border-gray-300 bg-white/95 px-3 py-1 text-xs font-semibold text-gray-600 shadow transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleRemoveWidget(widget.i);
-                    }}
-                    className="no-drag z-20 rounded-full bg-red-500 p-2 text-white shadow-lg hover:bg-red-600 transition-all hover:scale-110"
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      pointerEvents: 'auto'
+                      setVerlaufWidget({ type: widget.type, name: widgetName });
                     }}
                   >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                    Verlauf
                   </button>
-                </>
-              )}
-            </div>
-          ))}
+                )}
+
+                {isEditing && (
+                  <>
+                    <div className="absolute inset-0 z-10 cursor-move" style={{ pointerEvents: "auto" }} />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveWidget(widget.i);
+                      }}
+                      className="no-drag absolute right-2 top-2 z-20 rounded-full bg-red-500 p-2 text-white shadow-lg transition-all hover:scale-110 hover:bg-red-600"
+                      style={{ pointerEvents: "auto" }}
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </div>
+            );
+          })}
         </ResponsiveGridLayout>
       </div>
 
@@ -245,6 +259,15 @@ export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {
         onAdd={handleAddWidget}
         activeWidgets={activeWidgetTypes}
       />
+
+      {/* Verlauf Modal */}
+      {verlaufWidget && (
+        <VerlaufModal
+          widgetTyp={verlaufWidget.type}
+          widgetName={verlaufWidget.name}
+          onClose={() => setVerlaufWidget(null)}
+        />
+      )}
     </div>
   );
 }

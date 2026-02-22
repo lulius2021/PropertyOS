@@ -46,6 +46,16 @@ export const reportingRouter = router({
       where: { tenantId, status: "UNKLAR" },
     });
 
+    // Offene Mahnungen
+    const offeneMahnungen = await db.mahnung.count({
+      where: { tenantId, status: "OFFEN" },
+    });
+
+    // Offene Sollstellungen (Anzahl)
+    const offeneSollstellungenCount = await db.sollstellung.count({
+      where: { tenantId, status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] } },
+    });
+
     return {
       objekte: objekteCount,
       einheiten: {
@@ -56,6 +66,8 @@ export const reportingRouter = router({
       rueckstaende: rueckstaende.toFixed(2),
       offeneTickets,
       unklareZahlungen,
+      offeneMahnungen,
+      offeneSollstellungen: offeneSollstellungenCount,
     };
   }),
 

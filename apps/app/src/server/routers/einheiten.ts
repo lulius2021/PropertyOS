@@ -133,6 +133,45 @@ export const einheitenRouter = router({
       return einheit;
     }),
 
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        einheitNr: z.string().min(1).optional(),
+        typ: z.enum(["WOHNUNG", "GEWERBE", "STELLPLATZ", "LAGER"]).optional(),
+        flaeche: z.number().positive().optional(),
+        zimmer: z.number().int().positive().optional().nullable(),
+        etage: z.number().int().optional().nullable(),
+        ausstattung: z.string().optional().nullable(),
+        eurProQm: z.number().optional().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+
+      const old = await ctx.db.einheit.findFirst({
+        where: { id, tenantId: ctx.tenantId },
+      });
+      if (!old) throw new Error("Einheit nicht gefunden");
+
+      const einheit = await ctx.db.einheit.update({
+        where: { id },
+        data,
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "EINHEIT_GEAENDERT",
+        entitaet: "Einheit",
+        entitaetId: id,
+        altWert: old,
+        neuWert: einheit,
+      });
+
+      return einheit;
+    }),
+
   updateStatus: protectedProcedure
     .input(
       z.object({

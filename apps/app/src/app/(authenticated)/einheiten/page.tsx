@@ -1,24 +1,31 @@
 "use client";
 
 import { trpc } from "@/lib/trpc/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Building2, Search } from "lucide-react";
+import { Building2, Plus, Pencil, Search } from "lucide-react";
 import { useState } from "react";
+import { NeueEinheitModal } from "@/components/einheiten/NeueEinheitModal";
+import { EinheitBearbeitenModal } from "@/components/einheiten/EinheitBearbeitenModal";
+
+type Einheit = {
+  id: string;
+  einheitNr: string;
+  typ: "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER";
+  flaeche: string;
+  zimmer?: number | null;
+  etage?: number | null;
+  eurProQm?: string | null;
+  ausstattung?: string | null;
+  status: string;
+  objektId: string | null;
+  objekt?: { bezeichnung: string } | null;
+};
 
 export default function EinheitenPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedObjekte, setSelectedObjekte] = useState<string[]>([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingEinheit, setEditingEinheit] = useState<Einheit | null>(null);
 
   const { data: einheiten, isLoading } = trpc.einheiten.list.useQuery({});
   const { data: stats } = trpc.einheiten.stats.useQuery(undefined);
@@ -68,33 +75,22 @@ export default function EinheitenPage() {
 
   const getTypLabel = (typ: string) => {
     switch (typ) {
-      case "WOHNUNG":
-        return "Wohnung";
-      case "GEWERBE":
-        return "Gewerbe";
-      case "STELLPLATZ":
-        return "Stellplatz";
-      case "LAGER":
-        return "Lager";
-      default:
-        return typ;
+      case "WOHNUNG": return "Wohnung";
+      case "GEWERBE": return "Gewerbe";
+      case "STELLPLATZ": return "Stellplatz";
+      case "LAGER": return "Lager";
+      default: return typ;
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "VERMIETET":
-        return "Vermietet";
-      case "VERFUEGBAR":
-        return "Verfügbar";
-      case "KUENDIGUNG":
-        return "Kündigung";
-      case "SANIERUNG":
-        return "Sanierung";
-      case "RESERVIERT":
-        return "Reserviert";
-      default:
-        return status;
+      case "VERMIETET": return "Vermietet";
+      case "VERFUEGBAR": return "Verfügbar";
+      case "KUENDIGUNG": return "Kündigung";
+      case "SANIERUNG": return "Sanierung";
+      case "RESERVIERT": return "Reserviert";
+      default: return status;
     }
   };
 
@@ -108,11 +104,20 @@ export default function EinheitenPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Einheiten</h1>
-        <p className="text-muted-foreground">
-          Verwalten Sie Ihre Wohn- und Gewerbeeinheiten
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Einheiten</h1>
+          <p className="text-muted-foreground">
+            Verwalten Sie Ihre Wohn- und Gewerbeeinheiten
+          </p>
+        </div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          <Plus className="h-4 w-4" />
+          Neue Einheit
+        </button>
       </div>
 
       {/* Statistics */}
@@ -272,9 +277,16 @@ export default function EinheitenPage() {
                   </div>
                 )}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <button className="w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2">
+                <button className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   Details ansehen
+                </button>
+                <button
+                  onClick={() => setEditingEinheit(einheit as Einheit)}
+                  className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Bearbeiten
                 </button>
               </div>
             </div>
@@ -284,11 +296,28 @@ export default function EinheitenPage() {
 
       {filteredEinheiten?.length === 0 && (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-8">
-          <div className="text-center text-gray-500">
-            Keine Einheiten gefunden
+          <div className="text-center">
+            <Building2 className="mx-auto h-10 w-10 text-gray-300 mb-3" />
+            <p className="text-gray-500 font-medium">Keine Einheiten gefunden</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Erstellen Sie Ihre erste Einheit mit dem Button oben rechts.
+            </p>
           </div>
         </div>
       )}
+
+      {/* Modals */}
+      <NeueEinheitModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={() => {}}
+      />
+      <EinheitBearbeitenModal
+        isOpen={editingEinheit !== null}
+        einheit={editingEinheit}
+        onClose={() => setEditingEinheit(null)}
+        onSuccess={() => {}}
+      />
     </div>
   );
 }

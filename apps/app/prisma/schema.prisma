@@ -37,6 +37,7 @@ model Tenant {
   zeiterfassung         Zeiterfassung[]
   zaehler               Zaehler[]
   kredite               Kredit[]
+  kpiSnapshots          KPISnapshot[]
 
   @@map("tenants")
 }
@@ -908,6 +909,24 @@ model Kredit {
   @@index([tenantId])
   @@index([objektId])
   @@map("kredite")
+}
+
+// ============================================
+// KPI SNAPSHOTS (Dashboard-Verlauf)
+// ============================================
+
+model KPISnapshot {
+  id        String   @id @default(cuid())
+  tenantId  String
+  widgetTyp String   // z.B. "rueckstaende", "tickets", "vermietungsquote"
+  wertText  String   // Angezeigter Wert, z.B. "€5.320,00" oder "93 %"
+  wertZahl  Float?   // Numerischer Wert für Vergleich & Trend
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, widgetTyp, createdAt])
+  @@map("kpi_snapshots")
 }
 
 model Sondertilgung {

@@ -42,36 +42,32 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
     },
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validierung
+  const handleFileSelect = (file: File) => {
     if (!file.type.startsWith("image/")) {
-      alert("Bitte wählen Sie eine Bilddatei aus.");
       return;
     }
-
     if (file.size > 5 * 1024 * 1024) {
-      alert("Bild ist zu groß. Maximale Größe: 5MB");
       return;
     }
 
     setIsUploading(true);
 
-    // Bild zu Base64 konvertieren
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64String = reader.result as string;
       setImagePreview(base64String);
-      setFormData({ ...formData, bildUrl: base64String });
+      setFormData((prev) => ({ ...prev, bildUrl: base64String }));
       setIsUploading(false);
     };
     reader.onerror = () => {
-      alert("Fehler beim Laden des Bildes");
       setIsUploading(false);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileSelect(file);
   };
 
   const handleRemoveImage = () => {
@@ -116,9 +112,9 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Grunddaten */}
+          {/* Stammdaten */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Grunddaten</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Stammdaten</h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -134,6 +130,42 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Objektart <span className="text-red-500">*</span>
+                </label>
+                <select
+                  required
+                  value={formData.objektart}
+                  onChange={(e) => setFormData({ ...formData, objektart: e.target.value as any })}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="WOHNHAUS">Wohnhaus</option>
+                  <option value="GEWERBE">Gewerbe</option>
+                  <option value="GEMISCHT">Gemischt</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gesamtfläche (m²)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.gesamtflaeche}
+                  onChange={(e) => setFormData({ ...formData, gesamtflaeche: e.target.value })}
+                  placeholder="z.B. 450.50"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Adresse */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2 mt-4">Adresse</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Straße <span className="text-red-500">*</span>
@@ -175,49 +207,27 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Objektart <span className="text-red-500">*</span>
-                </label>
-                <select
-                  required
-                  value={formData.objektart}
-                  onChange={(e) => setFormData({ ...formData, objektart: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="WOHNHAUS">Wohnhaus</option>
-                  <option value="GEWERBE">Gewerbe</option>
-                  <option value="GEMISCHT">Gemischt</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Gesamtfläche (m²)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.gesamtflaeche}
-                  onChange={(e) => setFormData({ ...formData, gesamtflaeche: e.target.value })}
-                  placeholder="z.B. 450.50"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
             </div>
           </div>
 
-          {/* Bild */}
+          {/* Medien */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Bild</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2 mt-4">Medien</h3>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Objekt-Bild hochladen
               </label>
 
               {!imagePreview ? (
-                <div className="flex items-center justify-center w-full">
+                <div
+                  className="flex items-center justify-center w-full"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleFileSelect(file);
+                  }}
+                >
                   <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,7 +252,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   <img
                     src={imagePreview}
                     alt="Vorschau"
-                    className="w-full h-48 rounded-xl object-cover border border-gray-200"
+                    className="w-full max-h-40 rounded-xl object-contain border border-gray-200"
                   />
                   <button
                     type="button"

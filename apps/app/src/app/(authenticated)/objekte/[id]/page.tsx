@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc/client";
 import { ObjektImage } from "@/components/objekte/ObjektImage";
 import { ErweiterterObjektModal } from "@/components/objekte/ErweiterterObjektModal";
-import { MieterZuObjektHinzufuegenModal } from "@/components/mieter/MieterZuObjektHinzufuegenModal";
+import { NeueEinheitModal } from "@/components/einheiten/NeueEinheitModal";
 
 export default function ObjektDetailPage() {
   const params = useParams();
@@ -13,7 +13,7 @@ export default function ObjektDetailPage() {
   const utils = trpc.useUtils();
   const objektId = params.id as string;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMieterModalOpen, setIsMieterModalOpen] = useState(false);
+  const [isEinheitModalOpen, setIsEinheitModalOpen] = useState(false);
 
   const { data: objekt, isLoading } = trpc.objekte.getById.useQuery({ id: objektId });
 
@@ -41,15 +41,37 @@ export default function ObjektDetailPage() {
     );
   }
 
-  // Sammle alle Mieter aus den Einheiten
-  const alleMieter = objekt.einheiten.flatMap((einheit) =>
-    einheit.mietverhaeltnisse.map((mv) => ({
-      ...mv.mieter,
-      einheitNr: einheit.einheitNr,
-      einheitId: einheit.id,
-      mietbeginn: mv.einzugsdatum,
-    }))
-  );
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "VERMIETET":
+        return "bg-green-100 text-green-800";
+      case "VERFUEGBAR":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "VERMIETET": return "Vermietet";
+      case "VERFUEGBAR": return "Verfügbar";
+      case "KUENDIGUNG": return "Kündigung";
+      case "SANIERUNG": return "Sanierung";
+      case "RESERVIERT": return "Reserviert";
+      default: return status;
+    }
+  };
+
+  const getTypLabel = (typ: string) => {
+    switch (typ) {
+      case "WOHNUNG": return "Wohnung";
+      case "GEWERBE": return "Gewerbe";
+      case "STELLPLATZ": return "Stellplatz";
+      case "LAGER": return "Lager";
+      default: return typ;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -82,7 +104,7 @@ export default function ObjektDetailPage() {
                 <p className="mt-1 text-lg text-gray-600">
                   {objekt.strasse}, {objekt.plz} {objekt.ort}
                 </p>
-                <div className="mt-3 flex items-center gap-4">
+                <div className="mt-3 flex flex-wrap items-center gap-4">
                   <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
                     {objekt.objektart}
                   </span>
@@ -92,6 +114,16 @@ export default function ObjektDetailPage() {
                   {objekt.gesamtflaeche && (
                     <span className="text-sm text-gray-600">
                       {objekt.gesamtflaeche.toString()} m²
+                    </span>
+                  )}
+                  {objekt.baujahr && (
+                    <span className="text-sm text-gray-600">
+                      Baujahr {objekt.baujahr}
+                    </span>
+                  )}
+                  {objekt.heizungsart && (
+                    <span className="text-sm text-gray-600">
+                      {objekt.heizungsart}
                     </span>
                   )}
                 </div>
@@ -114,7 +146,7 @@ export default function ObjektDetailPage() {
           </div>
         </div>
 
-        {/* Objektdaten */}
+        {/* Notizen */}
         {objekt.notizen && (
           <div className="px-6 py-4">
             <h3 className="text-sm font-medium text-gray-700">Notizen</h3>
@@ -123,111 +155,109 @@ export default function ObjektDetailPage() {
         )}
       </div>
 
-      {/* Mieterübersicht */}
+      {/* Einheiten */}
       <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">
-              Mieter in diesem Objekt ({alleMieter.length})
+              Einheiten ({objekt.einheiten.length})
             </h2>
             <button
-              onClick={() => setIsMieterModalOpen(true)}
-              className="flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+              onClick={() => setIsEinheitModalOpen(true)}
+              className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>
-              Mieter hinzufügen
+              Neue Einheit
             </button>
           </div>
         </div>
 
-        {alleMieter.length === 0 ? (
+        {objekt.einheiten.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">Keine aktiven Mietverhältnisse</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">Keine Einheiten vorhanden</h3>
             <p className="mt-1 text-sm text-gray-500">
-              In diesem Objekt gibt es derzeit keine aktiven Mieter.
+              Erstellen Sie die erste Einheit für dieses Objekt.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-200">
-            {alleMieter.map((mieter) => (
-              <div
-                key={`${mieter.id}-${mieter.einheitId}`}
-                className="px-6 py-4 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4">
-                    {/* Avatar */}
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                      <span className="text-lg font-semibold">
-                        {mieter.vorname?.[0] || mieter.nachname[0]}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900">
-                        {mieter.typ === "GESCHAEFTLICH" && mieter.firma ? (
-                          <>
-                            {mieter.firma}
-                            {mieter.vorname && mieter.nachname && (
-                              <span className="ml-2 text-sm text-gray-500">
-                                ({mieter.vorname} {mieter.nachname})
-                              </span>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            {mieter.anrede && `${mieter.anrede} `}
-                            {mieter.vorname} {mieter.nachname}
-                          </>
-                        )}
-                      </h3>
-                      <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                            />
-                          </svg>
-                          <span>Einheit {mieter.einheitNr}</span>
-                        </div>
-                        {mieter.mietbeginn && (
-                          <>
-                            <span className="text-gray-400">•</span>
-                            <span>
-                              Seit {new Date(mieter.mietbeginn).toLocaleDateString("de-DE")}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      {mieter.email && (
-                        <p className="mt-1 text-sm text-gray-500">{mieter.email}</p>
-                      )}
-                      {mieter.telefon && (
-                        <p className="mt-1 text-sm text-gray-500">{mieter.telefon}</p>
-                      )}
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => router.push(`/mieter/${mieter.id}`)}
-                    className="text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    Details →
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Einheit-Nr
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Typ
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Fläche
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Zimmer
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Aktueller Mieter
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {objekt.einheiten.map((einheit) => {
+                  const aktiveMV = einheit.mietverhaeltnisse?.find(
+                    (mv) => !mv.auszugsdatum
+                  );
+                  const mieterName = aktiveMV
+                    ? aktiveMV.mieter.firma
+                      ? aktiveMV.mieter.firma
+                      : `${aktiveMV.mieter.vorname ?? ""} ${aktiveMV.mieter.nachname}`.trim()
+                    : "Leer";
+
+                  return (
+                    <tr
+                      key={einheit.id}
+                      onClick={() => router.push(`/einheiten/${einheit.id}`)}
+                      className="cursor-pointer hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                        {einheit.einheitNr}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                        {getTypLabel(einheit.typ)}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                        {einheit.flaeche.toString()} m²
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                        {einheit.zimmer ?? "–"}
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(einheit.status)}`}
+                        >
+                          {getStatusLabel(einheit.status)}
+                        </span>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                        {mieterName}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
@@ -237,21 +267,19 @@ export default function ObjektDetailPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          // Refresh die Daten
           utils.objekte.getById.invalidate({ id: objektId });
         }}
         objektId={objektId}
       />
 
-      {/* Mieter hinzufügen Modal */}
-      <MieterZuObjektHinzufuegenModal
-        isOpen={isMieterModalOpen}
-        onClose={() => setIsMieterModalOpen(false)}
+      {/* Neue Einheit Modal */}
+      <NeueEinheitModal
+        isOpen={isEinheitModalOpen}
+        onClose={() => setIsEinheitModalOpen(false)}
         onSuccess={() => {
-          // Refresh die Daten
           utils.objekte.getById.invalidate({ id: objektId });
         }}
-        objektId={objektId}
+        defaultObjektId={objekt.id}
       />
     </div>
   );

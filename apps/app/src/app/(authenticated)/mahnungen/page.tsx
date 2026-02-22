@@ -1,10 +1,19 @@
 "use client";
 
 import { trpc } from "@/lib/trpc/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const MAHNSTUFE_LABELS: Record<string, string> = {
+  ERINNERUNG: "Zahlungserinnerung",
+  MAHNUNG_1: "1. Mahnung",
+  MAHNUNG_2: "2. Mahnung",
+  MAHNUNG_3: "3. Mahnung (letzte)",
+};
 
 export default function MahnungenPage() {
   const [showVorschlaege, setShowVorschlaege] = useState(true);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const { data: mahnungen, isLoading, refetch } = trpc.mahnungen.list.useQuery();
   const { data: vorschlaege, isLoading: vorschlaegeLoading } =
@@ -17,24 +26,43 @@ export default function MahnungenPage() {
     },
   });
 
+  // Auto-clear success message after 3 seconds
+  useEffect(() => {
+    if (successMsg) {
+      const timer = setTimeout(() => setSuccessMsg(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMsg]);
+
+  // Auto-clear error message after 5 seconds
+  useEffect(() => {
+    if (errorMsg) {
+      const timer = setTimeout(() => setErrorMsg(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg]);
+
   const handleErstellen = async (
     mietverhaeltnisId: string,
     mahnstufe: "ERINNERUNG" | "MAHNUNG_1" | "MAHNUNG_2" | "MAHNUNG_3"
   ) => {
+    const label = MAHNSTUFE_LABELS[mahnstufe] ?? mahnstufe;
     if (
       confirm(
-        `Möchten Sie wirklich eine ${mahnstufe} für dieses Mietverhältnis erstellen?`
+        `Möchten Sie wirklich eine ${label} für dieses Mietverhältnis erstellen?`
       )
     ) {
+      setSuccessMsg("");
+      setErrorMsg("");
       try {
         await erstellenMutation.mutateAsync({
           mietverhaeltnisId,
           mahnstufe,
           dokumentGenerieren: true,
         });
-        alert("Mahnung erfolgreich erstellt!");
+        setSuccessMsg(`${label} erfolgreich erstellt!`);
       } catch (error) {
-        alert(`Fehler: ${(error as Error).message}`);
+        setErrorMsg(`Fehler: ${(error as Error).message}`);
       }
     }
   };
@@ -53,6 +81,20 @@ export default function MahnungenPage() {
           </p>
         </div>
       </div>
+
+      {/* Inline Success Banner */}
+      {successMsg && (
+        <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+          <p className="text-sm font-medium text-green-800">{successMsg}</p>
+        </div>
+      )}
+
+      {/* Inline Error Banner */}
+      {errorMsg && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+          <p className="text-sm font-medium text-red-800">{errorMsg}</p>
+        </div>
+      )}
 
       {/* Statistiken */}
       {stats && (
@@ -163,7 +205,7 @@ export default function MahnungenPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {vorschlag.empfohleneStufe}
+                      {MAHNSTUFE_LABELS[vorschlag.empfohleneStufe] ?? vorschlag.empfohleneStufe}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
@@ -227,7 +269,7 @@ export default function MahnungenPage() {
                 {mahnungen?.map((mahnung: any) => (
                   <tr key={mahnung.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
-                      {mahnung.mahnstufe}
+                      {MAHNSTUFE_LABELS[mahnung.mahnstufe] ?? mahnung.mahnstufe}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {new Date(mahnung.mahnDatum).toLocaleDateString("de-DE")}
@@ -253,7 +295,7 @@ export default function MahnungenPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {mahnung.dokumentGeneriert ? (
-                        <span className="text-green-600">✓ Generiert</span>
+                        <span className="text-green-600">Generiert</span>
                       ) : (
                         <span className="text-gray-400">Nicht generiert</span>
                       )}

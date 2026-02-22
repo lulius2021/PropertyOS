@@ -1060,6 +1060,458 @@ export const statistikRouter = router({
     }),
 
   // =========================================================================
+  // 14) KPI SNAPSHOTS speichern (wird beim Dashboard-Laden getriggert)
+  // =========================================================================
+  saveSnapshots: protectedProcedure.mutation(async ({ ctx }) => {
+    const tenantId = ctx.tenantId;
+    const now = new Date();
+    const yearStart = new Date(now.getFullYear(), 0, 1);
+    const yearEnd   = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
+
+    const fmt = (n: number) =>
+      new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
+    const pct = (n: number) => `${n.toFixed(1)} %`;
+    const num = (n: number) => n.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+
+    // Alle benötigten Werte parallel abfragen
+    const [
+      objekteCount,
+      einheitenAll,
+      mvFluktuationsCount,
+      sollAgg,
+      istAgg,
+      rueckstandAgg,
+      cashEin,
+      cashAus,
+      kostenAgg,
+      kostenFlaecheAgg,
+      aktiveMV,
+      offeneTickets,
+      kritTickets,
+      kreditRateAgg,
+      zaehlerCount,
+      zaehlerMitAblesung,
+      unklareZ,
+    ] = await Promise.all([
+      ctx.db.objekt.count({ where: { tenantId } }),
+      ctx.db.einheit.findMany({ where: { tenantId }, select: { status: true, flaeche: true } }),
+      ctx.db.mietverhaeltnis.count({
+        where: { tenantId, auszugsdatum: { gte: yearStart, lte: yearEnd } },
+      }),
+      ctx.db.sollstellung.aggregate({
+        where: { tenantId, status: { not: "STORNIERT" } },
+        _sum: { betragGesamt: true },
+      }),
+      ctx.db.sollstellung.aggregate({
+        where: { tenantId, status: { not: "STORNIERT" } },
+        _sum: { gedecktGesamt: true },
+      }),
+      ctx.db.sollstellung.aggregate({
+        where: { tenantId, status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] } },
+        _sum: { betragGesamt: true, gedecktGesamt: true },
+      }),
+      ctx.db.zahlung.aggregate({
+        where: { tenantId, status: { in: ["ZUGEORDNET", "TEILWEISE_ZUGEORDNET", "SPLITTET"] } },
+        _sum: { betrag: true },
+      }),
+      ctx.db.kosten.aggregate({ where: { tenantId }, _sum: { betragBrutto: true } }),
+      ctx.db.kosten.aggregate({ where: { tenantId, datum: { gte: yearStart, lte: yearEnd } }, _sum: { betragBrutto: true } }),
+      ctx.db.einheit.aggregate({ where: { tenantId }, _sum: { flaeche: true } }),
+      ctx.db.mietverhaeltnis.findMany({
+        where: { tenantId, auszugsdatum: null },
+        select: { kaltmiete: true, einheit: { select: { flaeche: true } } },
+      }),
+      ctx.db.ticket.count({ where: { tenantId, status: { not: "ABGESCHLOSSEN" } } }),
+      ctx.db.ticket.count({ where: { tenantId, status: { not: "ABGESCHLOSSEN" }, prioritaet: { in: ["HOCH", "KRITISCH"] } } }),
+      ctx.db.kredit.aggregate({ where: { tenantId }, _sum: { rate: true } }),
+      ctx.db.zaehler.count({ where: { tenantId } }),
+      ctx.db.zaehlerstand.groupBy({
+        by: ["zaehlerId"],
+        where: { tenantId, datum: { gte: new Date(now.getFullYear(), now.getMonth() - 3, 1) } },
+        _count: { id: true },
+      }),
+      ctx.db.zahlung.count({ where: { tenantId, status: "UNKLAR" } }),
+    ]);
+
+    // Berechnungen
+    const einheitenGesamt   = einheitenAll.length;
+    const einheitenVermietet= einheitenAll.filter(e => e.status === "VERMIETET").length;
+    const einheitenLeer     = einheitenGesamt - einheitenVermietet;
+    const gesamtFlaeche     = d2n(kostenFlaecheAgg._sum.flaeche);
+
+    const soll         = d2n(sollAgg._sum.betragGesamt);
+    const ist          = d2n(istAgg._sum.gedecktGesamt);
+    const rueckstaende = d2n(rueckstandAgg._sum.betragGesamt) - d2n(rueckstandAgg._sum.gedecktGesamt);
+    const cashflow     = d2n(cashEin._sum.betrag) - d2n(cashAus._sum.betragBrutto);
+    const debtService  = d2n(kreditRateAgg._sum.rate);
+    const cashflowND   = cashflow - debtService;
+    const kostenJahr   = d2n(kostenAgg._sum.betragBrutto);
+    const kostenProQm  = gesamtFlaeche > 0 ? parseFloat((kostenJahr / gesamtFlaeche).toFixed(2)) : 0;
+
+    const vermietungsquote  = pct(einheitenGesamt > 0 ? (einheitenVermietet / einheitenGesamt) * 100 : 0);
+    const leerstandsquote   = pct(einheitenGesamt > 0 ? (einheitenLeer / einheitenGesamt) * 100 : 0);
+    const fluktuationsquote = pct(einheitenGesamt > 0 ? (mvFluktuationsCount / einheitenGesamt) * 100 : 0);
+    const einzugsquote      = pct(soll > 0 ? (ist / soll) * 100 : 0);
+
+    const gesamtKaltmiete   = aktiveMV.reduce((s, mv) => s + d2n(mv.kaltmiete), 0);
+    const aktiveMVFlaeche   = aktiveMV.reduce((s, mv) => s + d2n(mv.einheit?.flaeche ?? 0), 0);
+    const kaltmieteProQm    = aktiveMVFlaeche > 0 ? parseFloat((gesamtKaltmiete / aktiveMVFlaeche).toFixed(2)) : 0;
+
+    const zaehlerMitAblesungCount = zaehlerMitAblesung.length;
+    const zaehlerVollstaendigkeitPct = zaehlerCount > 0
+      ? parseFloat(((zaehlerMitAblesungCount / zaehlerCount) * 100).toFixed(1)) : 100;
+
+    // Ertragsverlust Leerstand: leere Einheiten * avgKaltmieteProQm * avgFlaeche
+    const avgKaltmieteProQm = kaltmieteProQm;
+    const avgLeereFlaeche   = einheitenLeer > 0
+      ? einheitenAll.filter(e => e.status !== "VERMIETET").reduce((s, e) => s + d2n(e.flaeche), 0) / einheitenLeer
+      : 0;
+    const ertragsverlust    = einheitenLeer * avgKaltmieteProQm * avgLeereFlaeche;
+
+    const snapshots: { widgetTyp: string; wertText: string; wertZahl: number }[] = [
+      // Kern-KPIs
+      { widgetTyp: "objekte",              wertText: String(objekteCount),        wertZahl: objekteCount },
+      { widgetTyp: "einheiten",            wertText: String(einheitenGesamt),     wertZahl: einheitenGesamt },
+      { widgetTyp: "rueckstaende",         wertText: fmt(rueckstaende),           wertZahl: rueckstaende },
+      { widgetTyp: "tickets",              wertText: String(offeneTickets),       wertZahl: offeneTickets },
+      // Vermietung
+      { widgetTyp: "vermietungsquote",     wertText: vermietungsquote,            wertZahl: parseFloat(vermietungsquote) },
+      { widgetTyp: "belegungsquote",       wertText: vermietungsquote,            wertZahl: parseFloat(vermietungsquote) },
+      { widgetTyp: "leerstandsquote",      wertText: leerstandsquote,             wertZahl: parseFloat(leerstandsquote) },
+      { widgetTyp: "fluktuationsquote",    wertText: fluktuationsquote,           wertZahl: parseFloat(fluktuationsquote) },
+      { widgetTyp: "ertragsverlustLeerstand", wertText: fmt(ertragsverlust),     wertZahl: ertragsverlust },
+      { widgetTyp: "leerstandsdauer",      wertText: `${einheitenLeer} leer`,    wertZahl: einheitenLeer },
+      // Soll/Ist
+      { widgetTyp: "sollstellungen",       wertText: fmt(soll),                  wertZahl: soll },
+      { widgetTyp: "istzahlungen",         wertText: fmt(ist),                   wertZahl: ist },
+      { widgetTyp: "einzugsquote",         wertText: einzugsquote,               wertZahl: parseFloat(einzugsquote) },
+      { widgetTyp: "mietrueckstaende",     wertText: fmt(rueckstaende),          wertZahl: rueckstaende },
+      { widgetTyp: "agingRueckstaende",    wertText: fmt(rueckstaende),          wertZahl: rueckstaende },
+      { widgetTyp: "zahlungsverzug",       wertText: fmt(rueckstaende),          wertZahl: rueckstaende },
+      // Cashflow
+      { widgetTyp: "operativerCashflow",   wertText: fmt(cashflow),              wertZahl: cashflow },
+      { widgetTyp: "cashflowNachDebt",     wertText: fmt(cashflowND),            wertZahl: cashflowND },
+      { widgetTyp: "debtService",          wertText: fmt(debtService),           wertZahl: debtService },
+      // Kosten
+      { widgetTyp: "kostenGesamt",         wertText: fmt(kostenJahr),            wertZahl: kostenJahr },
+      { widgetTyp: "kostenProQm",          wertText: `${num(kostenProQm)} €/m²`, wertZahl: kostenProQm },
+      { widgetTyp: "kostenNachKategorie",  wertText: fmt(kostenJahr),            wertZahl: kostenJahr },
+      { widgetTyp: "kostenVerlauf",        wertText: fmt(kostenJahr),            wertZahl: kostenJahr },
+      // Miete
+      { widgetTyp: "kaltmieteProQm",       wertText: `${num(kaltmieteProQm)} €/m²`, wertZahl: kaltmieteProQm },
+      { widgetTyp: "gesamtMiete",          wertText: fmt(gesamtKaltmiete),       wertZahl: gesamtKaltmiete },
+      // Tickets
+      { widgetTyp: "ticketsPrioritaet",    wertText: `${kritTickets} kritisch`,  wertZahl: kritTickets },
+      { widgetTyp: "ticketBearbeitungszeit", wertText: String(offeneTickets),   wertZahl: offeneTickets },
+      { widgetTyp: "ticketKategorien",     wertText: String(offeneTickets),      wertZahl: offeneTickets },
+      { widgetTyp: "handlungsbedarf",      wertText: String(offeneTickets),      wertZahl: offeneTickets },
+      // Zähler
+      { widgetTyp: "zaehlerVollstaendigkeit", wertText: pct(zaehlerVollstaendigkeitPct), wertZahl: zaehlerVollstaendigkeitPct },
+      // Datenqualität
+      { widgetTyp: "unzugeordneteZahlungen", wertText: String(unklareZ),        wertZahl: unklareZ },
+      { widgetTyp: "datenqualitaet",       wertText: String(unklareZ),           wertZahl: unklareZ },
+      { widgetTyp: "stammdatenLuecken",    wertText: String(unklareZ),           wertZahl: unklareZ },
+      // Charts (Jahres-Gesamtwert als Snapshot)
+      { widgetTyp: "sollIstVerlauf",       wertText: `Soll ${fmt(soll)} / Ist ${fmt(ist)}`, wertZahl: ist },
+      { widgetTyp: "cashflowVerlauf",      wertText: fmt(cashflow),              wertZahl: cashflow },
+      { widgetTyp: "ticketsVerlauf",       wertText: String(offeneTickets),      wertZahl: offeneTickets },
+    ];
+
+    // Letzten Snapshot pro Widget-Typ in einem Query holen
+    const lastSnaps = await ctx.db.kPISnapshot.findMany({
+      where: { tenantId, widgetTyp: { in: snapshots.map(s => s.widgetTyp) } },
+      orderBy: { createdAt: "desc" },
+      distinct: ["widgetTyp"],
+      select: { widgetTyp: true, wertZahl: true },
+    });
+    const lastByType: Record<string, number | null> = Object.fromEntries(
+      lastSnaps.map(s => [s.widgetTyp, s.wertZahl])
+    );
+
+    // Nur geänderte Werte einfügen (createMany für Effizienz)
+    const toCreate = snapshots.filter(s => {
+      const last = lastByType[s.widgetTyp];
+      return last === undefined || Math.abs((last ?? 0) - s.wertZahl) > 0.001;
+    });
+
+    if (toCreate.length > 0) {
+      await ctx.db.kPISnapshot.createMany({
+        data: toCreate.map(s => ({ tenantId, widgetTyp: s.widgetTyp, wertText: s.wertText, wertZahl: s.wertZahl })),
+      });
+    }
+
+    return { ok: true, saved: toCreate.length };
+  }),
+
+  // =========================================================================
+  // 15) KPI SNAPSHOT VERLAUF abfragen
+  // =========================================================================
+  kpiVerlauf: protectedProcedure
+    .input(z.object({ widgetTyp: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const rows = await ctx.db.kPISnapshot.findMany({
+        where: { tenantId: ctx.tenantId, widgetTyp: input.widgetTyp },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      });
+      return rows.map((r) => ({
+        id: r.id,
+        wertText: r.wertText,
+        wertZahl: r.wertZahl,
+        datum: r.createdAt.toISOString(),
+      }));
+    }),
+
+  // =========================================================================
+  // 16) VERLAUF (Widget-spezifische Ereignishistorie)
+  // =========================================================================
+  verlauf: protectedProcedure
+    .input(z.object({ widgetTyp: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
+      const { widgetTyp } = input;
+
+      type Eintrag = {
+        id: string;
+        datum: string;
+        titel: string;
+        beschreibung: string;
+        betrag?: number;
+        status?: string;
+        typ: string;
+      };
+
+      const fmt = (n: number) =>
+        new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
+
+      const ZAHLUNG_WIDGETS = [
+        "rueckstaende", "sollIst", "mietrueckstaende", "agingRueckstaende",
+        "zahlungsverzug", "sollstellungen", "istzahlungen", "einzugsquote",
+        "operativerCashflow", "cashflowNachDebt", "debtService",
+        "sollIstVerlauf", "cashflowVerlauf", "unzugeordneteZahlungen", "datenqualitaet",
+      ];
+      const TICKET_WIDGETS = [
+        "tickets", "ticketsPrioritaet", "ticketBearbeitungszeit",
+        "ticketKategorien", "ticketsVerlauf", "handlungsbedarf",
+      ];
+      const EINHEIT_WIDGETS = [
+        "einheiten", "belegungsquote", "leerstandsquote", "leerstandsdauer",
+        "fluktuationsquote", "ertragsverlustLeerstand", "vermietungsquote",
+      ];
+      const KOSTEN_WIDGETS = ["kostenGesamt", "kostenProQm", "kostenNachKategorie", "kostenVerlauf"];
+      const KREDIT_WIDGETS = ["finanzierung", "restschuld", "dscr", "kredituebersicht"];
+      const ZAEHLER_WIDGETS = ["zaehlerVollstaendigkeit"];
+      const MIETE_WIDGETS = ["kaltmieteProQm", "gesamtMiete"];
+
+      const eintraege: Eintrag[] = [];
+
+      if (ZAHLUNG_WIDGETS.includes(widgetTyp)) {
+        const zahlungen = await ctx.db.zahlung.findMany({
+          where: { tenantId },
+          orderBy: { datum: "desc" },
+          take: 50,
+          include: {
+            zuordnungen: {
+              take: 1,
+              include: {
+                sollstellung: {
+                  include: {
+                    mietverhaeltnis: {
+                      include: {
+                        mieter: { select: { vorname: true, nachname: true } },
+                        einheit: {
+                          select: {
+                            einheitNr: true,
+                            objekt: { select: { bezeichnung: true } },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        for (const z of zahlungen) {
+          const betrag = d2n(z.betrag);
+          const mv = z.zuordnungen[0]?.sollstellung?.mietverhaeltnis;
+          const mieter = mv?.mieter;
+          const einheit = mv?.einheit;
+          let titel = "Zahlung";
+          let beschreibung = fmt(betrag);
+          if (mieter) {
+            titel = `${mieter.vorname ?? ""} ${mieter.nachname}`.trim();
+            beschreibung = `${fmt(betrag)} · ${einheit?.objekt.bezeichnung ?? ""} ${einheit?.einheitNr ? `EH ${einheit.einheitNr}` : ""}`.trim();
+          } else if (z.verwendungszweck) {
+            beschreibung = `${fmt(betrag)} · ${z.verwendungszweck.substring(0, 60)}`;
+          }
+          eintraege.push({ id: z.id, datum: z.datum.toISOString(), titel, beschreibung, betrag, status: z.status, typ: "zahlung" });
+        }
+
+      } else if (TICKET_WIDGETS.includes(widgetTyp)) {
+        const tickets = await ctx.db.ticket.findMany({
+          where: { tenantId },
+          orderBy: { updatedAt: "desc" },
+          take: 50,
+          select: { id: true, titel: true, status: true, prioritaet: true, createdAt: true, updatedAt: true, kategorie: true },
+        });
+        const statusLabel: Record<string, string> = { ERFASST: "Erfasst", IN_BEARBEITUNG: "In Bearbeitung", ZUR_PRUEFUNG: "Zur Prüfung", ABGESCHLOSSEN: "Abgeschlossen" };
+        const prioLabel: Record<string, string> = { NIEDRIG: "Niedrig", MITTEL: "Mittel", HOCH: "Hoch", KRITISCH: "Kritisch" };
+        for (const t of tickets) {
+          eintraege.push({
+            id: t.id, datum: t.updatedAt.toISOString(), titel: t.titel,
+            beschreibung: `${statusLabel[t.status] ?? t.status} · Priorität: ${prioLabel[t.prioritaet] ?? t.prioritaet} · ${t.kategorie}`,
+            status: t.status, typ: "ticket",
+          });
+        }
+
+      } else if (EINHEIT_WIDGETS.includes(widgetTyp)) {
+        const statusHistorie = await ctx.db.einheitStatusHistorie.findMany({
+          where: { tenantId },
+          orderBy: { createdAt: "desc" },
+          take: 50,
+          include: {
+            einheit: { select: { einheitNr: true, objekt: { select: { bezeichnung: true } } } },
+          },
+        });
+        const statusLabel: Record<string, string> = { VERFUEGBAR: "Verfügbar", VERMIETET: "Vermietet", KUENDIGUNG: "Kündigung", SANIERUNG: "Sanierung", RESERVIERT: "Reserviert" };
+        for (const s of statusHistorie) {
+          eintraege.push({
+            id: s.id, datum: s.createdAt.toISOString(),
+            titel: `${s.einheit.objekt.bezeichnung} · EH ${s.einheit.einheitNr}`,
+            beschreibung: `Status: ${statusLabel[s.status] ?? s.status}${s.notiz ? ` · ${s.notiz}` : ""}`,
+            status: s.status, typ: "einheit",
+          });
+        }
+        if (eintraege.length === 0) {
+          const mietverhaeltnisse = await ctx.db.mietverhaeltnis.findMany({
+            where: { tenantId },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+            include: {
+              mieter: { select: { vorname: true, nachname: true } },
+              einheit: { select: { einheitNr: true, objekt: { select: { bezeichnung: true } } } },
+            },
+          });
+          for (const mv of mietverhaeltnisse) {
+            const kaltmiete = d2n(mv.kaltmiete);
+            eintraege.push({
+              id: mv.id, datum: mv.createdAt.toISOString(),
+              titel: `${mv.mieter.vorname ?? ""} ${mv.mieter.nachname}`.trim(),
+              beschreibung: `Einzug: ${mv.einzugsdatum.toLocaleDateString("de-DE")} · ${mv.einheit.objekt.bezeichnung} EH ${mv.einheit.einheitNr} · ${fmt(kaltmiete)}`,
+              betrag: kaltmiete, typ: "einheit",
+            });
+          }
+        }
+
+      } else if (KOSTEN_WIDGETS.includes(widgetTyp)) {
+        const kosten = await ctx.db.kosten.findMany({
+          where: { tenantId },
+          orderBy: { datum: "desc" },
+          take: 50,
+          select: { id: true, datum: true, betragBrutto: true, lieferant: true, kategorie: true, beschreibung: true },
+        });
+        for (const k of kosten) {
+          const betrag = d2n(k.betragBrutto);
+          eintraege.push({
+            id: k.id, datum: k.datum.toISOString(), titel: k.lieferant,
+            beschreibung: `${fmt(betrag)} · ${k.kategorie}${k.beschreibung ? ` · ${k.beschreibung.substring(0, 60)}` : ""}`,
+            betrag, typ: "kosten",
+          });
+        }
+
+      } else if (KREDIT_WIDGETS.includes(widgetTyp)) {
+        const sondertilgungen = await ctx.db.sondertilgung.findMany({
+          where: { tenantId },
+          orderBy: { datum: "desc" },
+          take: 50,
+          include: { kredit: { select: { bezeichnung: true, bank: true } } },
+        });
+        for (const s of sondertilgungen) {
+          const betrag = d2n(s.betrag);
+          eintraege.push({
+            id: s.id, datum: s.datum.toISOString(),
+            titel: `Sondertilgung – ${s.kredit.bezeichnung}`,
+            beschreibung: `${fmt(betrag)} · ${s.kredit.bank}${s.notiz ? ` · ${s.notiz}` : ""}`,
+            betrag, typ: "kredit",
+          });
+        }
+        if (eintraege.length === 0) {
+          const kredite = await ctx.db.kredit.findMany({
+            where: { tenantId },
+            orderBy: { createdAt: "desc" },
+            take: 20,
+            select: { id: true, bezeichnung: true, bank: true, ursprungsbetrag: true, createdAt: true, startdatum: true },
+          });
+          for (const k of kredite) {
+            const betrag = d2n(k.ursprungsbetrag);
+            eintraege.push({
+              id: k.id, datum: k.createdAt.toISOString(), titel: k.bezeichnung,
+              beschreibung: `${k.bank} · Darlehen: ${fmt(betrag)} · Start: ${k.startdatum.toLocaleDateString("de-DE")}`,
+              betrag, typ: "kredit",
+            });
+          }
+        }
+
+      } else if (ZAEHLER_WIDGETS.includes(widgetTyp)) {
+        const ablesungen = await ctx.db.zaehlerstand.findMany({
+          where: { tenantId },
+          orderBy: { datum: "desc" },
+          take: 50,
+          include: { zaehler: { select: { zaehlernummer: true, typ: true } } },
+        });
+        const zaehlerTypLabel: Record<string, string> = { STROM: "Strom", GAS: "Gas", WASSER_KALT: "Wasser (kalt)", WASSER_WARM: "Wasser (warm)", WAERME: "Wärme" };
+        for (const a of ablesungen) {
+          eintraege.push({
+            id: a.id, datum: a.datum.toISOString(),
+            titel: `${zaehlerTypLabel[a.zaehler.typ] ?? a.zaehler.typ} – Nr. ${a.zaehler.zaehlernummer}`,
+            beschreibung: `Stand: ${d2n(a.stand).toLocaleString("de-DE")}${a.ablesesTyp === "EINZUG" ? " · Einzug" : a.ablesesTyp === "AUSZUG" ? " · Auszug" : ""}${a.notiz ? ` · ${a.notiz}` : ""}`,
+            typ: "zaehler",
+          });
+        }
+
+      } else if (MIETE_WIDGETS.includes(widgetTyp)) {
+        const mietverhaeltnisse = await ctx.db.mietverhaeltnis.findMany({
+          where: { tenantId },
+          orderBy: { createdAt: "desc" },
+          take: 50,
+          include: {
+            mieter: { select: { vorname: true, nachname: true } },
+            einheit: { select: { einheitNr: true, objekt: { select: { bezeichnung: true } } } },
+          },
+        });
+        for (const mv of mietverhaeltnisse) {
+          const kaltmiete = d2n(mv.kaltmiete);
+          eintraege.push({
+            id: mv.id, datum: mv.createdAt.toISOString(),
+            titel: `${mv.mieter.vorname ?? ""} ${mv.mieter.nachname}`.trim(),
+            beschreibung: `${mv.einheit.objekt.bezeichnung} EH ${mv.einheit.einheitNr} · ${fmt(kaltmiete)} · Einzug: ${mv.einzugsdatum.toLocaleDateString("de-DE")}`,
+            betrag: kaltmiete, typ: "miete",
+          });
+        }
+
+      } else {
+        // Fallback: Objekte
+        const objekte = await ctx.db.objekt.findMany({
+          where: { tenantId },
+          orderBy: { updatedAt: "desc" },
+          take: 20,
+          select: { id: true, bezeichnung: true, strasse: true, plz: true, ort: true, updatedAt: true },
+        });
+        for (const o of objekte) {
+          eintraege.push({
+            id: o.id, datum: o.updatedAt.toISOString(), titel: o.bezeichnung,
+            beschreibung: `${o.strasse}, ${o.plz} ${o.ort}`, typ: "objekt",
+          });
+        }
+      }
+
+      return { eintraege: eintraege.slice(0, 50) };
+    }),
+
+  // =========================================================================
   // 13) TICKETS MONATSVERLAUF
   // =========================================================================
   ticketsMonatlich: protectedProcedure

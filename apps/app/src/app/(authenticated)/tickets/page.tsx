@@ -3,6 +3,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ const createTicketSchema = z.object({
 type CreateTicketInput = z.infer<typeof createTicketSchema>;
 
 export default function TicketsPage() {
+  const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<
     "ERFASST" | "IN_BEARBEITUNG" | "ZUR_PRUEFUNG" | "ABGESCHLOSSEN" | undefined
   >();
@@ -241,7 +243,7 @@ export default function TicketsPage() {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {tickets?.map((ticket: any) => (
-                <tr key={ticket.id} className="hover:bg-gray-50">
+                <tr key={ticket.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/tickets/${ticket.id}`)}>
                   <td className="px-6 py-4">
                     <div className="font-medium text-gray-900">{ticket.titel}</div>
                     {ticket._count.kommentare > 0 && (

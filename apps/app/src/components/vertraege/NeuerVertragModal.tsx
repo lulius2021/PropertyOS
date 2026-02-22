@@ -1,0 +1,299 @@
+"use client";
+
+import { useState } from "react";
+import { trpc } from "@/lib/trpc/client";
+
+interface NeuerVertragModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  defaultEinheitId?: string;
+}
+
+export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId }: NeuerVertragModalProps) {
+  const [formData, setFormData] = useState({
+    mieterId: "",
+    einheitId: defaultEinheitId ?? "",
+    einzugsdatum: "",
+    kaltmiete: "",
+    bkVorauszahlung: "0",
+    hkVorauszahlung: "0",
+    kaution: "",
+    notizen: "",
+  });
+
+  const { data: mieter } = trpc.mieter.list.useQuery();
+  const { data: einheiten } = trpc.einheiten.list.useQuery({});
+  const utils = trpc.useUtils();
+
+  const createMutation = trpc.vertraege.create.useMutation({
+    onSuccess: () => {
+      utils.vertraege.list.invalidate();
+      utils.vertraege.stats.invalidate();
+      utils.einheiten.list.invalidate();
+      utils.einheiten.stats.invalidate();
+      setFormData({
+        mieterId: "",
+        einheitId: "",
+        einzugsdatum: "",
+        kaltmiete: "",
+        bkVorauszahlung: "0",
+        hkVorauszahlung: "0",
+        kaution: "",
+        notizen: "",
+      });
+      onSuccess();
+      onClose();
+    },
+  });
+
+  const getMieterLabel = (m: { vorname?: string | null; nachname: string; firma?: string | null; typ: string }) => {
+    if ((m.typ === "GEWERBE" || m.typ === "GESCHAEFTLICH") && m.firma) return m.firma;
+    return `${m.vorname ?? ""} ${m.nachname}`.trim();
+  };
+
+  // Only show available units (VERFUEGBAR or RESERVIERT) for new contracts
+  const verfuegbareEinheiten = einheiten?.filter(
+    (e) => e.status === "VERFUEGBAR" || e.status === "RESERVIERT"
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createMutation.mutate({
+      mieterId: formData.mieterId,
+      einheitId: formData.einheitId,
+      einzugsdatum: new Date(formData.einzugsdatum),
+      kaltmiete: parseFloat(formData.kaltmiete),
+      bkVorauszahlung: parseFloat(formData.bkVorauszahlung),
+      hkVorauszahlung: parseFloat(formData.hkVorauszahlung),
+      kaution: formData.kaution ? parseFloat(formData.kaution) : undefined,
+      notizen: formData.notizen || undefined,
+    });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
+        {/* Header */}
+        <div className="sticky top-0 z-10 border-b border-gray-200 bg-white px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Neues Mietverhältnis</h2>
+            <button
+              onClick={onClose}
+              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Mieter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mieter <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              value={formData.mieterId}
+              onChange={(e) => setFormData({ ...formData, mieterId: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">Mieter wählen...</option>
+              {mieter?.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {getMieterLabel(m)}
+                </option>
+              ))}
+            </select>
+            {mieter?.length === 0 && (
+              <p className="mt-1 text-xs text-amber-600">
+                Keine Mieter vorhanden. Bitte zuerst unter "Mieter" einen Mieter anlegen.
+              </p>
+            )}
+          </div>
+
+          {/* Einheit */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Einheit <span className="text-red-500">*</span>
+            </label>
+            <select
+              required
+              value={formData.einheitId}
+              onChange={(e) => setFormData({ ...formData, einheitId: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              <option value="">Einheit wählen...</option>
+              {verfuegbareEinheiten?.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.objekt?.bezeichnung} — Einheit {e.einheitNr} ({e.flaeche} m²)
+                </option>
+              ))}
+            </select>
+            {verfuegbareEinheiten?.length === 0 && (
+              <p className="mt-1 text-xs text-amber-600">
+                Keine verfügbaren Einheiten. Alle Einheiten sind belegt oder nicht vorhanden.
+              </p>
+            )}
+          </div>
+
+          {/* Einzugsdatum */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Einzugsdatum <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              required
+              value={formData.einzugsdatum}
+              onChange={(e) => setFormData({ ...formData, einzugsdatum: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Miete */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Mietzahlungen</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Kaltmiete (€) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="0.01"
+                  step="0.01"
+                  value={formData.kaltmiete}
+                  onChange={(e) => setFormData({ ...formData, kaltmiete: e.target.value })}
+                  placeholder="800.00"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  BK-Vorauszahlung (€)
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={formData.bkVorauszahlung}
+                  onChange={(e) => setFormData({ ...formData, bkVorauszahlung: e.target.value })}
+                  placeholder="150.00"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  HK-Vorauszahlung (€)
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={formData.hkVorauszahlung}
+                  onChange={(e) => setFormData({ ...formData, hkVorauszahlung: e.target.value })}
+                  placeholder="80.00"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            {(formData.kaltmiete || formData.bkVorauszahlung || formData.hkVorauszahlung) && (
+              <p className="mt-2 text-xs text-gray-500">
+                Warmmiete:{" "}
+                <span className="font-semibold text-gray-700">
+                  {(
+                    (parseFloat(formData.kaltmiete) || 0) +
+                    (parseFloat(formData.bkVorauszahlung) || 0) +
+                    (parseFloat(formData.hkVorauszahlung) || 0)
+                  ).toFixed(2)}{" "}
+                  €/Monat
+                </span>
+              </p>
+            )}
+          </div>
+
+          {/* Kaution */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Kaution (€)
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.kaution}
+              onChange={(e) => setFormData({ ...formData, kaution: e.target.value })}
+              placeholder="z.B. 2400.00 (= 3 × Kaltmiete)"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Notizen */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Notizen
+            </label>
+            <textarea
+              value={formData.notizen}
+              onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
+              rows={3}
+              placeholder="Besondere Vereinbarungen, Hinweise..."
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
+            <p className="text-xs text-blue-700">
+              Das Mietverhältnis wird als <strong>Entwurf</strong> angelegt. Die Einheit wird automatisch auf "Vermietet" gesetzt.
+            </p>
+          </div>
+
+          {createMutation.error && (
+            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
+              <p className="text-sm text-red-800">
+                Fehler: {createMutation.error.message}
+              </p>
+            </div>
+          )}
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={createMutation.isPending}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              Abbrechen
+            </button>
+            <button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+            >
+              {createMutation.isPending ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Erstelle...
+                </>
+              ) : (
+                "Mietverhältnis anlegen"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

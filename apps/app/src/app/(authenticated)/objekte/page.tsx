@@ -13,7 +13,17 @@ export default function ObjektePage() {
   const utils = trpc.useUtils();
   const { data: objekte, isLoading } = trpc.objekte.list.useQuery();
   const { data: planInfo } = trpc.plan.info.useQuery();
-  const [view, setView] = useState<"table" | "grid">("grid");
+  const [view, setView] = useState<"table" | "grid">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("propgate_objekte_view") as "table" | "grid") ?? "grid";
+    }
+    return "grid";
+  });
+
+  const handleViewChange = (v: "table" | "grid") => {
+    setView(v);
+    localStorage.setItem("propgate_objekte_view", v);
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading) {
@@ -30,7 +40,7 @@ export default function ObjektePage() {
           <p className="mt-2 text-gray-600">Verwaltung aller Immobilienobjekte</p>
         </div>
         <div className="flex items-center gap-3">
-          <ViewToggle view={view} onViewChange={setView} />
+          <ViewToggle view={view} onViewChange={handleViewChange} />
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={limitReached}
@@ -103,7 +113,7 @@ export default function ObjektePage() {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {objekte?.map((objekt) => (
-                <tr key={objekt.id} className="hover:bg-gray-50">
+                <tr key={objekt.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/objekte/${objekt.id}`)}>
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="font-medium text-gray-900">{objekt.bezeichnung}</div>
                   </td>

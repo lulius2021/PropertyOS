@@ -3,8 +3,10 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ZaehlerPage() {
+  const router = useRouter();
   const [typFilter, setTypFilter] = useState<
     "STROM" | "GAS" | "WASSER_KALT" | "WASSER_WARM" | "WAERME" | undefined
   >();
@@ -170,7 +172,7 @@ export default function ZaehlerPage() {
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {zaehler?.map((z: any) => (
-                <tr key={z.id} className="hover:bg-gray-50">
+                <tr key={z.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/zaehler/${z.id}`)}>
                   <td className="px-6 py-4">
                     <div className="font-medium text-gray-900">
                       {z.zaehlernummer}
