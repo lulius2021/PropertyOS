@@ -57,7 +57,7 @@ const navItems = [
       ))}
     </nav>
 
-    <!-- CTA Buttons -->
+    <!-- CTA Buttons (desktop only) -->
     <div class="header-cta">
       <!-- Interactive hover login button -->
       <a href={`${APP_URL}/login`} class="login-hover-btn" aria-label="Login">
@@ -70,16 +70,17 @@ const navItems = [
         </div>
         <div class="login-hover-blob"></div>
       </a>
-      <!-- Theme Toggle -->
-      <button class="theme-toggle" id="theme-toggle" aria-label="Farbschema wechseln">
-        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
     </div>
+
+    <!-- Theme Toggle (always visible) -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Farbschema wechseln">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
 
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menü öffnen" aria-expanded="false">
@@ -89,7 +90,7 @@ const navItems = [
     </button>
   </div>
 
-  <!-- Mobile Navigation -->
+  <!-- Mobile Navigation: fixed overlay that slides down -->
   <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
     {navItems.map((item) => (
       <a href={item.href} class="mobile-nav-link">
@@ -133,7 +134,7 @@ const navItems = [
   }
 
   .header-pill.menu-open {
-    border-radius: 24px;
+    border-radius: 999px;
   }
 
   /* ── Back button ── */
@@ -199,6 +200,11 @@ const navItems = [
     flex: 1;
     justify-content: center;
     gap: 0.5rem;
+  }
+
+  /* On mobile, push theme-toggle + hamburger to the right */
+  @media (max-width: 768px) {
+    .logo { margin-right: auto; }
   }
 
   /* Each nav item: icon always visible, label slides in on hover */
@@ -370,7 +376,6 @@ const navItems = [
     cursor: pointer;
     padding: 0.4rem;
     border-radius: 8px;
-    margin-left: auto;
   }
 
   .mobile-menu-btn span {
@@ -383,11 +388,39 @@ const navItems = [
   }
 
   .mobile-nav {
-    display: none;
+    position: fixed;
+    /* sits just below the pill: 1rem (top offset) + 68px (pill height) + 10px gap */
+    top: calc(1rem + 68px + 10px);
+    left: 1.25rem;
+    right: 1.25rem;
+    z-index: 45;
+    background: rgba(10, 10, 18, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 20px;
+    padding: 0.5rem 0.625rem 0.875rem;
+    display: flex;
     flex-direction: column;
-    padding: 0.5rem 0.5rem 1rem;
     gap: 0.125rem;
     pointer-events: all;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    /* Hidden state: slide up + fade */
+    transform: translateY(-12px);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s ease,
+                visibility 0s linear 0.28s;
+  }
+
+  .mobile-nav.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s ease,
+                visibility 0s linear 0s;
   }
 
   .mobile-nav-link {
@@ -433,10 +466,39 @@ const navItems = [
     margin-top: 0.25rem;
   }
 
+  /* ── Light theme overrides ── */
+  html[data-theme="light"] .mobile-nav {
+    background: rgba(255, 255, 255, 0.97);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  }
+
+  html[data-theme="light"] .mobile-nav-link {
+    color: #4a5568;
+  }
+
+  html[data-theme="light"] .mobile-nav-link:hover {
+    color: #0f1020;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  html[data-theme="light"] .mobile-nav-icon {
+    color: #8a94a8;
+  }
+
+  html[data-theme="light"] .mobile-nav-divider {
+    background: rgba(0, 0, 0, 0.07);
+  }
+
   @media (max-width: 768px) {
     .desktop-nav,
     .header-cta {
       display: none;
+    }
+
+    .theme-toggle {
+      display: flex;
+      margin-left: auto;
     }
 
     .header-pill {
@@ -446,9 +508,32 @@ const navItems = [
     .mobile-menu-btn {
       display: flex;
     }
+  }
 
-    .mobile-nav.is-open {
-      display: flex;
+  @media (max-width: 480px) {
+    #site-header {
+      padding: 0 0.75rem;
+    }
+
+    .header-pill {
+      height: 58px;
+      padding: 0 0.875rem;
+    }
+
+    .mobile-nav {
+      /* 0.75rem (top offset) + 58px (pill height) + 10px gap */
+      top: calc(0.75rem + 58px + 10px);
+      left: 0.75rem;
+      right: 0.75rem;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
     }
   }
 </style>

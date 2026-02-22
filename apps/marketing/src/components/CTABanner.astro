@@ -141,4 +141,40 @@ import { APP_URL } from '../config/urls';
     border-color: var(--border);
     background: var(--bg-card);
   }
+
+  @media (max-width: 640px) {
+    .cta-section {
+      padding: 4rem 1.25rem;
+    }
+
+    .cta-h2 {
+      font-size: clamp(1.875rem, 7vw, 2.25rem);
+    }
+
+    .cta-subtext {
+      font-size: 1rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .cta-primary,
+    .cta-ghost {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cta-section {
+      padding: 3rem 1rem;
+    }
+
+    .cta-primary,
+    .cta-ghost {
+      padding: 0.8125rem 1.25rem;
+    }
+  }
 </style>

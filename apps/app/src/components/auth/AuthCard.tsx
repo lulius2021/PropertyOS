@@ -20,7 +20,7 @@ export function AuthCard({ children, wide }: { children: ReactNode; wide?: boole
     try { localStorage.setItem('propgate-theme', next); } catch {}
   };
 
-  const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate-marketing.vercel.app";
+  const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL ?? "https://propgate.de";
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--auth-bg)] px-4 py-10">

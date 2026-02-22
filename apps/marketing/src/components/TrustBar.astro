@@ -65,4 +65,29 @@ const items = [
   .trust-label {
     white-space: nowrap;
   }
+
+  @media (max-width: 640px) {
+    .trust-bar {
+      padding: 1rem;
+    }
+
+    .trust-inner {
+      gap: 0.625rem 1.25rem;
+    }
+
+    .trust-pill {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .trust-inner {
+      justify-content: flex-start;
+      gap: 0.5rem 1rem;
+    }
+
+    .trust-label {
+      white-space: normal;
+    }
+  }
 </style>

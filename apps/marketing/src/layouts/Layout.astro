@@ -196,16 +196,25 @@ const ogImageURL = new URL(ogImage, Astro.site);
           transform: 'translate(-50%, -50%)',
           transition: 'opacity 0.3s ease',
           top: '0', left: '0', opacity: '0',
+          willChange: 'left, top',
         });
         document.body.appendChild(cursor);
 
+        // Throttle mousemove with requestAnimationFrame to avoid layout thrashing
+        let rafId = 0;
+        let mx = 0, my = 0;
         document.addEventListener('mousemove', (e: MouseEvent) => {
-          cursor.style.left = e.clientX + 'px';
-          cursor.style.top  = e.clientY + 'px';
-          // Only show on dark sections
-          const el = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
-          const isDark = el?.closest('[data-dark]') !== null;
-          cursor.style.opacity = isDark ? '1' : '0';
+          mx = e.clientX; my = e.clientY;
+          if (rafId) return;
+          rafId = requestAnimationFrame(() => {
+            rafId = 0;
+            cursor.style.left = mx + 'px';
+            cursor.style.top  = my + 'px';
+            // Only check dark section every frame, not on every pixel move
+            const el = document.elementFromPoint(mx, my) as HTMLElement | null;
+            const isDark = el?.closest('[data-dark]') !== null;
+            cursor.style.opacity = isDark ? '1' : '0';
+          });
         });
       })();
     </script>

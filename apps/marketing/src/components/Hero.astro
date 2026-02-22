@@ -21,18 +21,7 @@ import { APP_URL } from '../config/urls';
 
   <div class="hero-container">
     <div class="hero-text">
-    <!-- Badge -->
-    <div class="hero-badge-wrap">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>Jetzt verfügbar — kostenlos starten</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Headline — line by line reveal -->
+<!-- Headline — line by line reveal -->
     <h1 class="hero-h1">
       <span class="line-wrap"><span class="h-line-1">Immobilienverwaltung,</span></span>
       <span class="line-wrap"><span class="h-line-2">die wirklich</span></span>
@@ -65,7 +54,14 @@ import { APP_URL } from '../config/urls';
     </div><!-- /hero-text -->
 
     <!-- Browser Mockup -->
-    <div data-animate="scale" data-delay="4" class="browser-mockup-wrapper">
+    <div data-animate="scale" data-delay="2" class="browser-mockup-wrapper">
+      <!-- Rotate hint button — only visible on mobile portrait -->
+      <button class="rotate-btn" id="rotate-btn" aria-label="Im Querformat anzeigen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/>
+        </svg>
+        <span id="rotate-btn-label">Querformat für bessere Ansicht</span>
+      </button>
       <div class="demo-overlay" id="demo-overlay-btn" role="button" tabindex="0" aria-label="Live Demo starten">
         <button class="demo-btn" id="demo-open-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -713,6 +709,98 @@ import { APP_URL } from '../config/urls';
     }
   }
 
+  /* Rotate button — hidden by default, shown only on mobile portrait */
+  .rotate-btn {
+    display: none;
+  }
+
+  @media (max-width: 768px) and (orientation: portrait) {
+    /* Compact mockup height in portrait */
+    .dashboard-preview {
+      height: 220px;
+    }
+
+    /* Show rotate button */
+    .rotate-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      background: rgba(0, 102, 255, 0.1);
+      border: 1px solid rgba(0, 102, 255, 0.25);
+      color: #4da6ff;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.375rem 0.875rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .rotate-btn:hover {
+      background: rgba(0, 102, 255, 0.18);
+    }
+  }
+
+  /* In landscape: full height, hide rotate button */
+  @media (max-width: 900px) and (orientation: landscape) {
+    .rotate-btn {
+      display: none !important;
+    }
+
+    .dashboard-preview {
+      height: 320px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-section {
+      padding: 4.5rem 1rem 3rem;
+    }
+
+    .hero-h1 {
+      font-size: clamp(1.75rem, 8vw, 2.2rem);
+    }
+
+    .hero-subtext {
+      font-size: 1rem;
+    }
+
+    .hero-cta {
+      flex-wrap: nowrap;
+      gap: 0.625rem;
+    }
+
+    .cta-primary,
+    .cta-secondary {
+      font-size: 0.875rem;
+      padding: 0.75rem 1.125rem;
+      white-space: nowrap;
+    }
+
+    .browser-chrome {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .url-bar {
+      max-width: 100%;
+      font-size: 0.75rem;
+    }
+
+    .dashboard-preview {
+      height: 220px;
+    }
+
+    .demo-btn {
+      font-size: 0.9375rem;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .dash-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   /* ── Light theme: browser mockup ─────────────────────────── */
   html[data-theme="light"] .browser-mockup {
     background: #ffffff;
@@ -809,4 +897,43 @@ import { APP_URL } from '../config/urls';
   html[data-theme="light"] .scan-line {
     display: none;
   }
+
+  /* Light theme: rotate button */
+  html[data-theme="light"] .rotate-btn {
+    background: rgba(0, 102, 255, 0.07);
+    border-color: rgba(0, 102, 255, 0.2);
+    color: #0052cc;
+  }
 </style>
+
+<script>
+  const rotateBtn = document.getElementById('rotate-btn');
+  const rotateBtnLabel = document.getElementById('rotate-btn-label');
+
+  rotateBtn?.addEventListener('click', async () => {
+    try {
+      // Try to request fullscreen + lock landscape orientation
+      await document.documentElement.requestFullscreen?.();
+      await (screen.orientation as any).lock('landscape');
+    } catch {
+      // Fallback: show a manual rotation hint
+      if (rotateBtnLabel) {
+        rotateBtnLabel.textContent = 'Gerät bitte seitlich halten 🔄';
+      }
+      rotateBtn!.style.background = 'rgba(0, 102, 255, 0.2)';
+      // Reset label after 3s
+      setTimeout(() => {
+        if (rotateBtnLabel) rotateBtnLabel.textContent = 'Querformat für bessere Ansicht';
+        rotateBtn!.style.background = '';
+      }, 3000);
+    }
+  });
+
+  // Hide rotate button when device is actually in landscape
+  window.addEventListener('orientationchange', () => {
+    if (rotateBtn) {
+      rotateBtn.style.display =
+        window.innerWidth > window.innerHeight ? 'none' : '';
+    }
+  });
+</script>

@@ -564,9 +564,38 @@ const mailIcon = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
     }
   }
 
+  @media (max-width: 768px) {
+    .pricing-section {
+      padding: 3.5rem 1.25rem 4rem;
+    }
+
+    /* Stop floating animation on mobile — too distracting in single column */
+    .card-float-wrap {
+      animation: none !important;
+    }
+  }
+
   @media (max-width: 640px) {
     .plans-grid {
       grid-template-columns: 1fr;
+    }
+
+    .pricing-section {
+      padding: 3rem 1rem 3.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .price-amount {
+      font-size: 2rem;
+    }
+
+    .card-body {
+      padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .card-visual {
+      padding: 1.25rem 1.25rem 0;
     }
   }
 

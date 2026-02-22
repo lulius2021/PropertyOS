@@ -1199,6 +1199,28 @@ import { APP_URL } from '../config/urls';
     background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 7px;
     padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: #374151;
   }
+
+  /* ── Mobile: 16:9 landscape preview ─────────────── */
+  @media (max-width: 768px) {
+    .demo-modal-backdrop { padding: 1rem; align-items: center; }
+    .demo-modal-panel {
+      border-radius: 12px;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+    .demo-modal-header { height: 40px; padding: 0 0.875rem; }
+    .demo-modal-title { font-size: 0.8125rem; }
+    .demo-badge { display: none; }
+    .demo-modal-body { overflow: hidden; }
+    .da-app {
+      width: 1100px;
+      transform-origin: top left;
+      transform: scale(var(--ms, 1));
+      height: calc(100% / var(--ms, 1));
+    }
+  }
 </style>
 
 <script>
@@ -1208,7 +1230,27 @@ import { APP_URL } from '../config/urls';
   const modal      = document.getElementById('demo-modal');
   const closeBtn   = document.getElementById('demo-close');
 
-  function openDemo()  { modal?.classList.add('is-open');    document.body.classList.add('demo-open'); }
+  // ── Mobile scale: preserve desktop layout ──────────
+  function applyMobileScale() {
+    const body = modal?.querySelector('.demo-modal-body') as HTMLElement | null;
+    const app  = modal?.querySelector('.da-app') as HTMLElement | null;
+    if (!body || !app) return;
+    if (window.innerWidth <= 768) {
+      const scale = body.clientWidth / 1100;
+      app.style.setProperty('--ms', String(scale));
+    } else {
+      app.style.removeProperty('--ms');
+    }
+  }
+  applyMobileScale();
+  window.addEventListener('resize', applyMobileScale);
+
+  function openDemo()  {
+    modal?.classList.add('is-open');
+    document.body.classList.add('demo-open');
+    // Recalculate after panel becomes visible (clientWidth now correct)
+    requestAnimationFrame(applyMobileScale);
+  }
   function closeDemo() { modal?.classList.remove('is-open'); document.body.classList.remove('demo-open'); }
 
   openBtn?.addEventListener('click', openDemo);
