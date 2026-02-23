@@ -22,8 +22,8 @@
 ### Tech Stack (Production-Ready)
 
 #### Frontend
-- **Framework:** Next.js 15 (App Router) + React 19
-- **Styling:** Tailwind CSS 3.4
+- **Framework:** Next.js 16 (App Router) + React 19
+- **Styling:** Tailwind CSS 4
 - **UI Components:** shadcn/ui + Radix UI (Headless Components)
 - **Type Safety:** TypeScript (Strict Mode)
 - **Forms:** React Hook Form + Zod Validation

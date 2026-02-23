@@ -7,18 +7,18 @@ Modern, cloud-based property management SaaS platform for professional real esta
 This is a **Turborepo monorepo** containing:
 
 - **apps/marketing** - Astro-based marketing website (propgate.de)
-- **apps/app** - Next.js 15 web application (app.propgate.de)
+- **apps/app** - Next.js 16.1.6 web application (app.propgate.de)
 - **packages/shared** - Shared TypeScript types and utilities
 
 ## 🚀 Tech Stack
 
 ### Frontend
 - **Marketing**: Astro 4.x (SSG, SEO-optimized)
-- **App**: Next.js 15 (App Router) + React 19
+- **App**: Next.js 16 (App Router) + React 19
 - **UI**: shadcn/ui + Radix UI + Tailwind CSS
 - **Forms**: React Hook Form + Zod validation
 
-### Backend (Planned - Phase 3+)
+### Backend
 - **Database**: PostgreSQL (Vercel Postgres)
 - **ORM**: Prisma (strict mode)
 - **API**: tRPC v11 (type-safe, end-to-end)
