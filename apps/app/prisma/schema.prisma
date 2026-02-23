@@ -1,4 +1,4 @@
-// PropertyOS - Prisma Schema (Phase 4: Core Entities & Audit)
+// PropertyOS - Prisma Schema (Phase 5: Feature Sprint Feb/Mar 2026)
 
 generator client {
   provider = "prisma-client-js"
@@ -20,28 +20,45 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Auto-Mahnung Konfiguration
   autoMahnungAktiv               Boolean @default(false)
   autoMahnungTageNachFaelligkeit Int     @default(7)
   autoMahnungEmailAktiv          Boolean @default(false)
 
-  users                 User[]
-  objekte               Objekt[]
-  einheiten             Einheit[]
-  mieter                Mieter[]
-  mietverhaeltnisse     Mietverhaeltnis[]
-  dokumente             Dokument[]
-  auditLogs             AuditLog[]
-  einheitStatusHistorie EinheitStatusHistorie[]
-  sollstellungen        Sollstellung[]
-  zahlungen             Zahlung[]
-  bankImportProfiles    BankImportProfile[]
-  mahnungen             Mahnung[]
-  tickets               Ticket[]
-  kosten                Kosten[]
-  zeiterfassung         Zeiterfassung[]
-  zaehler               Zaehler[]
-  kredite               Kredit[]
-  kpiSnapshots          KPISnapshot[]
+  // Mahngebühren konfigurierbar (statt hardcoded)
+  mahngebuehrErinnerung  Decimal @default(0) @db.Decimal(10, 2)
+  mahngebuehrStufe1      Decimal @default(5) @db.Decimal(10, 2)
+  mahngebuehrStufe2      Decimal @default(10) @db.Decimal(10, 2)
+  mahngebuehrStufe3      Decimal @default(15) @db.Decimal(10, 2)
+  verzugszinssatz        Decimal @default(5) @db.Decimal(5, 2)  // % p.a.
+  mahnungGracePeriodTage Int     @default(7)
+
+  // Zahlungsabgleich
+  ausgleichsReihenfolge String @default("AELTESTE_ZUERST") // "AELTESTE_ZUERST" | "NEUESTE_ZUERST"
+
+  users                   User[]
+  objekte                 Objekt[]
+  einheiten               Einheit[]
+  mieter                  Mieter[]
+  mietverhaeltnisse       Mietverhaeltnis[]
+  dokumente               Dokument[]
+  auditLogs               AuditLog[]
+  einheitStatusHistorie   EinheitStatusHistorie[]
+  sollstellungen          Sollstellung[]
+  zahlungen               Zahlung[]
+  bankImportProfiles      BankImportProfile[]
+  mahnungen               Mahnung[]
+  tickets                 Ticket[]
+  kosten                  Kosten[]
+  zeiterfassung           Zeiterfassung[]
+  zaehler                 Zaehler[]
+  kredite                 Kredit[]
+  kpiSnapshots            KPISnapshot[]
+  zahlungsguthaben        Zahlungsguthaben[]
+  zustellungProtokolle    ZustellungProtokoll[]
+  dienstleister           Dienstleister[]
+  nebenkostenabrechnungen Nebenkostenabrechnung[]
+  wartungsaufgaben        Wartungsaufgabe[]
 
   @@map("tenants")
 }
@@ -193,10 +210,11 @@ model Objekt {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  einheiten Einheit[]
-  dokumente Dokument[]
-  zaehler   Zaehler[]
+  tenant                  Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  einheiten               Einheit[]
+  dokumente               Dokument[]
+  zaehler                 Zaehler[]
+  nebenkostenabrechnungen Nebenkostenabrechnung[]
 
   @@index([tenantId])
   @@map("objekte")
@@ -220,19 +238,20 @@ enum Verwaltungsart {
 }
 
 model Einheit {
-  id        String        @id @default(cuid())
-  tenantId  String
-  objektId  String
-  einheitNr String
-  typ       EinheitTyp
-  flaeche   Decimal       @db.Decimal(10, 2)
-  zimmer    Int?
-  etage     Int?
-  ausstattung String?     @db.Text
-  status    EinheitStatus @default(VERFUEGBAR)
-  eurProQm  Decimal?      @db.Decimal(10, 2)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  tenantId    String
+  objektId    String
+  einheitNr   String
+  typ         EinheitTyp
+  flaeche     Decimal       @db.Decimal(10, 2)
+  zimmer      Int?
+  etage       Int?
+  ausstattung String?       @db.Text
+  status      EinheitStatus @default(VERFUEGBAR)
+  eurProQm    Decimal?      @db.Decimal(10, 2)
+  intakeToken String?       @unique  // NEU: für öffentliche Ticket-Intake-URL
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   tenant              Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   objekt              Objekt                  @relation(fields: [objektId], references: [id], onDelete: Cascade)
@@ -335,6 +354,9 @@ model Mieter {
   telefon   String?  // Legacy-Feld, wird durch telefonMobil ersetzt
   notizen   String?  @db.Text
 
+  // NEU: IBAN für automatisches Matching
+  iban      String?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -416,6 +438,12 @@ model Mietverhaeltnis {
 
   vertragStatus   VertragStatus @default(ENTWURF)
   notizen         String?       @db.Text
+
+  // NEU: Sperrlogik für Mahnwesen
+  mahnungGesperrt    Boolean   @default(false)
+  mahnungSperrGrund  String?
+  mahnungGesperrtBis DateTime?
+
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -425,6 +453,8 @@ model Mietverhaeltnis {
   dokumente       Dokument[]
   sollstellungen  Sollstellung[]
   zaehlerstaende  Zaehlerstand[]
+  mahnungen       Mahnung[]
+  nkaMieterpositionen NKAMieterposition[]
 
   @@index([tenantId, einheitId])
   @@index([tenantId, mieterId])
@@ -480,7 +510,18 @@ model Dokument {
   ticketId          String?
   kostenId          String?
   kreditId          String?
+  wartungsaufgabeId String?
   notiz             String?     @db.Text
+
+  // NEU: Versionierung
+  version           Int       @default(1)
+  faelligkeitsdatum DateTime? // abgeleitete Frist
+  fristTyp          String?   // KUENDIGUNG, WARTUNG, PRUEFUNG, etc.
+  vorgaengerId      String?
+  schlagworte       String?   // Komma-getrennt
+
+  vorgaenger        Dokument?  @relation("Versionskette", fields: [vorgaengerId], references: [id])
+  nachfolger        Dokument[] @relation("Versionskette")
 
   tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   objekt          Objekt?          @relation(fields: [objektId], references: [id], onDelete: Cascade)
@@ -491,6 +532,7 @@ model Dokument {
   ticket          Ticket?          @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   kosten          Kosten?          @relation(fields: [kostenId], references: [id], onDelete: Cascade)
   kredit          Kredit?          @relation(fields: [kreditId], references: [id], onDelete: Cascade)
+  wartungsaufgabe Wartungsaufgabe? @relation(fields: [wartungsaufgabeId], references: [id])
 
   @@index([tenantId, typ])
   @@map("dokumente")
@@ -529,7 +571,7 @@ model AuditLog {
 }
 
 // ============================================
-// E) SOLLSTELLUNGEN & OFFENE POSTEN (Phase 5)
+// E) SOLLSTELLUNGEN & OFFENE POSTEN
 // ============================================
 
 model Sollstellung {
@@ -584,7 +626,7 @@ enum SollstellungStatus {
 }
 
 // ============================================
-// F) BANKIMPORT & ZAHLUNGEN (Phase 5)
+// F) BANKIMPORT & ZAHLUNGEN
 // ============================================
 
 model BankImportProfile {
@@ -617,6 +659,7 @@ model Zahlung {
 
   tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   zuordnungen ZahlungZuordnung[]
+  guthaben    Zahlungsguthaben[]
 
   @@index([tenantId, status])
   @@map("zahlungen")
@@ -628,6 +671,7 @@ enum ZahlungStatus {
   TEILWEISE_ZUGEORDNET
   IGNORIERT
   SPLITTET
+  RUECKLASTSCHRIFT // NEU
 }
 
 model ZahlungZuordnung {
@@ -651,8 +695,26 @@ model ZahlungZuordnung {
   @@map("zahlung_zuordnungen")
 }
 
+// NEU: Überzahlungs-Gutschriften
+model Zahlungsguthaben {
+  id                String   @id @default(cuid())
+  tenantId          String
+  mietverhaeltnisId String
+  betrag            Decimal  @db.Decimal(10, 2)
+  entstanden        DateTime @default(now())
+  verbraucht        Boolean  @default(false)
+  zahlungId         String
+  createdAt         DateTime @default(now())
+
+  tenant    Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zahlung   Zahlung @relation(fields: [zahlungId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, mietverhaeltnisId])
+  @@map("zahlungsguthaben")
+}
+
 // ============================================
-// G) MAHNWESEN (Phase 6)
+// G) MAHNWESEN
 // ============================================
 
 model Mahnung {
@@ -672,8 +734,10 @@ model Mahnung {
   createdAt              DateTime    @default(now())
   updatedAt              DateTime    @updatedAt
 
-  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  dokumente Dokument[]
+  tenant              Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  mietverhaeltnis     Mietverhaeltnis       @relation(fields: [mietverhaeltnisId], references: [id], onDelete: Cascade)
+  dokumente           Dokument[]
+  zustellungProtokolle ZustellungProtokoll[]
 
   @@index([tenantId, status])
   @@index([tenantId, mietverhaeltnisId])
@@ -692,10 +756,31 @@ enum MahnStatus {
   VERSENDET
   BEZAHLT
   STORNIERT
+  STRITTIG  // NEU
+  INKASSO   // NEU
+}
+
+// NEU: Zustellprotokoll
+model ZustellungProtokoll {
+  id        String   @id @default(cuid())
+  tenantId  String
+  mahnungId String
+  methode   String   // BRIEF, EMAIL, EINSCHREIBEN, PERSOENLICH
+  datum     DateTime @default(now())
+  bearbeiter String?
+  status    String   @default("VERSENDET") // VERSENDET, ZUGESTELLT, GESCHEITERT
+  notiz     String?  @db.Text
+  createdAt DateTime @default(now())
+
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  mahnung Mahnung @relation(fields: [mahnungId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, mahnungId])
+  @@map("zustellung_protokoll")
 }
 
 // ============================================
-// H) TICKETSYSTEM (Phase 7)
+// H) TICKETSYSTEM
 // ============================================
 
 model Ticket {
@@ -712,12 +797,22 @@ model Ticket {
   verantwortlicher  String? // User ID
   frist             DateTime?
   ersteller         String? // User ID
+  herkunft          String?          // INTERN, MIETER_PORTAL
+
+  // NEU: SLA, Dienstleister, Kostenlimit
+  slaFaelligkeitDatum  DateTime?
+  dienstleisterId      String?
+  kostenlimitFreigabe  Decimal?  @db.Decimal(10, 2)
+  kostenartUmlagefaehig Boolean  @default(false)
+
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
-  tenant     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  kommentare TicketKommentar[]
-  dokumente  Dokument[]
+  tenant          Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  dienstleister   Dienstleister?      @relation(fields: [dienstleisterId], references: [id])
+  kommentare      TicketKommentar[]
+  dokumente       Dokument[]
+  statusHistorie  TicketStatusHistorie[]
 
   @@index([tenantId, status])
   @@map("tickets")
@@ -743,6 +838,11 @@ enum TicketStatus {
   IN_BEARBEITUNG
   ZUR_PRUEFUNG
   ABGESCHLOSSEN
+  BEAUFTRAGT        // NEU: Handwerker beauftragt
+  TERMIN_VEREINBART // NEU
+  IN_ARBEIT         // NEU: Handwerker vor Ort
+  RUECKFRAGE        // NEU: Rückfrage an Mieter/Eigentümer
+  ABGERECHNET       // NEU: Rechnung erhalten und bezahlt
 }
 
 model TicketKommentar {
@@ -759,8 +859,43 @@ model TicketKommentar {
   @@map("ticket_kommentare")
 }
 
+// NEU: Dienstleister-Stammdaten
+model Dienstleister {
+  id        String   @id @default(cuid())
+  tenantId  String
+  name      String
+  telefon   String?
+  email     String?
+  kategorie String?  // ELEKTRIKER, SANITAER, HEIZUNG, AUFZUG, etc.
+  notiz     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tickets Ticket[]
+
+  @@index([tenantId])
+  @@map("dienstleister")
+}
+
+// NEU: Ticket Status-Historie
+model TicketStatusHistorie {
+  id         String       @id @default(cuid())
+  ticketId   String
+  vonStatus  TicketStatus
+  zuStatus   TicketStatus
+  datum      DateTime     @default(now())
+  bearbeiter String?
+  notiz      String?
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@map("ticket_status_historie")
+}
+
 // ============================================
-// I) KOSTEN & ZEIT (Phase 7)
+// I) KOSTEN & ZEIT
 // ============================================
 
 model Kosten {
@@ -836,7 +971,7 @@ model Zeiterfassung {
 }
 
 // ============================================
-// J) ZÄHLERVERWALTUNG (Phase 7)
+// J) ZÄHLERVERWALTUNG
 // ============================================
 
 model Zaehler {
@@ -895,7 +1030,7 @@ enum AblesesTyp {
 }
 
 // ============================================
-// K) KREDITVERWALTUNG (Phase 8)
+// K) KREDITVERWALTUNG
 // ============================================
 
 model Kredit {
@@ -962,4 +1097,111 @@ model Sondertilgung {
 
   @@index([tenantId, kreditId])
   @@map("sondertilgungen")
+}
+
+// ============================================
+// L) NEBENKOSTENABRECHNUNG (NEU)
+// ============================================
+
+model Nebenkostenabrechnung {
+  id              String    @id @default(cuid())
+  tenantId        String
+  objektId        String
+  abrechnungsjahr Int
+  vonDatum        DateTime
+  bisDatum        DateTime
+  status          NKAStatus @default(ENTWURF)
+  gesamtkosten    Decimal?  @db.Decimal(12, 2)
+  notiz           String?   @db.Text
+  erstelltAm      DateTime  @default(now())
+  freigegebenAm   DateTime?
+  updatedAt       DateTime  @updatedAt
+
+  tenant          Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  objekt          Objekt             @relation(fields: [objektId], references: [id], onDelete: Cascade)
+  positionen      NKAPosition[]
+  mieterpositionen NKAMieterposition[]
+
+  @@index([tenantId, abrechnungsjahr])
+  @@index([tenantId, objektId])
+  @@map("nebenkostenabrechnungen")
+}
+
+enum NKAStatus {
+  ENTWURF
+  BERECHNET
+  FREIGEGEBEN
+  VERSENDET
+  ABGESCHLOSSEN
+}
+
+model NKAPosition {
+  id                   String               @id @default(cuid())
+  nkaId                String
+  kostenartBezeichnung String
+  betragGesamt         Decimal              @db.Decimal(12, 2)
+  umlageschluessel     UmlageschluesselTyp
+  bkRelevant           Boolean              @default(true)
+  hkRelevant           Boolean              @default(false)
+  betragProEinheit     Json?                // { einheitId: betrag }
+  createdAt            DateTime             @default(now())
+
+  nka Nebenkostenabrechnung @relation(fields: [nkaId], references: [id], onDelete: Cascade)
+
+  @@index([nkaId])
+  @@map("nka_positionen")
+}
+
+model NKAMieterposition {
+  id                  String  @id @default(cuid())
+  nkaId               String
+  mietverhaeltnisId   String
+  einheitId           String
+  vorauszahlungGesamt Decimal @db.Decimal(12, 2)
+  istKostenGesamt     Decimal @db.Decimal(12, 2)
+  differenz           Decimal @db.Decimal(12, 2) // positiv = Nachforderung, negativ = Guthaben
+  anteilsTage         Int     @default(365)
+  createdAt           DateTime @default(now())
+
+  nka             Nebenkostenabrechnung @relation(fields: [nkaId], references: [id], onDelete: Cascade)
+  mietverhaeltnis Mietverhaeltnis       @relation(fields: [mietverhaeltnisId], references: [id], onDelete: Cascade)
+
+  @@index([nkaId])
+  @@index([mietverhaeltnisId])
+  @@map("nka_mieterpositionen")
+}
+
+enum UmlageschluesselTyp {
+  FLAECHE
+  PERSONEN
+  EINHEITEN
+  VERBRAUCH
+  TAGE
+  PAUSCHAL
+}
+
+// ============================================
+// M) WARTUNGSPLAN (NEU)
+// ============================================
+
+model Wartungsaufgabe {
+  id                  String    @id @default(cuid())
+  tenantId            String
+  objektId            String?
+  einheitId           String?
+  bezeichnung         String    // "Heizungswartung", "Aufzug TÜV"
+  kategorie           String    // HEIZUNG, AUFZUG, BRANDSCHUTZ, RAUCHWARNMELDER, etc.
+  intervallMonate     Int       // 12 = jährlich, 24 = alle 2 Jahre
+  letzteAusfuehrung   DateTime?
+  naechsteFaelligkeit DateTime
+  verantwortlicher    String?
+  notiz               String?   @db.Text
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  dokumente Dokument[]
+
+  @@index([tenantId, naechsteFaelligkeit])
+  @@map("wartungsaufgaben")
 }

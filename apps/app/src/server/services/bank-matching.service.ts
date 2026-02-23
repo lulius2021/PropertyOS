@@ -185,8 +185,100 @@ export async function autoMatchZahlung(
 
   // REGEL 3: IBAN-Match (falls vorhanden)
   if (zahlung.iban) {
-    // TODO: IBAN-Matching (erfordert IBAN-Feld bei Mieter)
-    // Aktuell nicht implementiert da Mieter-Model noch kein IBAN-Feld hat
+    const mieterMitIBAN = await db.mieter.findFirst({
+      where: { tenantId, iban: zahlung.iban },
+    });
+    if (mieterMitIBAN) {
+      // Aktives Mietverhaeltnis finden
+      const mietverhaeltnis = await db.mietverhaeltnis.findFirst({
+        where: { tenantId, mieterId: mieterMitIBAN.id, auszugsdatum: null },
+      });
+      if (mietverhaeltnis) {
+        const tenant = await db.tenant.findUnique({
+          where: { id: tenantId },
+          select: { ausgleichsReihenfolge: true },
+        });
+        const orderBy =
+          tenant?.ausgleichsReihenfolge === "NEUESTE_ZUERST"
+            ? ({ faelligkeitsdatum: "desc" } as const)
+            : ({ faelligkeitsdatum: "asc" } as const);
+        const sollstellungen = await db.sollstellung.findMany({
+          where: {
+            tenantId,
+            mietverhaeltnisId: mietverhaeltnis.id,
+            status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] },
+          },
+          orderBy,
+        });
+        const match = sollstellungen.find((s) => {
+          const offen = new Decimal(s.betragGesamt.toString()).minus(
+            s.gedecktGesamt.toString()
+          );
+          return (
+            betrag.equals(offen) || betrag.equals(s.betragGesamt.toString())
+          );
+        });
+        if (match) {
+          // Check for overpayment
+          const offenerBetrag = new Decimal(
+            match.betragGesamt.toString()
+          ).minus(match.gedecktGesamt.toString());
+          if (betrag.greaterThan(offenerBetrag)) {
+            // Create Zahlungsguthaben for overpayment
+            const guthabenBetrag = betrag.minus(offenerBetrag);
+            await db.zahlungsguthaben.create({
+              data: {
+                tenantId,
+                mietverhaeltnisId: mietverhaeltnis.id,
+                betrag: guthabenBetrag,
+                zahlungId: zahlungId,
+              },
+            });
+            // Only allocate up to the open amount
+            try {
+              const zuordnung = await ordneZahlungZu({
+                zahlungId,
+                sollstellungId: match.id,
+                betrag: offenerBetrag,
+                tenantId,
+              });
+              return {
+                zahlungId,
+                matched: true,
+                zuordnungen: [zuordnung],
+                reason: "IBAN Match (mit Überzahlung → Guthaben)",
+              };
+            } catch (error) {
+              return {
+                zahlungId,
+                matched: false,
+                reason: `IBAN Match Zuordnung fehlgeschlagen: ${(error as Error).message}`,
+              };
+            }
+          }
+          try {
+            const zuordnung = await ordneZahlungZu({
+              zahlungId,
+              sollstellungId: match.id,
+              betrag,
+              tenantId,
+            });
+            return {
+              zahlungId,
+              matched: true,
+              zuordnungen: [zuordnung],
+              reason: "IBAN Match",
+            };
+          } catch (error) {
+            return {
+              zahlungId,
+              matched: false,
+              reason: `IBAN Match Zuordnung fehlgeschlagen: ${(error as Error).message}`,
+            };
+          }
+        }
+      }
+    }
   }
 
   // Kein Match gefunden
@@ -221,4 +313,47 @@ export async function autoMatchAlleUnklareZahlungen(tenantId: string) {
     fehlgeschlagen: ergebnisse.filter((r) => !r.matched).length,
     ergebnisse,
   };
+}
+
+/**
+ * Erstellt eine Rücklastschrift für eine Zahlung
+ */
+export async function createRuecklastschrift(
+  zahlungId: string,
+  tenantId: string,
+  ruecklastschriftGebuehr = 15
+) {
+  const zahlung = await db.zahlung.findUnique({ where: { id: zahlungId } });
+  if (!zahlung || zahlung.tenantId !== tenantId)
+    throw new Error("Zahlung nicht gefunden");
+
+  // Update zahlung status
+  await db.zahlung.update({
+    where: { id: zahlungId },
+    data: { status: "RUECKLASTSCHRIFT" },
+  });
+
+  // Find related mietverhaeltnis via zuordnungen
+  const zuordnung = await db.zahlungZuordnung.findFirst({
+    where: { zahlungId },
+    include: { sollstellung: true },
+  });
+
+  if (zuordnung?.sollstellung?.mietverhaeltnisId) {
+    // Create Rücklastschrift fee as Sollstellung
+    await db.sollstellung.create({
+      data: {
+        tenantId,
+        mietverhaeltnisId: zuordnung.sollstellung.mietverhaeltnisId,
+        typ: "MAHNGEBUEHR",
+        titel: `Rücklastschrift-Gebühr`,
+        betragGesamt: new Decimal(ruecklastschriftGebuehr),
+        faelligkeitsdatum: new Date(),
+        status: "OFFEN",
+        ursprungSollstellungId: zuordnung.sollstellungId,
+      },
+    });
+  }
+
+  return true;
 }

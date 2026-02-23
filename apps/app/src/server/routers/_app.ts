@@ -17,6 +17,10 @@ import { statistikRouter } from "./statistik";
 import { seedingRouter } from "./seeding";
 import { dokumenteRouter } from "./dokumente";
 import { userSettingsRouter } from "./userSettings";
+import { dienstleisterRouter } from "./dienstleister";
+import { nebenkostenabrechnungRouter } from "./nebenkostenabrechnung";
+import { wartungRouter } from "./wartung";
+import { sucheRouter } from "./suche";
 
 export const appRouter = router({
   objekte: objekteRouter,
@@ -37,6 +41,10 @@ export const appRouter = router({
   seeding: seedingRouter,
   dokumente: dokumenteRouter,
   userSettings: userSettingsRouter,
+  dienstleister: dienstleisterRouter,
+  nebenkostenabrechnung: nebenkostenabrechnungRouter,
+  wartung: wartungRouter,
+  suche: sucheRouter,
 });
 
 export type AppRouter = typeof appRouter;

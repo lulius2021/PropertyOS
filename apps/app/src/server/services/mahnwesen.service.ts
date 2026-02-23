@@ -119,8 +119,34 @@ export async function ersteMahnung({
     throw new Error("Kein offener Betrag vorhanden");
   }
 
+  // Tenant-Konfiguration laden (Mahngebühren + Verzugszins)
+  const tenant = await db.tenant.findUnique({
+    where: { id: tenantId },
+    select: {
+      mahngebuehrErinnerung: true,
+      mahngebuehrStufe1: true,
+      mahngebuehrStufe2: true,
+      mahngebuehrStufe3: true,
+      verzugszinssatz: true,
+    },
+  });
+
+  const tenantGebuehren: MahngebuehrenKonfig = tenant
+    ? {
+        ERINNERUNG: Number(tenant.mahngebuehrErinnerung),
+        MAHNUNG_1: Number(tenant.mahngebuehrStufe1),
+        MAHNUNG_2: Number(tenant.mahngebuehrStufe2),
+        MAHNUNG_3: Number(tenant.mahngebuehrStufe3),
+      }
+    : MAHNGEBUEHREN;
+
+  // verzugszinssatz is stored as percentage (e.g. 5 = 5%), convert to decimal
+  const jahreszinssatz = tenant
+    ? Number(tenant.verzugszinssatz) / 100
+    : VERZUGSZINS.jahreszinssatz;
+
   // Mahngebühr
-  const mahngebuehr = new Decimal(MAHNGEBUEHREN[mahnstufe]);
+  const mahngebuehr = new Decimal(tenantGebuehren[mahnstufe]);
 
   // Verzugszinsen berechnen
   const mahnDatum = new Date();
@@ -142,7 +168,7 @@ export async function ersteMahnung({
           offen,
           verzugstart,
           mahnDatum,
-          VERZUGSZINS.jahreszinssatz
+          jahreszinssatz
         );
         verzugszinsenGesamt = verzugszinsenGesamt.plus(zinsen);
       }
@@ -215,11 +241,12 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
   const heute = new Date();
   heute.setHours(0, 0, 0, 0);
 
-  // Alle Mietverhältnisse mit offenen Sollstellungen
+  // Alle aktiven, nicht gesperrten Mietverhältnisse mit offenen Sollstellungen
   const mietverhaeltnisse = await db.mietverhaeltnis.findMany({
     where: {
       tenantId,
       auszugsdatum: null, // Nur aktive
+      mahnungGesperrt: false,
     },
     include: {
       mieter: true,
@@ -242,6 +269,11 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
   const vorschlaege = [];
 
   for (const mv of mietverhaeltnisse) {
+    // Zusätzlich prüfen: temporäre Sperre noch aktiv?
+    if (mv.mahnungGesperrtBis && mv.mahnungGesperrtBis > heute) {
+      continue;
+    }
+
     if (mv.sollstellungen.length === 0) {
       continue;
     }

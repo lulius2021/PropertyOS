@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "@/lib/trpc/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const MAHNSTUFE_LABELS: Record<string, string> = {
   ERINNERUNG: "Zahlungserinnerung",
@@ -10,10 +10,14 @@ const MAHNSTUFE_LABELS: Record<string, string> = {
   MAHNUNG_3: "3. Mahnung (letzte)",
 };
 
+type Tab = "vorschlaege" | "alle" | "zustellprotokoll";
+
 export default function MahnungenPage() {
-  const [showVorschlaege, setShowVorschlaege] = useState(true);
+  const [activeTab, setActiveTab] = useState<Tab>("vorschlaege");
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data: mahnungen, isLoading, refetch } = trpc.mahnungen.list.useQuery();
   const { data: vorschlaege, isLoading: vorschlaegeLoading } =
@@ -25,6 +29,30 @@ export default function MahnungenPage() {
       refetch();
     },
   });
+
+  const updateStatusMutation = trpc.mahnungen.updateStatus.useMutation({
+    onSuccess: () => {
+      refetch();
+      setOpenDropdownId(null);
+    },
+  });
+
+  const sperrenMutation = trpc.mahnungen.sperren.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdownId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Auto-clear success message after 3 seconds
   useEffect(() => {
@@ -64,6 +92,45 @@ export default function MahnungenPage() {
       } catch (error) {
         setErrorMsg(`Fehler: ${(error as Error).message}`);
       }
+    }
+  };
+
+  const handleStatusChange = async (mahnungId: string, newStatus: string) => {
+    try {
+      await updateStatusMutation.mutateAsync({ id: mahnungId, status: newStatus as "STRITTIG" | "INKASSO" });
+      setSuccessMsg(`Status auf ${newStatus} geändert.`);
+    } catch (error) {
+      setErrorMsg(`Fehler: ${(error as Error).message}`);
+    }
+  };
+
+  const handleSperren = async (mietverhaeltnisId: string) => {
+    if (confirm("Mahnvorschlag für dieses Mietverhältnis sperren?")) {
+      try {
+        await sperrenMutation.mutateAsync({ mietverhaeltnisId });
+        setSuccessMsg("Mahnvorschlag gesperrt.");
+      } catch (error) {
+        setErrorMsg(`Fehler: ${(error as Error).message}`);
+      }
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "OFFEN":
+        return "bg-orange-100 text-orange-800";
+      case "VERSENDET":
+        return "bg-blue-100 text-blue-800";
+      case "BEZAHLT":
+        return "bg-green-100 text-green-800";
+      case "STORNIERT":
+        return "bg-gray-100 text-gray-800";
+      case "STRITTIG":
+        return "bg-yellow-100 text-yellow-800";
+      case "INKASSO":
+        return "bg-gray-900 text-white";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -123,9 +190,9 @@ export default function MahnungenPage() {
       {/* Tabs */}
       <div className="mb-4 flex gap-2">
         <button
-          onClick={() => setShowVorschlaege(true)}
+          onClick={() => setActiveTab("vorschlaege")}
           className={`rounded px-4 py-2 text-sm font-medium ${
-            showVorschlaege
+            activeTab === "vorschlaege"
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
@@ -133,19 +200,29 @@ export default function MahnungenPage() {
           Vorschläge ({vorschlaege?.length || 0})
         </button>
         <button
-          onClick={() => setShowVorschlaege(false)}
+          onClick={() => setActiveTab("alle")}
           className={`rounded px-4 py-2 text-sm font-medium ${
-            !showVorschlaege
+            activeTab === "alle"
               ? "bg-blue-600 text-white"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           Alle Mahnungen ({mahnungen?.length || 0})
         </button>
+        <button
+          onClick={() => setActiveTab("zustellprotokoll")}
+          className={`rounded px-4 py-2 text-sm font-medium ${
+            activeTab === "zustellprotokoll"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+          }`}
+        >
+          Zustellprotokoll
+        </button>
       </div>
 
       {/* Mahnvorschläge */}
-      {showVorschlaege && (
+      {activeTab === "vorschlaege" && (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
           {vorschlaege && vorschlaege.length === 0 ? (
             <div className="p-12 text-center">
@@ -208,18 +285,27 @@ export default function MahnungenPage() {
                       {MAHNSTUFE_LABELS[vorschlag.empfohleneStufe] ?? vorschlag.empfohleneStufe}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() =>
-                          handleErstellen(
-                            vorschlag.mietverhaeltnisId,
-                            vorschlag.empfohleneStufe
-                          )
-                        }
-                        disabled={erstellenMutation.isPending}
-                        className="rounded bg-orange-600 px-3 py-1 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
-                      >
-                        {erstellenMutation.isPending ? "..." : "Erstellen"}
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() =>
+                            handleErstellen(
+                              vorschlag.mietverhaeltnisId,
+                              vorschlag.empfohleneStufe
+                            )
+                          }
+                          disabled={erstellenMutation.isPending}
+                          className="rounded bg-orange-600 px-3 py-1 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
+                        >
+                          {erstellenMutation.isPending ? "..." : "Erstellen"}
+                        </button>
+                        <button
+                          onClick={() => handleSperren(vorschlag.mietverhaeltnisId)}
+                          disabled={sperrenMutation.isPending}
+                          className="rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Sperren
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -230,7 +316,7 @@ export default function MahnungenPage() {
       )}
 
       {/* Alle Mahnungen */}
-      {!showVorschlaege && (
+      {activeTab === "alle" && (
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
           {mahnungen && mahnungen.length === 0 ? (
             <div className="p-12 text-center">
@@ -263,6 +349,9 @@ export default function MahnungenPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     Dokument
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Aktionen
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
@@ -282,13 +371,7 @@ export default function MahnungenPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                          mahnung.status === "OFFEN"
-                            ? "bg-orange-100 text-orange-800"
-                            : mahnung.status === "VERSENDET"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getStatusColor(mahnung.status)}`}
                       >
                         {mahnung.status}
                       </span>
@@ -300,11 +383,51 @@ export default function MahnungenPage() {
                         <span className="text-gray-400">Nicht generiert</span>
                       )}
                     </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="relative inline-block" ref={openDropdownId === mahnung.id ? dropdownRef : undefined}>
+                        <button
+                          onClick={() => setOpenDropdownId(openDropdownId === mahnung.id ? null : mahnung.id)}
+                          className="rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
+                        >
+                          Status ändern
+                        </button>
+                        {openDropdownId === mahnung.id && (
+                          <div className="absolute right-0 z-10 mt-1 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                            {["OFFEN", "VERSENDET", "BEZAHLT", "STORNIERT", "STRITTIG", "INKASSO"]
+                              .filter((s) => s !== mahnung.status)
+                              .map((status) => (
+                                <button
+                                  key={status}
+                                  onClick={() => handleStatusChange(mahnung.id, status)}
+                                  className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                >
+                                  <span className={`mr-2 inline-block h-2 w-2 rounded-full ${getStatusColor(status).split(" ")[0]}`} />
+                                  {status}
+                                </button>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
+        </div>
+      )}
+
+      {/* Zustellprotokoll */}
+      {activeTab === "zustellprotokoll" && (
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="p-12 text-center">
+            <h3 className="text-lg font-medium text-gray-900">
+              Zustellprotokoll
+            </h3>
+            <p className="mt-2 text-gray-600">
+              Zustellprotokolle werden in einer zukünftigen Version angezeigt.
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -25,11 +25,33 @@ const createTicketSchema = z.object({
 
 type CreateTicketInput = z.infer<typeof createTicketSchema>;
 
+const ALL_STATUSES = [
+  "ERFASST",
+  "IN_BEARBEITUNG",
+  "ZUR_PRUEFUNG",
+  "ABGESCHLOSSEN",
+  "BEAUFTRAGT",
+  "TERMIN_VEREINBART",
+  "IN_ARBEIT",
+  "RUECKFRAGE",
+  "ABGERECHNET",
+] as const;
+
+const STATUS_LABELS: Record<string, string> = {
+  ERFASST: "Erfasst",
+  IN_BEARBEITUNG: "In Bearbeitung",
+  ZUR_PRUEFUNG: "Zur Prüfung",
+  ABGESCHLOSSEN: "Abgeschlossen",
+  BEAUFTRAGT: "Beauftragt",
+  TERMIN_VEREINBART: "Termin vereinbart",
+  IN_ARBEIT: "In Arbeit",
+  RUECKFRAGE: "Rückfrage",
+  ABGERECHNET: "Abgerechnet",
+};
+
 export default function TicketsPage() {
   const router = useRouter();
-  const [statusFilter, setStatusFilter] = useState<
-    "ERFASST" | "IN_BEARBEITUNG" | "ZUR_PRUEFUNG" | "ABGESCHLOSSEN" | undefined
-  >();
+  const [statusFilter, setStatusFilter] = useState<(typeof ALL_STATUSES)[number] | undefined>();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const utils = trpc.useUtils();
@@ -112,9 +134,47 @@ export default function TicketsPage() {
         return "bg-orange-100 text-orange-800";
       case "ABGESCHLOSSEN":
         return "bg-green-100 text-green-800";
+      case "BEAUFTRAGT":
+        return "bg-purple-100 text-purple-800";
+      case "TERMIN_VEREINBART":
+        return "bg-indigo-100 text-indigo-800";
+      case "IN_ARBEIT":
+        return "bg-blue-100 text-blue-800";
+      case "RUECKFRAGE":
+        return "bg-orange-100 text-orange-800";
+      case "ABGERECHNET":
+        return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const getSLABadge = (ticket: any) => {
+    if (!ticket.slaFaelligkeitDatum) return null;
+    const now = new Date();
+    const sla = new Date(ticket.slaFaelligkeitDatum);
+    const diffMs = sla.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return (
+        <span className="ml-2 inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+          SLA {Math.abs(diffDays)}d überfällig
+        </span>
+      );
+    }
+    if (diffDays <= 2) {
+      return (
+        <span className="ml-2 inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
+          SLA {diffDays}d
+        </span>
+      );
+    }
+    return (
+      <span className="ml-2 inline-flex rounded-full bg-gray-100 px-2 text-xs font-semibold leading-5 text-gray-600">
+        SLA {diffDays}d
+      </span>
+    );
   };
 
   return (
@@ -159,7 +219,7 @@ export default function TicketsPage() {
       )}
 
       {/* Filter */}
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <button
           onClick={() => setStatusFilter(undefined)}
           className={`rounded px-3 py-1 text-sm ${
@@ -170,36 +230,19 @@ export default function TicketsPage() {
         >
           Alle
         </button>
-        <button
-          onClick={() => setStatusFilter("ERFASST")}
-          className={`rounded px-3 py-1 text-sm ${
-            statusFilter === "ERFASST"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
-        >
-          Erfasst
-        </button>
-        <button
-          onClick={() => setStatusFilter("IN_BEARBEITUNG")}
-          className={`rounded px-3 py-1 text-sm ${
-            statusFilter === "IN_BEARBEITUNG"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
-        >
-          In Bearbeitung
-        </button>
-        <button
-          onClick={() => setStatusFilter("ABGESCHLOSSEN")}
-          className={`rounded px-3 py-1 text-sm ${
-            statusFilter === "ABGESCHLOSSEN"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
-        >
-          Abgeschlossen
-        </button>
+        {ALL_STATUSES.map((status) => (
+          <button
+            key={status}
+            onClick={() => setStatusFilter(status)}
+            className={`rounded px-3 py-1 text-sm ${
+              statusFilter === status
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            {STATUS_LABELS[status]}
+          </button>
+        ))}
       </div>
 
       {/* Tabelle */}
@@ -266,8 +309,9 @@ export default function TicketsPage() {
                     <span
                       className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getStatusColor(ticket.status)}`}
                     >
-                      {ticket.status}
+                      {STATUS_LABELS[ticket.status] || ticket.status}
                     </span>
+                    {getSLABadge(ticket)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(ticket.createdAt).toLocaleDateString("de-DE")}

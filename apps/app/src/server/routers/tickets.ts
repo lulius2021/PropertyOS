@@ -3,7 +3,8 @@
  * Handles ticket management system
  */
 
-import { router, protectedProcedure, createPlanGatedProcedure } from "../trpc";
+import { router, protectedProcedure, publicProcedure, createPlanGatedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { logAudit } from "../middleware/audit";
 
@@ -18,7 +19,7 @@ export const ticketsRouter = router({
       z
         .object({
           status: z
-            .enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN"])
+            .enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN", "BEAUFTRAGT", "TERMIN_VEREINBART", "IN_ARBEIT", "RUECKFRAGE", "ABGERECHNET"])
             .optional(),
           kategorie: z
             .enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE", "SANIERUNG"])
@@ -65,6 +66,10 @@ export const ticketsRouter = router({
           },
           dokumente: {
             orderBy: { hochgeladenAm: "desc" },
+          },
+          dienstleister: true,
+          statusHistorie: {
+            orderBy: { datum: "desc" },
           },
         },
       });
@@ -135,7 +140,7 @@ export const ticketsRouter = router({
           .optional(),
         prioritaet: z.enum(["NIEDRIG", "MITTEL", "HOCH", "KRITISCH"]).optional(),
         status: z
-          .enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN"])
+          .enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN", "BEAUFTRAGT", "TERMIN_VEREINBART", "IN_ARBEIT", "RUECKFRAGE", "ABGERECHNET"])
           .optional(),
         verantwortlicher: z.string().optional(),
         frist: z.date().optional(),
@@ -205,16 +210,34 @@ export const ticketsRouter = router({
     .input(
       z.object({
         ticketId: z.string(),
-        status: z.enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN"]),
+        status: z.enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN", "BEAUFTRAGT", "TERMIN_VEREINBART", "IN_ARBEIT", "RUECKFRAGE", "ABGERECHNET"]),
         kommentar: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Altes Ticket laden für StatusHistorie
+      const altesTicket = await ctx.db.ticket.findUnique({
+        where: { id: input.ticketId, tenantId: ctx.tenantId },
+      });
+
       // Status aktualisieren
       const ticket = await ctx.db.ticket.update({
         where: { id: input.ticketId, tenantId: ctx.tenantId },
         data: { status: input.status },
       });
+
+      // StatusHistorie-Eintrag erstellen
+      if (altesTicket) {
+        await ctx.db.ticketStatusHistorie.create({
+          data: {
+            ticketId: input.ticketId,
+            vonStatus: altesTicket.status,
+            zuStatus: input.status,
+            bearbeiter: ctx.userId,
+            notiz: input.kommentar,
+          },
+        });
+      }
 
       // Optionaler Kommentar
       if (input.kommentar) {
@@ -235,6 +258,67 @@ export const ticketsRouter = router({
         entitaet: "Ticket",
         entitaetId: ticket.id,
         neuWert: { status: input.status },
+      });
+
+      return ticket;
+    }),
+
+  /**
+   * Dienstleister zuweisen
+   */
+  assignDienstleister: ticketsProcedure
+    .input(
+      z.object({
+        ticketId: z.string(),
+        dienstleisterId: z.string().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const data: any = { dienstleisterId: input.dienstleisterId };
+      if (input.dienstleisterId) {
+        data.status = "BEAUFTRAGT";
+      }
+
+      const ticket = await ctx.db.ticket.update({
+        where: { id: input.ticketId, tenantId: ctx.tenantId },
+        data,
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "TICKET_DIENSTLEISTER_ZUGEWIESEN",
+        entitaet: "Ticket",
+        entitaetId: ticket.id,
+        neuWert: { dienstleisterId: input.dienstleisterId },
+      });
+
+      return ticket;
+    }),
+
+  /**
+   * SLA-Fälligkeit setzen
+   */
+  setSLA: ticketsProcedure
+    .input(
+      z.object({
+        ticketId: z.string(),
+        slaFaelligkeitDatum: z.date(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const ticket = await ctx.db.ticket.update({
+        where: { id: input.ticketId, tenantId: ctx.tenantId },
+        data: { slaFaelligkeitDatum: input.slaFaelligkeitDatum },
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "TICKET_SLA_GESETZT",
+        entitaet: "Ticket",
+        entitaetId: ticket.id,
+        neuWert: { slaFaelligkeitDatum: input.slaFaelligkeitDatum },
       });
 
       return ticket;
@@ -272,4 +356,44 @@ export const ticketsRouter = router({
       kritisch,
     };
   }),
+
+  /**
+   * Public intake: Mieter-Schadenmeldung via Token-Link
+   */
+  intakeSubmit: publicProcedure
+    .input(
+      z.object({
+        einheitToken: z.string(),
+        kategorie: z.enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE"]),
+        beschreibung: z.string().min(1).max(2000),
+        kontaktName: z.string().optional(),
+        kontaktTelefon: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const einheit = await ctx.db.einheit.findUnique({
+        where: { intakeToken: input.einheitToken },
+      });
+      if (!einheit) throw new TRPCError({ code: "NOT_FOUND", message: "Ungültiger Link" });
+
+      const beschreibungMitKontakt = input.kontaktName
+        ? `${input.beschreibung}\n\nGemeldet von: ${input.kontaktName}${input.kontaktTelefon ? ` (${input.kontaktTelefon})` : ""}`
+        : input.beschreibung;
+
+      const ticket = await ctx.db.ticket.create({
+        data: {
+          tenantId: einheit.tenantId,
+          titel: `${input.kategorie === "SCHADENSMELDUNG" ? "Schadensmeldung" : "Mieteranfrage"} — ${einheit.einheitNr}`,
+          beschreibung: beschreibungMitKontakt,
+          kategorie: input.kategorie,
+          prioritaet: "MITTEL",
+          status: "ERFASST",
+          einheitId: einheit.id,
+          objektId: einheit.objektId,
+          herkunft: "MIETER_PORTAL",
+        },
+      });
+
+      return { id: ticket.id };
+    }),
 });

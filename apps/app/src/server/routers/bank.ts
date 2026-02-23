@@ -15,6 +15,7 @@ import {
 import {
   autoMatchZahlung,
   autoMatchAlleUnklareZahlungen,
+  createRuecklastschrift,
 } from "../services/bank-matching.service";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -33,6 +34,7 @@ export const bankRouter = router({
               "TEILWEISE_ZUGEORDNET",
               "IGNORIERT",
               "SPLITTET",
+              "RUECKLASTSCHRIFT",
             ])
             .optional(),
           datumVon: z.date().optional(),
@@ -368,5 +370,60 @@ export const bankRouter = router({
       });
 
       return true;
+    }),
+
+  /**
+   * Rücklastschrift erstellen
+   */
+  createRuecklastschrift: bankImportProcedure
+    .input(
+      z.object({
+        zahlungId: z.string(),
+        gebuehr: z.number().positive().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await createRuecklastschrift(
+        input.zahlungId,
+        ctx.tenantId,
+        input.gebuehr
+      );
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "RUECKLASTSCHRIFT_ERSTELLT",
+        entitaet: "Zahlung",
+        entitaetId: input.zahlungId,
+        neuWert: { gebuehr: input.gebuehr },
+      });
+
+      return result;
+    }),
+
+  /**
+   * Guthaben auflisten
+   */
+  listGuthaben: bankImportProcedure
+    .input(
+      z
+        .object({
+          mietverhaeltnisId: z.string().optional(),
+          verbraucht: z.boolean().optional(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.zahlungsguthaben.findMany({
+        where: {
+          tenantId: ctx.tenantId,
+          mietverhaeltnisId: input?.mietverhaeltnisId,
+          verbraucht: input?.verbraucht,
+        },
+        include: {
+          zahlung: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
     }),
 });

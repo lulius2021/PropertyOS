@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GlobalSearch } from "@/components/GlobalSearch";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard" },
@@ -13,9 +14,12 @@ const navigation = [
   { name: "Bank", href: "/bank" },
   { name: "Mahnungen", href: "/mahnungen" },
   { name: "Tickets", href: "/tickets" },
+  { name: "Dienstleister", href: "/dienstleister" },
   { name: "Kosten", href: "/kosten" },
   { name: "Zähler", href: "/zaehler" },
   { name: "Kredite", href: "/kredite" },
+  { name: "Nebenkostenabr.", href: "/nebenkostenabrechnung" },
+  { name: "Wartungsplan", href: "/wartung" },
 ];
 
 const secondaryNavigation = [
@@ -54,6 +58,11 @@ export function Sidebar() {
           />
           <span className="text-xl font-bold text-gray-900">PropGate</span>
         </div>
+      </div>
+
+      {/* Global Search */}
+      <div className="px-4 pt-4">
+        <GlobalSearch />
       </div>
 
       {/* Navigation */}

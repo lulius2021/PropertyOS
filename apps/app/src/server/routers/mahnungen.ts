@@ -21,7 +21,7 @@ export const mahnungenRouter = router({
       z
         .object({
           mietverhaeltnisId: z.string().optional(),
-          status: z.enum(["OFFEN", "VERSENDET", "BEZAHLT", "STORNIERT"]).optional(),
+          status: z.enum(["OFFEN", "VERSENDET", "BEZAHLT", "STORNIERT", "STRITTIG", "INKASSO"]).optional(),
         })
         .optional()
     )
@@ -277,4 +277,135 @@ export const mahnungenRouter = router({
       },
     };
   }),
+
+  /**
+   * Status auf STRITTIG oder INKASSO setzen
+   */
+  updateStatus: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        status: z.enum(["STRITTIG", "INKASSO"]),
+        notiz: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const mahnung = await ctx.db.mahnung.update({
+        where: { id: input.id, tenantId: ctx.tenantId },
+        data: { status: input.status },
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: `MAHNUNG_${input.status}`,
+        entitaet: "Mahnung",
+        entitaetId: input.id,
+        neuWert: { status: input.status, notiz: input.notiz },
+      });
+
+      return mahnung;
+    }),
+
+  /**
+   * Mahnsperre für ein Mietverhältnis setzen
+   */
+  sperren: protectedProcedure
+    .input(
+      z.object({
+        mietverhaeltnisId: z.string(),
+        grund: z.string().optional(),
+        gesperrtBis: z.date().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const mv = await ctx.db.mietverhaeltnis.update({
+        where: { id: input.mietverhaeltnisId, tenantId: ctx.tenantId },
+        data: {
+          mahnungGesperrt: true,
+          mahnungSperrGrund: input.grund,
+          mahnungGesperrtBis: input.gesperrtBis,
+        },
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "MAHNUNG_GESPERRT",
+        entitaet: "Mietverhaeltnis",
+        entitaetId: input.mietverhaeltnisId,
+        neuWert: { grund: input.grund, gesperrtBis: input.gesperrtBis },
+      });
+
+      return mv;
+    }),
+
+  /**
+   * Mahnsperre für ein Mietverhältnis aufheben
+   */
+  entsperren: protectedProcedure
+    .input(z.object({ mietverhaeltnisId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const mv = await ctx.db.mietverhaeltnis.update({
+        where: { id: input.mietverhaeltnisId, tenantId: ctx.tenantId },
+        data: {
+          mahnungGesperrt: false,
+          mahnungSperrGrund: null,
+          mahnungGesperrtBis: null,
+        },
+      });
+
+      return mv;
+    }),
+
+  /**
+   * Zustellprotokoll-Eintrag erstellen
+   */
+  addZustellung: protectedProcedure
+    .input(
+      z.object({
+        mahnungId: z.string(),
+        methode: z.enum(["BRIEF", "EMAIL", "EINSCHREIBEN", "PERSOENLICH"]),
+        status: z.string().optional(),
+        notiz: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const eintrag = await ctx.db.zustellungProtokoll.create({
+        data: {
+          tenantId: ctx.tenantId,
+          mahnungId: input.mahnungId,
+          methode: input.methode,
+          status: input.status ?? "VERSENDET",
+          notiz: input.notiz,
+          bearbeiter: ctx.userId,
+        },
+      });
+
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "ZUSTELLUNG_ERSTELLT",
+        entitaet: "ZustellungProtokoll",
+        entitaetId: eintrag.id,
+        neuWert: eintrag,
+      });
+
+      return eintrag;
+    }),
+
+  /**
+   * Zustellprotokolle für eine Mahnung abrufen
+   */
+  getZustellungen: protectedProcedure
+    .input(z.object({ mahnungId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.zustellungProtokoll.findMany({
+        where: {
+          tenantId: ctx.tenantId,
+          mahnungId: input.mahnungId,
+        },
+        orderBy: { datum: "desc" },
+      });
+    }),
 });
