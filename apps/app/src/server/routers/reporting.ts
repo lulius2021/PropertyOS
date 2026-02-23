@@ -7,69 +7,127 @@ export const reportingRouter = router({
   /**
    * Dashboard KPIs
    */
-  dashboardKPIs: protectedProcedure.query(async ({ ctx }) => {
-    const tenantId = ctx.tenantId;
+  dashboardKPIs: protectedProcedure
+    .input(
+      z
+        .object({
+          objektId: z.string().optional(),
+          zeitraum: z.enum(["MONAT", "QUARTAL", "JAHR"]).optional(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const tenantId = ctx.tenantId;
 
-    // Objekte & Einheiten
-    const objekteCount = await db.objekt.count({ where: { tenantId } });
-    const einheitenCount = await db.einheit.count({ where: { tenantId } });
-    const vermieteteEinheiten = await db.einheit.count({
-      where: { tenantId, status: "VERMIETET" },
-    });
+      // Calculate date range based on zeitraum
+      let datumVon: Date | undefined;
+      if (input?.zeitraum) {
+        const now = new Date();
+        if (input.zeitraum === "MONAT") {
+          datumVon = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        } else if (input.zeitraum === "QUARTAL") {
+          datumVon = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        } else if (input.zeitraum === "JAHR") {
+          datumVon = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        }
+      }
 
-    // Offene Rückstände (Sollstellungen OFFEN oder TEILWEISE_BEZAHLT)
-    const offeneSollstellungen = await db.sollstellung.findMany({
-      where: {
-        tenantId,
-        status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] },
-        faelligkeitsdatum: { lte: new Date() },
-      },
-    });
+      // Objekte & Einheiten (filtered if objektId provided)
+      const objekteCount = input?.objektId
+        ? 1
+        : await db.objekt.count({ where: { tenantId } });
 
-    const rueckstaende = offeneSollstellungen.reduce((sum, s) => {
-      const offen = new Decimal(s.betragGesamt.toString()).minus(
-        s.gedecktGesamt.toString()
-      );
-      return sum.plus(offen);
-    }, new Decimal(0));
+      const einheitenWhere = input?.objektId
+        ? { tenantId, objektId: input.objektId }
+        : { tenantId };
+      const einheitenCount = await db.einheit.count({ where: einheitenWhere });
+      const vermieteteEinheiten = await db.einheit.count({
+        where: { ...einheitenWhere, status: "VERMIETET" },
+      });
 
-    // Offene Tickets
-    const offeneTickets = await db.ticket.count({
-      where: {
-        tenantId,
-        status: { in: ["ERFASST", "IN_BEARBEITUNG"] },
-      },
-    });
+      // Offene Rückstände
+      const offeneSollstellungen = await db.sollstellung.findMany({
+        where: {
+          tenantId,
+          status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] },
+          faelligkeitsdatum: {
+            lte: new Date(),
+            ...(datumVon ? { gte: datumVon } : {}),
+          },
+          ...(input?.objektId
+            ? {
+                mietverhaeltnis: { einheit: { objektId: input.objektId } },
+              }
+            : {}),
+        },
+      });
 
-    // Unklar-Zahlungen
-    const unklareZahlungen = await db.zahlung.count({
-      where: { tenantId, status: "UNKLAR" },
-    });
+      const rueckstaende = offeneSollstellungen.reduce((sum, s) => {
+        const offen = new Decimal(s.betragGesamt.toString()).minus(
+          s.gedecktGesamt.toString()
+        );
+        return sum.plus(offen);
+      }, new Decimal(0));
 
-    // Offene Mahnungen
-    const offeneMahnungen = await db.mahnung.count({
-      where: { tenantId, status: "OFFEN" },
-    });
+      // Offene Tickets (filter by objektId if provided)
+      const offeneTickets = await db.ticket.count({
+        where: {
+          tenantId,
+          status: { in: ["ERFASST", "IN_BEARBEITUNG"] },
+          ...(input?.objektId ? { objektId: input.objektId } : {}),
+          ...(datumVon ? { createdAt: { gte: datumVon } } : {}),
+        },
+      });
 
-    // Offene Sollstellungen (Anzahl)
-    const offeneSollstellungenCount = await db.sollstellung.count({
-      where: { tenantId, status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] } },
-    });
+      // Unklar-Zahlungen (no objektId filter — account level)
+      const unklareZahlungen = await db.zahlung.count({
+        where: {
+          tenantId,
+          status: "UNKLAR",
+          ...(datumVon ? { buchungsdatum: { gte: datumVon } } : {}),
+        },
+      });
 
-    return {
-      objekte: objekteCount,
-      einheiten: {
-        gesamt: einheitenCount,
-        vermietet: vermieteteEinheiten,
-        frei: einheitenCount - vermieteteEinheiten,
-      },
-      rueckstaende: rueckstaende.toFixed(2),
-      offeneTickets,
-      unklareZahlungen,
-      offeneMahnungen,
-      offeneSollstellungen: offeneSollstellungenCount,
-    };
-  }),
+      // Offene Mahnungen
+      const offeneMahnungenWhere: any = { tenantId, status: "OFFEN" };
+      if (input?.objektId) {
+        offeneMahnungenWhere.mietverhaeltnis = {
+          einheit: { objektId: input.objektId },
+        };
+      }
+      if (datumVon) offeneMahnungenWhere.createdAt = { gte: datumVon };
+      const offeneMahnungen = await db.mahnung.count({
+        where: offeneMahnungenWhere,
+      });
+
+      // Offene Sollstellungen (Anzahl)
+      const offeneSollstellungenCount = await db.sollstellung.count({
+        where: {
+          tenantId,
+          status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] },
+          ...(input?.objektId
+            ? {
+                mietverhaeltnis: { einheit: { objektId: input.objektId } },
+              }
+            : {}),
+          ...(datumVon ? { faelligkeitsdatum: { gte: datumVon } } : {}),
+        },
+      });
+
+      return {
+        objekte: objekteCount,
+        einheiten: {
+          gesamt: einheitenCount,
+          vermietet: vermieteteEinheiten,
+          frei: einheitenCount - vermieteteEinheiten,
+        },
+        rueckstaende: rueckstaende.toFixed(2),
+        offeneTickets,
+        unklareZahlungen,
+        offeneMahnungen,
+        offeneSollstellungen: offeneSollstellungenCount,
+      };
+    }),
 
   /**
    * Soll/Ist Übersicht für Zeitraum

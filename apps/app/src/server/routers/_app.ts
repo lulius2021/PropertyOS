@@ -14,6 +14,9 @@ import { reportingRouter } from "./reporting";
 import { authSecurityRouter } from "./auth-security";
 import { planRouter } from "./plan";
 import { statistikRouter } from "./statistik";
+import { seedingRouter } from "./seeding";
+import { dokumenteRouter } from "./dokumente";
+import { userSettingsRouter } from "./userSettings";
 
 export const appRouter = router({
   objekte: objekteRouter,
@@ -31,6 +34,9 @@ export const appRouter = router({
   authSecurity: authSecurityRouter,
   plan: planRouter,
   statistik: statistikRouter,
+  seeding: seedingRouter,
+  dokumente: dokumenteRouter,
+  userSettings: userSettingsRouter,
 });
 
 export type AppRouter = typeof appRouter;

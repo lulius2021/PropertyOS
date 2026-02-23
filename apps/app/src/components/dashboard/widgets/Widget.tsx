@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { WidgetType, WidgetSize } from "./types";
 import { trpc } from "@/lib/trpc/client";
 import Link from "next/link";
+import { MahnungErstellenModal } from "@/components/mahnungen/MahnungErstellenModal";
+import { NeuesObjektModal } from "@/components/objekte/NeuesObjektModal";
+import { NeueEinheitModal } from "@/components/einheiten/NeueEinheitModal";
+import { ErweiterterMieterModal } from "@/components/mieter/ErweiterterMieterModal";
+import { DokumentUploadModal } from "@/components/dokumente/DokumentUploadModal";
 import {
   PieChart,
   Pie,
@@ -139,6 +145,13 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   const isSmall = size === "small";
   const isMedium = size === "medium";
   const isLarge = size === "large";
+
+  // Modal state hooks
+  const [showMahnungModal, setShowMahnungModal] = useState(false);
+  const [showNeuesObjekt, setShowNeuesObjekt] = useState(false);
+  const [showNeueEinheit, setShowNeueEinheit] = useState(false);
+  const [showNeuerMieter, setShowNeuerMieter] = useState(false);
+  const [showDokumentUpload, setShowDokumentUpload] = useState(false);
 
   // All statistics hooks at top level — React Rules of Hooks requires unconditional calls
   const { data: vermietungData, isLoading: vermietungLoading } = trpc.statistik.vermietung.useQuery();
@@ -302,14 +315,14 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
 
   // Handlungsbedarf Widget
   if (type === "handlungsbedarf") {
-    const items = [
+    const actionItems = [
       { label: "Zahlungen unklar", count: data?.unklareZahlungen ?? 0, href: "/bank" },
       { label: "Offene Tickets", count: data?.offeneTickets ?? 0, href: "/tickets" },
-      { label: "Offene Mahnungen", count: data?.offeneMahnungen ?? 0, href: "/mahnungen" },
+      { label: "Offene Mahnungen", count: data?.offeneMahnungen ?? 0, isMahnung: true },
       { label: "Offene Sollstellungen", count: data?.offeneSollstellungen ?? 0, href: "/sollstellungen" },
     ].filter((item) => item.count > 0);
 
-    if (!isLoading && items.length === 0) {
+    if (!isLoading && actionItems.length === 0) {
       return (
         <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex h-full items-center justify-center">
@@ -333,52 +346,108 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           Handlungsbedarf
         </h3>
         <div className="space-y-1">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-yellow-100"
-            >
-              <span className="text-sm text-yellow-800">{item.label}</span>
-              <span className="text-sm font-bold text-yellow-900">{item.count}</span>
-            </Link>
+          {actionItems.map((item) => (
+            item.isMahnung ? (
+              <button
+                key="mahnungen"
+                onClick={() => setShowMahnungModal(true)}
+                className="no-drag flex w-full items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-yellow-100"
+              >
+                <span className="text-sm text-yellow-800">{item.label}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-yellow-900">{item.count}</span>
+                  <span className="rounded bg-orange-600 px-2 py-0.5 text-xs font-medium text-white">Erstellen</span>
+                </div>
+              </button>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href!}
+                className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-yellow-100"
+              >
+                <span className="text-sm text-yellow-800">{item.label}</span>
+                <span className="text-sm font-bold text-yellow-900">{item.count}</span>
+              </Link>
+            )
           ))}
         </div>
+        <MahnungErstellenModal
+          open={showMahnungModal}
+          onClose={() => setShowMahnungModal(false)}
+          onSuccess={() => setShowMahnungModal(false)}
+        />
       </div>
     );
   }
 
   // Schnellzugriff Widget
   if (type === "schnellzugriff") {
-    const quickLinks = [
-      { href: "/objekte", title: "Objekte", color: "text-blue-600", bg: "bg-blue-50" },
-      { href: "/mieter", title: "Mieter", color: "text-green-600", bg: "bg-green-50" },
-      { href: "/sollstellungen", title: "Sollstellungen", color: "text-orange-600", bg: "bg-orange-50" },
-      { href: "/tickets", title: "Tickets", color: "text-red-600", bg: "bg-red-50" },
-      { href: "/bank", title: "Bank", color: "text-indigo-600", bg: "bg-indigo-50" },
-      { href: "/mahnungen", title: "Mahnwesen", color: "text-purple-600", bg: "bg-purple-50" },
-      { href: "/zaehler", title: "Zähler", color: "text-teal-600", bg: "bg-teal-50" },
-      { href: "/reporting", title: "Reporting", color: "text-gray-600", bg: "bg-gray-50" },
-    ];
-
-    const displayLinks = isSmall ? quickLinks.slice(0, 4) : quickLinks;
-
     return (
       <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
           Schnellzugriff
         </h3>
         <div className={`grid gap-3 ${isLarge ? "grid-cols-4" : "grid-cols-2"}`}>
-          {displayLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`flex items-center justify-center rounded-lg border border-gray-100 p-3 transition-colors ${link.bg} hover:scale-105`}
-            >
-              <p className={`text-sm font-medium ${link.color}`}>{link.title}</p>
-            </Link>
-          ))}
+          <button
+            onClick={() => setShowNeuesObjekt(true)}
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-blue-100 bg-blue-50 p-3 transition-all hover:scale-105 hover:bg-blue-100"
+          >
+            <svg className="h-5 w-5 text-blue-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <p className="text-xs font-medium text-blue-700">+ Objekt</p>
+          </button>
+          <button
+            onClick={() => setShowNeueEinheit(true)}
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-green-100 bg-green-50 p-3 transition-all hover:scale-105 hover:bg-green-100"
+          >
+            <svg className="h-5 w-5 text-green-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <p className="text-xs font-medium text-green-700">+ Einheit</p>
+          </button>
+          <button
+            onClick={() => setShowNeuerMieter(true)}
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-purple-100 bg-purple-50 p-3 transition-all hover:scale-105 hover:bg-purple-100"
+          >
+            <svg className="h-5 w-5 text-purple-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <p className="text-xs font-medium text-purple-700">+ Mieter</p>
+          </button>
+          <button
+            onClick={() => setShowDokumentUpload(true)}
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-orange-100 bg-orange-50 p-3 transition-all hover:scale-105 hover:bg-orange-100"
+          >
+            <svg className="h-5 w-5 text-orange-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <p className="text-xs font-medium text-orange-700">Beleg</p>
+          </button>
         </div>
+
+        {/* Modals */}
+        <NeuesObjektModal
+          isOpen={showNeuesObjekt}
+          onClose={() => setShowNeuesObjekt(false)}
+          onSuccess={() => setShowNeuesObjekt(false)}
+        />
+        <NeueEinheitModal
+          isOpen={showNeueEinheit}
+          onClose={() => setShowNeueEinheit(false)}
+          onSuccess={() => setShowNeueEinheit(false)}
+        />
+        {showNeuerMieter && (
+          <ErweiterterMieterModal
+            isOpen={showNeuerMieter}
+            onClose={() => setShowNeuerMieter(false)}
+            onSuccess={() => setShowNeuerMieter(false)}
+          />
+        )}
+        <DokumentUploadModal
+          open={showDokumentUpload}
+          onClose={() => setShowDokumentUpload(false)}
+        />
       </div>
     );
   }

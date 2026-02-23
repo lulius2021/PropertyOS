@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc/client";
 import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import { TwoFactorDisable } from "@/components/auth/TwoFactorDisable";
@@ -198,9 +198,179 @@ function SecurityTab() {
   );
 }
 
+function DemoDataTab() {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const seedMutation = trpc.seeding.createDemoData.useMutation({
+    onSuccess: (data) => {
+      setResult(data);
+      setShowConfirm(false);
+    },
+    onError: (err) => {
+      setError(err.message);
+      setShowConfirm(false);
+    },
+  });
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-gray-900 mb-1">Demo-Daten</h2>
+      <p className="text-sm text-gray-500 mb-6">
+        Erstellt realistische Demo-Daten (Objekte, Einheiten, Mieter, Mietverhältnisse, Tickets und Mahnungen) für Testzwecke.
+        Nur möglich wenn die Datenbank noch leer ist.
+      </p>
+
+      {result && (
+        <div className="mb-4 rounded-lg bg-green-50 border border-green-200 p-4">
+          <p className="text-sm font-medium text-green-800 mb-2">Demo-Daten erfolgreich erstellt:</p>
+          <ul className="text-sm text-green-700 space-y-0.5">
+            <li>{result.objekte} Objekte</li>
+            <li>{result.einheiten} Einheiten</li>
+            <li>{result.mieter} Mieter</li>
+            <li>{result.mietverhaeltnisse} Mietverhältnisse</li>
+            <li>{result.sollstellungen} Sollstellungen</li>
+            <li>{result.tickets} Tickets</li>
+            <li>{result.mahnungen} Mahnungen</li>
+          </ul>
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-4">
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      {showConfirm ? (
+        <div className="rounded-lg border border-orange-200 bg-orange-50 p-4">
+          <p className="text-sm font-medium text-orange-800 mb-3">
+            Wirklich Demo-Daten einfügen? Diese Aktion kann nicht rückgängig gemacht werden und ist nur möglich wenn die Datenbank leer ist.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowConfirm(false)}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={() => seedMutation.mutate()}
+              disabled={seedMutation.isPending}
+              className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+            >
+              {seedMutation.isPending ? "Erstelle..." : "Demo-Daten einfügen"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowConfirm(true)}
+          disabled={!!result}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          Demo-Daten einfügen
+        </button>
+      )}
+    </div>
+  );
+}
+
+function AutoMahnungTab() {
+  const utils = trpc.useUtils();
+  const { data: settings, isLoading } = trpc.userSettings.getAutoMahnungSettings.useQuery();
+  const [form, setForm] = useState({ autoMahnungAktiv: false, autoMahnungTageNachFaelligkeit: 7, autoMahnungEmailAktiv: false });
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (settings) {
+      setForm({
+        autoMahnungAktiv: settings.autoMahnungAktiv,
+        autoMahnungTageNachFaelligkeit: settings.autoMahnungTageNachFaelligkeit,
+        autoMahnungEmailAktiv: settings.autoMahnungEmailAktiv,
+      });
+    }
+  }, [settings]);
+
+  const updateMutation = trpc.userSettings.updateAutoMahnung.useMutation({
+    onSuccess: () => {
+      setSaved(true);
+      utils.userSettings.getAutoMahnungSettings.invalidate();
+      setTimeout(() => setSaved(false), 3000);
+    },
+  });
+
+  if (isLoading) return <div className="p-6 text-sm text-gray-500">Laden...</div>;
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-gray-900 mb-1">Automatische Mahnungen</h2>
+      <p className="text-sm text-gray-500 mb-6">
+        Automatisch Mahnungen für überfällige Mieter erstellen.
+      </p>
+
+      {saved && (
+        <div className="mb-4 rounded-lg bg-green-50 border border-green-200 p-3 text-sm text-green-700">
+          Einstellungen gespeichert.
+        </div>
+      )}
+
+      <div className="space-y-5 max-w-md">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-900">Auto-Mahnung aktiv</p>
+            <p className="text-xs text-gray-500">Mahnungen automatisch erstellen</p>
+          </div>
+          <button
+            onClick={() => setForm(f => ({ ...f, autoMahnungAktiv: !f.autoMahnungAktiv }))}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungAktiv ? "bg-blue-600" : "bg-gray-300"}`}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.autoMahnungAktiv ? "translate-x-6" : "translate-x-1"}`} />
+          </button>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tage nach Fälligkeit</label>
+          <input
+            type="number"
+            min={1}
+            max={60}
+            value={form.autoMahnungTageNachFaelligkeit}
+            onChange={(e) => setForm(f => ({ ...f, autoMahnungTageNachFaelligkeit: parseInt(e.target.value) || 7 }))}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          />
+          <p className="mt-1 text-xs text-gray-500">Nach wie vielen Tagen nach Fälligkeit eine Mahnung erstellt wird</p>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-900">E-Mail automatisch senden</p>
+            <p className="text-xs text-gray-500">Mahnung per E-Mail versenden (coming soon)</p>
+          </div>
+          <button
+            onClick={() => setForm(f => ({ ...f, autoMahnungEmailAktiv: !f.autoMahnungEmailAktiv }))}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungEmailAktiv ? "bg-blue-600" : "bg-gray-300"}`}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.autoMahnungEmailAktiv ? "translate-x-6" : "translate-x-1"}`} />
+          </button>
+        </div>
+
+        <button
+          onClick={() => updateMutation.mutate(form)}
+          disabled={updateMutation.isPending}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {updateMutation.isPending ? "Speichere..." : "Einstellungen speichern"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function EinstellungenPage() {
   const [activeTab, setActiveTab] = useState<
-    "parameter" | "benutzer" | "audit" | "sicherheit"
+    "parameter" | "benutzer" | "audit" | "sicherheit" | "demo" | "automahnung"
   >("parameter");
 
   return (
@@ -254,6 +424,26 @@ export default function EinstellungenPage() {
             }`}
           >
             Audit-Log
+          </button>
+          <button
+            onClick={() => setActiveTab("automahnung")}
+            className={`border-b-2 py-2 px-1 text-sm font-medium ${
+              activeTab === "automahnung"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+            }`}
+          >
+            Auto-Mahnung
+          </button>
+          <button
+            onClick={() => setActiveTab("demo")}
+            className={`border-b-2 py-2 px-1 text-sm font-medium ${
+              activeTab === "demo"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+            }`}
+          >
+            Demo-Daten
           </button>
         </nav>
       </div>
@@ -456,6 +646,12 @@ export default function EinstellungenPage() {
           </table>
         </div>
       )}
+
+      {/* Auto-Mahnung Tab */}
+      {activeTab === "automahnung" && <AutoMahnungTab />}
+
+      {/* Demo-Daten Tab */}
+      {activeTab === "demo" && <DemoDataTab />}
     </div>
   );
 }

@@ -26,6 +26,11 @@ interface WidgetConfig {
 interface SimpleDashboardProps {
   data?: any;
   isLoading?: boolean;
+  objektFilter?: string;
+  zeitraum?: string;
+  objekte?: any[];
+  onObjektChange?: (v: string) => void;
+  onZeitraumChange?: (v: string) => void;
 }
 
 // Feste DEFAULT_WIDGETS - 4 Spalten Grid
@@ -54,7 +59,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   { i: "cashflowVerlauf-1", type: "cashflowVerlauf", size: "medium", x: 2, y: 10, w: 2, h: 3 },
 ];
 
-export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {
+export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objekte, onObjektChange, onZeitraumChange }: SimpleDashboardProps) {
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS);
   const [isEditing, setIsEditing] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
@@ -165,6 +170,40 @@ export function SimpleDashboard({ data, isLoading }: SimpleDashboardProps) {
           </button>
         </div>
       </div>
+
+      {/* Filter Bar */}
+      {(objektFilter !== undefined) && (
+        <div className="flex flex-wrap gap-3">
+          <select
+            value={objektFilter}
+            onChange={(e) => onObjektChange?.(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
+          >
+            <option value="">Alle Objekte</option>
+            {objekte?.map((o: any) => (
+              <option key={o.id} value={o.id}>{o.bezeichnung}</option>
+            ))}
+          </select>
+          <select
+            value={zeitraum}
+            onChange={(e) => onZeitraumChange?.(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
+          >
+            <option value="">Gesamtzeitraum</option>
+            <option value="MONAT">Letzter Monat</option>
+            <option value="QUARTAL">Letztes Quartal</option>
+            <option value="JAHR">Letztes Jahr</option>
+          </select>
+          {(objektFilter || zeitraum) && (
+            <button
+              onClick={() => { onObjektChange?.(""); onZeitraumChange?.(""); }}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 hover:bg-gray-50"
+            >
+              Filter zurücksetzen
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Edit Mode Hint */}
       {isEditing && (

@@ -1,15 +1,34 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc/client";
 import { SimpleDashboard } from "@/components/dashboard/SimpleDashboard";
 
 export default function DashboardPage() {
-  const { data: kpis, isLoading } = trpc.reporting.dashboardKPIs.useQuery();
+  const router = useRouter();
+  const [objektFilter, setObjektFilter] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("propgate_dash_objekt") ?? "";
+    }
+    return "";
+  });
+  const [zeitraum, setZeitraum] = useState<"MONAT" | "QUARTAL" | "JAHR" | "">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("propgate_dash_zeitraum") as any) ?? "";
+    }
+    return "";
+  });
+
+  const { data: objekte } = trpc.objekte.list.useQuery();
+  const { data: kpis, isLoading } = trpc.reporting.dashboardKPIs.useQuery({
+    objektId: objektFilter || undefined,
+    zeitraum: zeitraum || undefined,
+  });
+  const { data: userSettings } = trpc.userSettings.getSettings.useQuery();
   const saveSnapshots = trpc.statistik.saveSnapshots.useMutation();
   const snapshotDone = useRef(false);
 
-  // Beim ersten Laden Snapshots speichern (nur einmal pro Session)
   useEffect(() => {
     if (kpis && !snapshotDone.current) {
       snapshotDone.current = true;
@@ -17,5 +36,31 @@ export default function DashboardPage() {
     }
   }, [kpis]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <SimpleDashboard data={kpis} isLoading={isLoading} />;
+  useEffect(() => {
+    if (userSettings !== undefined && userSettings !== null && !userSettings.hasCompletedOnboarding) {
+      router.push("/onboarding");
+    }
+  }, [userSettings, router]);
+
+  const handleObjektChange = (value: string) => {
+    setObjektFilter(value);
+    localStorage.setItem("propgate_dash_objekt", value);
+  };
+
+  const handleZeitraumChange = (value: string) => {
+    setZeitraum(value as any);
+    localStorage.setItem("propgate_dash_zeitraum", value);
+  };
+
+  return (
+    <SimpleDashboard
+      data={kpis}
+      isLoading={isLoading}
+      objektFilter={objektFilter}
+      zeitraum={zeitraum}
+      objekte={objekte ?? []}
+      onObjektChange={handleObjektChange}
+      onZeitraumChange={handleZeitraumChange}
+    />
+  );
 }
