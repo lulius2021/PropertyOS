@@ -56,12 +56,12 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+      <div className="w-full max-w-md rounded-xl bg-[var(--bg-card)] p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Mahnung erstellen</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Mahnung erstellen</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-full p-1 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -82,14 +82,14 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
             )}
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Mietverhältnis</label>
+              <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Mietverhältnis</label>
               {isLoading ? (
-                <p className="text-sm text-gray-500">Lade Vorschläge...</p>
+                <p className="text-sm text-[var(--text-secondary)]">Lade Vorschläge...</p>
               ) : (
                 <select
                   value={selectedId}
                   onChange={(e) => setSelectedId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">-- Mietverhältnis wählen --</option>
                   {vorschlaege?.map((v: any) => (
@@ -102,11 +102,11 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Mahnstufe</label>
+              <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Mahnstufe</label>
               <select
                 value={mahnstufe}
                 onChange={(e) => setMahnstufe(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none"
               >
                 {Object.entries(MAHNSTUFE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>
@@ -117,7 +117,7 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
             <div className="flex gap-3 pt-2">
               <button
                 onClick={onClose}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
               >
                 Abbrechen
               </button>

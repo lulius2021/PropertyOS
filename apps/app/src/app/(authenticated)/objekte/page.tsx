@@ -36,8 +36,8 @@ export default function ObjektePage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Objekte</h1>
-          <p className="mt-2 text-gray-600">Verwaltung aller Immobilienobjekte</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Objekte</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">Verwaltung aller Immobilienobjekte</p>
         </div>
         <div className="flex items-center gap-3">
           <ViewToggle view={view} onViewChange={handleViewChange} />
@@ -65,9 +65,9 @@ export default function ObjektePage() {
       )}
 
       {objekte && objekte.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <h3 className="text-lg font-medium text-gray-900">Keine Objekte vorhanden</h3>
-          <p className="mt-2 text-gray-600">
+        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-page)] p-12 text-center">
+          <h3 className="text-lg font-medium text-[var(--text-primary)]">Keine Objekte vorhanden</h3>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Erstellen Sie Ihr erstes Objekt, um zu beginnen.
           </p>
           <button
@@ -90,40 +90,40 @@ export default function ObjektePage() {
         </div>
       ) : (
         // Tabellenansicht
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Bezeichnung
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Adresse
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Art
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Einheiten
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {objekte?.map((objekt) => (
-                <tr key={objekt.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/objekte/${objekt.id}`)}>
+                <tr key={objekt.id} className="hover:bg-[var(--bg-card-hover)] cursor-pointer" onClick={() => router.push(`/objekte/${objekt.id}`)}>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <div className="font-medium text-gray-900">{objekt.bezeichnung}</div>
+                    <div className="font-medium text-[var(--text-primary)]">{objekt.bezeichnung}</div>
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {objekt.strasse}, {objekt.plz} {objekt.ort}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {objekt.objektart}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {objekt._count.einheiten}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm">

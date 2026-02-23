@@ -81,16 +81,16 @@ export function EinheitBearbeitenModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-[var(--bg-card)] shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-gray-200 bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--bg-card)] px-6 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
               Einheit bearbeiten
             </h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-2 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -103,7 +103,7 @@ export function EinheitBearbeitenModal({
           <div className="grid grid-cols-2 gap-4">
             {/* Einheit-Nr */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Einheit-Nr. <span className="text-red-500">*</span>
               </label>
               <input
@@ -111,20 +111,20 @@ export function EinheitBearbeitenModal({
                 required
                 value={formData.einheitNr}
                 onChange={(e) => setFormData({ ...formData, einheitNr: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             {/* Typ */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Typ <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.typ}
                 onChange={(e) => setFormData({ ...formData, typ: e.target.value as typeof formData.typ })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="WOHNUNG">Wohnung</option>
                 <option value="GEWERBE">Gewerbe</option>
@@ -137,7 +137,7 @@ export function EinheitBearbeitenModal({
           <div className="grid grid-cols-2 gap-4">
             {/* Fläche */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Fläche (m²) <span className="text-red-500">*</span>
               </label>
               <input
@@ -147,13 +147,13 @@ export function EinheitBearbeitenModal({
                 step="0.01"
                 value={formData.flaeche}
                 onChange={(e) => setFormData({ ...formData, flaeche: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             {/* Zimmer */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Zimmer
               </label>
               <input
@@ -163,7 +163,7 @@ export function EinheitBearbeitenModal({
                 value={formData.zimmer}
                 onChange={(e) => setFormData({ ...formData, zimmer: e.target.value })}
                 placeholder="optional"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -171,7 +171,7 @@ export function EinheitBearbeitenModal({
           <div className="grid grid-cols-2 gap-4">
             {/* Etage */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Etage
               </label>
               <input
@@ -180,13 +180,13 @@ export function EinheitBearbeitenModal({
                 value={formData.etage}
                 onChange={(e) => setFormData({ ...formData, etage: e.target.value })}
                 placeholder="0 = EG"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             {/* €/m² */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Kaltmiete €/m²
               </label>
               <input
@@ -196,14 +196,14 @@ export function EinheitBearbeitenModal({
                 value={formData.eurProQm}
                 onChange={(e) => setFormData({ ...formData, eurProQm: e.target.value })}
                 placeholder="optional"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
 
           {/* Ausstattung */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Ausstattung / Notizen
             </label>
             <textarea
@@ -211,7 +211,7 @@ export function EinheitBearbeitenModal({
               onChange={(e) => setFormData({ ...formData, ausstattung: e.target.value })}
               rows={3}
               placeholder="z.B. Einbauküche, Balkon..."
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -223,12 +223,12 @@ export function EinheitBearbeitenModal({
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border)]">
             <button
               type="button"
               onClick={onClose}
               disabled={updateMutation.isPending}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)] disabled:opacity-50"
             >
               Abbrechen
             </button>

@@ -14,25 +14,25 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg-page)] px-4">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900">Ein Fehler ist aufgetreten</h1>
-        <p className="mt-4 text-gray-600">
+        <h1 className="text-4xl font-bold text-[var(--text-primary)]">Ein Fehler ist aufgetreten</h1>
+        <p className="mt-4 text-[var(--text-secondary)]">
           Es tut uns leid, aber etwas ist schief gelaufen.
         </p>
         {error.message && (
-          <p className="mt-2 text-sm text-gray-500">{error.message}</p>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">{error.message}</p>
         )}
         <div className="mt-8 space-x-4">
           <button
             onClick={() => reset()}
-            className="rounded-md bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
+            className="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
           >
             Erneut versuchen
           </button>
           <a
             href="/"
-            className="inline-block rounded-md border border-gray-300 bg-white px-6 py-3 font-medium text-gray-700 hover:bg-gray-50"
+            className="inline-block rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-6 py-3 font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           >
             Zurück zum Dashboard
           </a>

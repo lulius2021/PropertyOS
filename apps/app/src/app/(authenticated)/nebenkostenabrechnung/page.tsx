@@ -13,11 +13,11 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  ENTWURF: "bg-gray-100 text-gray-800",
-  BERECHNET: "bg-blue-100 text-blue-800",
-  FREIGEGEBEN: "bg-green-100 text-green-800",
-  VERSENDET: "bg-purple-100 text-purple-800",
-  ABGESCHLOSSEN: "bg-gray-200 text-gray-600",
+  ENTWURF: "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]",
+  BERECHNET: "bg-blue-500/15 text-blue-400",
+  FREIGEGEBEN: "bg-green-500/15 text-green-400",
+  VERSENDET: "bg-purple-500/15 text-purple-400",
+  ABGESCHLOSSEN: "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]",
 };
 
 export default function NebenkostenabrechnungPage() {
@@ -29,8 +29,8 @@ export default function NebenkostenabrechnungPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Nebenkostenabrechnung</h1>
-          <p className="mt-2 text-gray-600">Jahresabrechnungen für Ihre Objekte</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Nebenkostenabrechnung</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">Jahresabrechnungen für Ihre Objekte</p>
         </div>
         <Link href="/nebenkostenabrechnung/neu"
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
@@ -38,45 +38,45 @@ export default function NebenkostenabrechnungPage() {
         </Link>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
         {!nkAs?.length ? (
           <div className="p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900">Keine Abrechnungen</h3>
-            <p className="mt-2 text-gray-600">Erstellen Sie Ihre erste Nebenkostenabrechnung.</p>
+            <h3 className="text-lg font-medium text-[var(--text-primary)]">Keine Abrechnungen</h3>
+            <p className="mt-2 text-[var(--text-secondary)]">Erstellen Sie Ihre erste Nebenkostenabrechnung.</p>
             <Link href="/nebenkostenabrechnung/neu" className="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
               Jetzt erstellen
             </Link>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Objekt</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Jahr</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Zeitraum</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Gesamtkosten</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Positionen</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Aktion</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Objekt</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Jahr</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Zeitraum</th>
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Gesamtkosten</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Positionen</th>
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Aktion</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {nkAs.map((nka: any) => (
-                <tr key={nka.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900">{nka.objekt?.bezeichnung}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900 font-semibold">{nka.abrechnungsjahr}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                <tr key={nka.id} className="hover:bg-[var(--bg-card-hover)]">
+                  <td className="px-6 py-4 font-medium text-[var(--text-primary)]">{nka.objekt?.bezeichnung}</td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)] font-semibold">{nka.abrechnungsjahr}</td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {new Date(nka.vonDatum).toLocaleDateString("de-DE")} – {new Date(nka.bisDatum).toLocaleDateString("de-DE")}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 text-right text-sm font-medium text-[var(--text-primary)]">
                     {nka.gesamtkosten ? `${parseFloat(nka.gesamtkosten).toFixed(2)} €` : "—"}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${STATUS_COLORS[nka.status] || "bg-gray-100 text-gray-800"}`}>
+                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${STATUS_COLORS[nka.status] || "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"}`}>
                       {STATUS_LABELS[nka.status] || nka.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {nka._count?.positionen || 0} Positionen, {nka._count?.mieterpositionen || 0} Mieter
                   </td>
                   <td className="px-6 py-4 text-right">

@@ -1,5 +1,80 @@
 @import "tailwindcss";
 
+/* ── Tailwind v4: class-based dark mode ──────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── PropGate Design Tokens ──────────────────────────────────── */
+
+/* Light Theme */
+:root {
+  --bg-page:        #f0f4f8;
+  --bg-sidebar:     #ffffff;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f8fafc;
+  --border:         #e2e8f0;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+  --accent:         #3b82f6;
+}
+
+/* Dark Theme */
+.dark {
+  --bg-page:        #0b0d14;
+  --bg-sidebar:     #0d0f18;
+  --bg-card:        #181c2e;
+  --bg-card-hover:  #1e2238;
+  --border:         rgba(255,255,255,0.10);
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #475569;
+  --accent:         #3b82f6;
+}
+
+/* ── Sidebar Nav Item Animations (CSS classes, not Tailwind group-hover) ── */
+.nav-item {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.15s ease,
+              color 0.15s ease,
+              box-shadow 0.15s ease;
+}
+.nav-item:not(.nav-active):hover {
+  transform: translateX(4px);
+}
+.nav-item.nav-active {
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.30), inset 2px 0 0 #3b82f6;
+}
+.nav-icon {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-item:hover .nav-icon {
+  transform: scale(1.15);
+}
+
+/* Sidebar ambient blue glow — centered on nav area */
+.sidebar-glow {
+  background-image:
+    radial-gradient(ellipse 110% 55% at 50% 48%,
+      rgba(59, 130, 246, 0.18) 0%,
+      rgba(59, 130, 246, 0.06) 50%,
+      transparent 75%),
+    radial-gradient(ellipse 80% 25% at 50% 0%,
+      rgba(99, 179, 255, 0.10) 0%, transparent 60%);
+}
+
+/* App page fade-in */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Ambient glow on dark page background */
+.dark body {
+  background-image: radial-gradient(ellipse 80% 50% at 50% -20%,
+    rgba(59,130,246,0.08) 0%, transparent 60%);
+}
+
 /* Spinning card border */
 @keyframes border-spin {
   to { transform: translate(-50%, -50%) rotate(360deg); }

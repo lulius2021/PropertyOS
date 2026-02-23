@@ -94,14 +94,14 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-[var(--bg-card)] shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-gray-200 bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--bg-card)] px-6 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Neues Objekt erstellen</h2>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Neues Objekt erstellen</h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-2 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -114,10 +114,10 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Stammdaten */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Stammdaten</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2">Stammdaten</h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Bezeichnung <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -126,19 +126,19 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   value={formData.bezeichnung}
                   onChange={(e) => setFormData({ ...formData, bezeichnung: e.target.value })}
                   placeholder="z.B. Musterstraße 10"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Objektart <span className="text-red-500">*</span>
                 </label>
                 <select
                   required
                   value={formData.objektart}
                   onChange={(e) => setFormData({ ...formData, objektart: e.target.value as any })}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="WOHNHAUS">Wohnhaus</option>
                   <option value="GEWERBE">Gewerbe</option>
@@ -147,7 +147,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Gesamtfläche (m²)
                 </label>
                 <input
@@ -156,7 +156,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   value={formData.gesamtflaeche}
                   onChange={(e) => setFormData({ ...formData, gesamtflaeche: e.target.value })}
                   placeholder="z.B. 450.50"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -164,10 +164,10 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
 
           {/* Adresse */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2 mt-4">Adresse</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2 mt-4">Adresse</h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Straße <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -176,12 +176,12 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   value={formData.strasse}
                   onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
                   placeholder="z.B. Musterstraße 10"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   PLZ <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -190,12 +190,12 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   value={formData.plz}
                   onChange={(e) => setFormData({ ...formData, plz: e.target.value })}
                   placeholder="z.B. 10115"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Ort <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -204,7 +204,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   value={formData.ort}
                   onChange={(e) => setFormData({ ...formData, ort: e.target.value })}
                   placeholder="z.B. Berlin"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -212,9 +212,9 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
 
           {/* Medien */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2 mt-4">Medien</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2 mt-4">Medien</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Objekt-Bild hochladen
               </label>
 
@@ -228,15 +228,15 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                     if (file) handleFileSelect(file);
                   }}
                 >
-                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-[var(--border)] border-dashed rounded-xl cursor-pointer bg-[var(--bg-page)] hover:bg-[var(--bg-card-hover)] transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 mb-3 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
-                      <p className="mb-2 text-sm text-gray-500">
+                      <p className="mb-2 text-sm text-[var(--text-secondary)]">
                         <span className="font-semibold">Klicken zum Hochladen</span> oder Drag & Drop
                       </p>
-                      <p className="text-xs text-gray-500">PNG, JPG oder WEBP (max. 5MB)</p>
+                      <p className="text-xs text-[var(--text-secondary)]">PNG, JPG oder WEBP (max. 5MB)</p>
                     </div>
                     <input
                       type="file"
@@ -252,7 +252,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                   <img
                     src={imagePreview}
                     alt="Vorschau"
-                    className="w-full max-h-40 rounded-xl object-contain border border-gray-200"
+                    className="w-full max-h-40 rounded-xl object-contain border border-[var(--border)]"
                   />
                   <button
                     type="button"
@@ -266,7 +266,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                 </div>
               )}
 
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-[var(--text-secondary)]">
                 {isUploading ? "Bild wird geladen..." : "Ohne Bild wird das PropGate Logo verwendet."}
               </p>
             </div>
@@ -274,9 +274,9 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
 
           {/* Notizen */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Notizen</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Notizen</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Notizen
               </label>
               <textarea
@@ -284,7 +284,7 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
                 onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
                 rows={4}
                 placeholder="Zusätzliche Informationen zum Objekt..."
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -299,12 +299,12 @@ export function NeuesObjektModal({ isOpen, onClose, onSuccess }: NeuesObjektModa
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border)]">
             <button
               type="button"
               onClick={onClose}
               disabled={createMutation.isPending}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)] disabled:opacity-50"
             >
               Abbrechen
             </button>

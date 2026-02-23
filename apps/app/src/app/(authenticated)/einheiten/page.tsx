@@ -59,17 +59,17 @@ export default function EinheitenPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "VERMIETET":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/15 text-green-400";
       case "VERFUEGBAR":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/15 text-blue-400";
       case "KUENDIGUNG":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/15 text-yellow-400";
       case "SANIERUNG":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "RESERVIERT":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-500/15 text-purple-400";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
   };
 
@@ -123,40 +123,40 @@ export default function EinheitenPage() {
       {/* Statistics */}
       {stats && (
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-gray-600">Gesamt Einheiten</div>
-              <Building2 className="h-4 w-4 text-gray-400" />
+              <div className="text-sm font-medium text-[var(--text-secondary)]">Gesamt Einheiten</div>
+              <Building2 className="h-4 w-4 text-[var(--text-muted)]" />
             </div>
-            <div className="mt-2 text-2xl font-bold text-gray-900">{stats.gesamt}</div>
+            <div className="mt-2 text-2xl font-bold text-[var(--text-primary)]">{stats.gesamt}</div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-medium text-gray-600">Verfügbar</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <div className="text-sm font-medium text-[var(--text-secondary)]">Verfügbar</div>
             <div className="mt-2 text-2xl font-bold text-blue-600">
               {stats.verfuegbar}
             </div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-medium text-gray-600">Vermietet</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <div className="text-sm font-medium text-[var(--text-secondary)]">Vermietet</div>
             <div className="mt-2 text-2xl font-bold text-green-600">
               {stats.vermietet}
             </div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-medium text-gray-600">Durchschnitt €/m²</div>
-            <div className="mt-2 text-2xl font-bold text-gray-900">{stats.durchschnittEurProQm}</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+            <div className="text-sm font-medium text-[var(--text-secondary)]">Durchschnitt €/m²</div>
+            <div className="mt-2 text-2xl font-bold text-[var(--text-primary)]">{stats.durchschnittEurProQm}</div>
           </div>
         </div>
       )}
 
       {/* Objekt Filter */}
       {objekte && objekte.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h3 className="text-sm font-semibold text-gray-900">Nach Objekt filtern</h3>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <div className="border-b border-[var(--border)] px-6 py-4">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Nach Objekt filtern</h3>
           </div>
           <div className="p-6">
             <div className="flex flex-wrap gap-2">
@@ -171,7 +171,7 @@ export default function EinheitenPage() {
                     className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
                       isSelected
                         ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                        : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--border)]"
                     }`}
                   >
                     <Building2 className="h-4 w-4" />
@@ -180,7 +180,7 @@ export default function EinheitenPage() {
                       className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
                         isSelected
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-600"
+                          : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
                       }`}
                     >
                       {einheitenCount}
@@ -202,22 +202,22 @@ export default function EinheitenPage() {
       )}
 
       {/* Filters */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-4">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm p-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-[var(--text-muted)]" />
             <input
               type="text"
               placeholder="Suche nach Einheit oder Objekt..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] py-2 pl-9 pr-4 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full md:w-[200px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full md:w-[200px] rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="all">Alle Status</option>
             <option value="VERFUEGBAR">Verfügbar</option>
@@ -232,14 +232,14 @@ export default function EinheitenPage() {
       {/* Einheiten List */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredEinheiten?.map((einheit) => (
-          <div key={einheit.id} className="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+          <div key={einheit.id} className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm hover:shadow-md transition-shadow">
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)]">
                     {einheit.objekt?.bezeichnung}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">
                     Einheit {einheit.einheitNr}
                   </p>
                 </div>
@@ -249,41 +249,41 @@ export default function EinheitenPage() {
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Typ:</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-[var(--text-secondary)]">Typ:</span>
+                  <span className="font-medium text-[var(--text-primary)]">
                     {getTypLabel(einheit.typ)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Fläche:</span>
-                  <span className="font-medium text-gray-900">{einheit.flaeche} m²</span>
+                  <span className="text-[var(--text-secondary)]">Fläche:</span>
+                  <span className="font-medium text-[var(--text-primary)]">{einheit.flaeche} m²</span>
                 </div>
                 {einheit.zimmer && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Zimmer:</span>
-                    <span className="font-medium text-gray-900">{einheit.zimmer}</span>
+                    <span className="text-[var(--text-secondary)]">Zimmer:</span>
+                    <span className="font-medium text-[var(--text-primary)]">{einheit.zimmer}</span>
                   </div>
                 )}
                 {einheit.etage !== null && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Etage:</span>
-                    <span className="font-medium text-gray-900">{einheit.etage}</span>
+                    <span className="text-[var(--text-secondary)]">Etage:</span>
+                    <span className="font-medium text-[var(--text-primary)]">{einheit.etage}</span>
                   </div>
                 )}
                 {einheit.eurProQm && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600">€/m²:</span>
-                    <span className="font-medium text-gray-900">{einheit.eurProQm}</span>
+                    <span className="text-[var(--text-secondary)]">€/m²:</span>
+                    <span className="font-medium text-[var(--text-primary)]">{einheit.eurProQm}</span>
                   </div>
                 )}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2">
-                <button className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <div className="mt-4 pt-4 border-t border-[var(--border)] flex gap-2">
+                <button className="flex-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]">
                   Details ansehen
                 </button>
                 <button
                   onClick={() => setEditingEinheit(einheit as Einheit)}
-                  className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Bearbeiten
@@ -295,11 +295,11 @@ export default function EinheitenPage() {
       </div>
 
       {filteredEinheiten?.length === 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-8">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm p-8">
           <div className="text-center">
-            <Building2 className="mx-auto h-10 w-10 text-gray-300 mb-3" />
-            <p className="text-gray-500 font-medium">Keine Einheiten gefunden</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <Building2 className="mx-auto h-10 w-10 text-[var(--text-muted)] mb-3" />
+            <p className="text-[var(--text-secondary)] font-medium">Keine Einheiten gefunden</p>
+            <p className="text-sm text-[var(--text-muted)] mt-1">
               Erstellen Sie Ihre erste Einheit mit dem Button oben rechts.
             </p>
           </div>

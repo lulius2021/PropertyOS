@@ -75,8 +75,8 @@ export default function ReportingPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reporting & Statistik</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Reporting & Statistik</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Auswertungen und Portfolio-Exporte
           </p>
         </div>
@@ -99,8 +99,8 @@ export default function ReportingPage() {
       </div>
 
       {/* Soll/Ist Monatsübersicht */}
-      <div className="mb-8 rounded-lg border bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="mb-8 rounded-lg border bg-[var(--bg-card)] p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           Soll/Ist Übersicht (Letzte 12 Monate)
         </h2>
         {monatsuebersicht && monatsuebersicht.length > 0 ? (
@@ -128,14 +128,14 @@ export default function ReportingPage() {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-gray-500">Keine Daten verfügbar</p>
+          <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
         )}
       </div>
 
       {/* Statusquoten */}
       <div className="grid gap-6 md:grid-cols-2 mb-8">
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Einheiten nach Status
           </h2>
           {statusquoten?.einheiten && statusquoten.einheiten.length > 0 ? (
@@ -149,12 +149,12 @@ export default function ReportingPage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-500">Keine Daten verfügbar</p>
+            <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
           )}
         </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Tickets nach Status
           </h2>
           {statusquoten?.tickets && statusquoten.tickets.length > 0 ? (
@@ -168,60 +168,60 @@ export default function ReportingPage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-500">Keine Daten verfügbar</p>
+            <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
           )}
         </div>
       </div>
 
       {/* Portfolio Preview */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           Portfolio-Übersicht
         </h2>
         {portfolioData && portfolioData.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Objekt
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Einheit
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Typ
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Fläche (m²)
                   </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Status
                   </th>
-                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Kaltmiete
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {portfolioData.slice(0, 10).map((item, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-sm text-gray-900">
+                  <tr key={idx} className="hover:bg-[var(--bg-card-hover)]">
+                    <td className="px-4 py-2 text-sm text-[var(--text-primary)]">
                       {item.objektBezeichnung}
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-900">
+                    <td className="px-4 py-2 text-sm text-[var(--text-primary)]">
                       {item.einheitNr}
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
+                    <td className="px-4 py-2 text-sm text-[var(--text-secondary)]">
                       {item.einheitTyp}
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
+                    <td className="px-4 py-2 text-sm text-[var(--text-secondary)]">
                       {item.flaeche}
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-500">
+                    <td className="px-4 py-2 text-sm text-[var(--text-secondary)]">
                       {item.status}
                     </td>
-                    <td className="px-4 py-2 text-right text-sm font-medium text-gray-900">
+                    <td className="px-4 py-2 text-right text-sm font-medium text-[var(--text-primary)]">
                       {item.kaltmiete} €
                     </td>
                   </tr>
@@ -229,13 +229,13 @@ export default function ReportingPage() {
               </tbody>
             </table>
             {portfolioData.length > 10 && (
-              <p className="mt-4 text-sm text-gray-500">
+              <p className="mt-4 text-sm text-[var(--text-secondary)]">
                 Zeige 10 von {portfolioData.length} Einheiten. Nutze Export für vollständige Liste.
               </p>
             )}
           </div>
         ) : (
-          <p className="text-gray-500">Keine Daten verfügbar</p>
+          <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
         )}
       </div>
     </div>

@@ -85,10 +85,10 @@ export default function KreditDetailPage() {
           <Button variant="outline" onClick={() => router.back()}>
             ← Zurück
           </Button>
-          <h1 className="mt-4 text-3xl font-bold text-gray-900">
+          <h1 className="mt-4 text-3xl font-bold text-[var(--text-primary)]">
             {kredit.bezeichnung}
           </h1>
-          <p className="mt-2 text-gray-600">{kredit.bank}</p>
+          <p className="mt-2 text-[var(--text-secondary)]">{kredit.bank}</p>
         </div>
         <Button onClick={() => setShowSondertilgungDialog(true)}>
           + Sondertilgung
@@ -98,8 +98,8 @@ export default function KreditDetailPage() {
       {/* Stammdaten */}
       <div className="mb-6 grid grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Ursprungsbetrag</div>
-          <div className="mt-1 text-2xl font-bold text-gray-900">
+          <div className="text-sm text-[var(--text-secondary)]">Ursprungsbetrag</div>
+          <div className="mt-1 text-2xl font-bold text-[var(--text-primary)]">
             {parseFloat(kredit.ursprungsbetrag).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -108,7 +108,7 @@ export default function KreditDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Aktuelle Restschuld</div>
+          <div className="text-sm text-[var(--text-secondary)]">Aktuelle Restschuld</div>
           <div className="mt-1 text-2xl font-bold text-red-600">
             {parseFloat(kredit.restschuld).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
@@ -118,7 +118,7 @@ export default function KreditDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Monatliche Rate</div>
+          <div className="text-sm text-[var(--text-secondary)]">Monatliche Rate</div>
           <div className="mt-1 text-2xl font-bold text-blue-600">
             {parseFloat(kredit.rate).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
@@ -128,8 +128,8 @@ export default function KreditDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Zinssatz</div>
-          <div className="mt-1 text-2xl font-bold text-gray-900">
+          <div className="text-sm text-[var(--text-secondary)]">Zinssatz</div>
+          <div className="mt-1 text-2xl font-bold text-[var(--text-primary)]">
             {(parseFloat(kredit.zinssatz) * 100).toFixed(2)} %
           </div>
         </Card>
@@ -140,17 +140,17 @@ export default function KreditDetailPage() {
         <h2 className="mb-4 text-xl font-bold">Details</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-sm text-gray-500">Referenznummer</div>
+            <div className="text-sm text-[var(--text-secondary)]">Referenznummer</div>
             <div className="font-medium">{kredit.referenznummer || "-"}</div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Startdatum</div>
+            <div className="text-sm text-[var(--text-secondary)]">Startdatum</div>
             <div className="font-medium">
               {new Date(kredit.startdatum).toLocaleDateString("de-DE")}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Auszahlungsdatum</div>
+            <div className="text-sm text-[var(--text-secondary)]">Auszahlungsdatum</div>
             <div className="font-medium">
               {kredit.auszahlungsdatum
                 ? new Date(kredit.auszahlungsdatum).toLocaleDateString("de-DE")
@@ -158,14 +158,14 @@ export default function KreditDetailPage() {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Laufzeit</div>
+            <div className="text-sm text-[var(--text-secondary)]">Laufzeit</div>
             <div className="font-medium">
               {kredit.laufzeitMonate} Monate (
               {Math.floor(kredit.laufzeitMonate / 12)} Jahre)
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Zinsbindung bis</div>
+            <div className="text-sm text-[var(--text-secondary)]">Zinsbindung bis</div>
             <div className="font-medium">
               {kredit.zinsbindungBis
                 ? new Date(kredit.zinsbindungBis).toLocaleDateString("de-DE")
@@ -173,7 +173,7 @@ export default function KreditDetailPage() {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Laufzeitende</div>
+            <div className="text-sm text-[var(--text-secondary)]">Laufzeitende</div>
             <div className="font-medium">
               {kredit.laufzeitEnde
                 ? new Date(kredit.laufzeitEnde).toLocaleDateString("de-DE")
@@ -183,7 +183,7 @@ export default function KreditDetailPage() {
         </div>
         {kredit.notizen && (
           <div className="mt-4">
-            <div className="text-sm text-gray-500">Notizen</div>
+            <div className="text-sm text-[var(--text-secondary)]">Notizen</div>
             <div className="mt-1 whitespace-pre-wrap">{kredit.notizen}</div>
           </div>
         )}
@@ -194,37 +194,37 @@ export default function KreditDetailPage() {
         <Card className="mb-6">
           <div className="p-6">
             <h2 className="mb-4 text-xl font-bold">Sondertilgungen</h2>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Betrag
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Notiz
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Aktion
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {kredit.sondertilgungen.map((st: any) => (
                   <tr key={st.id}>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-[var(--text-primary)]">
                       {new Date(st.datum).toLocaleDateString("de-DE")}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-gray-900">
+                    <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                       {parseFloat(st.betrag).toLocaleString("de-DE", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{" "}
                       €
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {st.notiz || "-"}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -252,8 +252,8 @@ export default function KreditDetailPage() {
 
             {/* Gesamtkosten */}
             <div className="mb-4 grid grid-cols-3 gap-4">
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Gesamtzinsen</div>
+              <div className="rounded-lg bg-[var(--bg-page)] p-3">
+                <div className="text-sm text-[var(--text-secondary)]">Gesamtzinsen</div>
                 <div className="text-lg font-bold text-orange-600">
                   {tilgungsplanData.gesamtkosten.gesamtzinsen.toLocaleString(
                     "de-DE",
@@ -265,8 +265,8 @@ export default function KreditDetailPage() {
                   €
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Gesamttilgung</div>
+              <div className="rounded-lg bg-[var(--bg-page)] p-3">
+                <div className="text-sm text-[var(--text-secondary)]">Gesamttilgung</div>
                 <div className="text-lg font-bold text-blue-600">
                   {tilgungsplanData.gesamtkosten.gesamttilgung.toLocaleString(
                     "de-DE",
@@ -278,9 +278,9 @@ export default function KreditDetailPage() {
                   €
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Gesamtkosten</div>
-                <div className="text-lg font-bold text-gray-900">
+              <div className="rounded-lg bg-[var(--bg-page)] p-3">
+                <div className="text-sm text-[var(--text-secondary)]">Gesamtkosten</div>
+                <div className="text-lg font-bold text-[var(--text-primary)]">
                   {tilgungsplanData.gesamtkosten.gesamtkosten.toLocaleString(
                     "de-DE",
                     {
@@ -295,36 +295,36 @@ export default function KreditDetailPage() {
 
             {/* Tabelle */}
             <div className="max-h-[600px] overflow-y-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="sticky top-0 bg-gray-50">
+              <table className="min-w-full divide-y divide-[var(--border)]">
+                <thead className="sticky top-0 bg-[var(--bg-page)]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Monat
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Datum
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Restschuld
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Zinsen
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Tilgung
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Rate
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Sondertilgung
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                       Neue Restschuld
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                   {tilgungsplanData.plan.map((eintrag: any, index: number) => (
                     <tr
                       key={index}
@@ -332,16 +332,16 @@ export default function KreditDetailPage() {
                         eintrag.sondertilgung > 0 ? "bg-blue-50" : ""
                       }
                     >
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-6 py-4 text-sm text-[var(--text-primary)]">
                         {eintrag.monat}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                         {new Date(eintrag.datum).toLocaleDateString("de-DE", {
                           month: "2-digit",
                           year: "numeric",
                         })}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm text-[var(--text-primary)]">
                         {eintrag.restschuld.toLocaleString("de-DE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
@@ -359,7 +359,7 @@ export default function KreditDetailPage() {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm font-medium text-[var(--text-primary)]">
                         {eintrag.rate.toLocaleString("de-DE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
@@ -377,7 +377,7 @@ export default function KreditDetailPage() {
                           "-"
                         )}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm font-bold text-[var(--text-primary)]">
                         {eintrag.restschuldNachZahlung.toLocaleString(
                           "de-DE",
                           {
@@ -398,14 +398,14 @@ export default function KreditDetailPage() {
       {/* Dialog für Sondertilgung */}
       {showSondertilgungDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6">
+          <div className="w-full max-w-md rounded-lg bg-[var(--bg-card)] p-6">
             <h2 className="mb-4 text-xl font-bold">
               Sondertilgung hinzufügen
             </h2>
             <form onSubmit={handleCreateSondertilgung}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Datum *
                   </label>
                   <Input
@@ -422,7 +422,7 @@ export default function KreditDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Betrag * (€)
                   </label>
                   <Input
@@ -441,11 +441,11 @@ export default function KreditDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Notiz
                   </label>
                   <textarea
-                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    className="w-full rounded border border-[var(--border)] px-3 py-2"
                     rows={2}
                     value={sondertilgungData.notiz}
                     onChange={(e) =>

@@ -118,19 +118,19 @@ export default function MahnungenPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "OFFEN":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "VERSENDET":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/15 text-blue-400";
       case "BEZAHLT":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/15 text-green-400";
       case "STORNIERT":
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
       case "STRITTIG":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/15 text-yellow-400";
       case "INKASSO":
         return "bg-gray-900 text-white";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
   };
 
@@ -142,8 +142,8 @@ export default function MahnungenPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mahnwesen</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Mahnwesen</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Verwaltung von Mahnungen und Zahlungserinnerungen
           </p>
         </div>
@@ -166,21 +166,21 @@ export default function MahnungenPage() {
       {/* Statistiken */}
       {stats && (
         <div className="mb-6 grid grid-cols-2 gap-4">
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Offene Mahnungen</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+            <div className="text-sm text-[var(--text-secondary)]">Offene Mahnungen</div>
             <div className="mt-1 text-2xl font-bold text-orange-600">
               {stats.offen.anzahl}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-secondary)]">
               {stats.offen.summe.toFixed(2)} €
             </div>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Versendet</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+            <div className="text-sm text-[var(--text-secondary)]">Versendet</div>
             <div className="mt-1 text-2xl font-bold text-blue-600">
               {stats.versendet.anzahl}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-secondary)]">
               {stats.versendet.summe.toFixed(2)} €
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function MahnungenPage() {
           className={`rounded px-4 py-2 text-sm font-medium ${
             activeTab === "vorschlaege"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Vorschläge ({vorschlaege?.length || 0})
@@ -204,7 +204,7 @@ export default function MahnungenPage() {
           className={`rounded px-4 py-2 text-sm font-medium ${
             activeTab === "alle"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Alle Mahnungen ({mahnungen?.length || 0})
@@ -214,7 +214,7 @@ export default function MahnungenPage() {
           className={`rounded px-4 py-2 text-sm font-medium ${
             activeTab === "zustellprotokoll"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Zustellprotokoll
@@ -223,65 +223,65 @@ export default function MahnungenPage() {
 
       {/* Mahnvorschläge */}
       {activeTab === "vorschlaege" && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
           {vorschlaege && vorschlaege.length === 0 ? (
             <div className="p-12 text-center">
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-medium text-[var(--text-primary)]">
                 Keine Mahnvorschläge
               </h3>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-[var(--text-secondary)]">
                 Aktuell gibt es keine überfälligen Zahlungen.
               </p>
             </div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Mieter
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Objekt / Einheit
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Offener Betrag
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Tage überfällig
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Empfohlen
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Aktion
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {vorschlaege?.map((vorschlag: any) => (
-                  <tr key={vorschlag.mietverhaeltnisId} className="hover:bg-gray-50">
+                  <tr key={vorschlag.mietverhaeltnisId} className="hover:bg-[var(--bg-card-hover)]">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-[var(--text-primary)]">
                         {vorschlag.mieter.nachname}
                       </div>
                       {vorschlag.mieter.firma && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-[var(--text-secondary)]">
                           {vorschlag.mieter.firma}
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {vorschlag.objekt.bezeichnung} - {vorschlag.einheit.einheitNr}
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-red-600">
                       {vorschlag.offenerBetrag.toFixed(2)} €
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                      <span className="inline-flex rounded-full bg-red-500/15 px-2 text-xs font-semibold leading-5 text-red-400">
                         {vorschlag.tageUeberfaellig} Tage
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-[var(--text-primary)]">
                       {MAHNSTUFE_LABELS[vorschlag.empfohleneStufe] ?? vorschlag.empfohleneStufe}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -301,7 +301,7 @@ export default function MahnungenPage() {
                         <button
                           onClick={() => handleSperren(vorschlag.mietverhaeltnisId)}
                           disabled={sperrenMutation.isPending}
-                          className="rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                          className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] disabled:opacity-50"
                         >
                           Sperren
                         </button>
@@ -317,56 +317,56 @@ export default function MahnungenPage() {
 
       {/* Alle Mahnungen */}
       {activeTab === "alle" && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
           {mahnungen && mahnungen.length === 0 ? (
             <div className="p-12 text-center">
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-lg font-medium text-[var(--text-primary)]">
                 Keine Mahnungen vorhanden
               </h3>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-[var(--text-secondary)]">
                 Es wurden noch keine Mahnungen erstellt.
               </p>
             </div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Mahnstufe
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Offener Betrag
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Gebühren
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Dokument
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Aktionen
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {mahnungen?.map((mahnung: any) => (
-                  <tr key={mahnung.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                  <tr key={mahnung.id} className="hover:bg-[var(--bg-card-hover)]">
+                    <td className="px-6 py-4 font-medium text-[var(--text-primary)]">
                       {MAHNSTUFE_LABELS[mahnung.mahnstufe] ?? mahnung.mahnstufe}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {new Date(mahnung.mahnDatum).toLocaleDateString("de-DE")}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-gray-900">
+                    <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                       {mahnung.offenerBetrag} €
                     </td>
-                    <td className="px-6 py-4 text-right text-sm text-gray-500">
+                    <td className="px-6 py-4 text-right text-sm text-[var(--text-secondary)]">
                       {(parseFloat(mahnung.mahngebuehr) + parseFloat(mahnung.verzugszinsen)).toFixed(2)} €
                     </td>
                     <td className="px-6 py-4">
@@ -376,30 +376,30 @@ export default function MahnungenPage() {
                         {mahnung.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {mahnung.dokumentGeneriert ? (
                         <span className="text-green-600">Generiert</span>
                       ) : (
-                        <span className="text-gray-400">Nicht generiert</span>
+                        <span className="text-[var(--text-muted)]">Nicht generiert</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="relative inline-block" ref={openDropdownId === mahnung.id ? dropdownRef : undefined}>
                         <button
                           onClick={() => setOpenDropdownId(openDropdownId === mahnung.id ? null : mahnung.id)}
-                          className="rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
+                          className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
                         >
                           Status ändern
                         </button>
                         {openDropdownId === mahnung.id && (
-                          <div className="absolute right-0 z-10 mt-1 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                          <div className="absolute right-0 z-10 mt-1 w-40 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] py-1 shadow-lg">
                             {["OFFEN", "VERSENDET", "BEZAHLT", "STORNIERT", "STRITTIG", "INKASSO"]
                               .filter((s) => s !== mahnung.status)
                               .map((status) => (
                                 <button
                                   key={status}
                                   onClick={() => handleStatusChange(mahnung.id, status)}
-                                  className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                                  className="block w-full px-4 py-2 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
                                 >
                                   <span className={`mr-2 inline-block h-2 w-2 rounded-full ${getStatusColor(status).split(" ")[0]}`} />
                                   {status}
@@ -419,12 +419,12 @@ export default function MahnungenPage() {
 
       {/* Zustellprotokoll */}
       {activeTab === "zustellprotokoll" && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
           <div className="p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-[var(--text-primary)]">
               Zustellprotokoll
             </h3>
-            <p className="mt-2 text-gray-600">
+            <p className="mt-2 text-[var(--text-secondary)]">
               Zustellprotokolle werden in einer zukünftigen Version angezeigt.
             </p>
           </div>

@@ -52,8 +52,8 @@ export default function DienstleisterPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dienstleister</h1>
-          <p className="mt-2 text-gray-600">Handwerker und Servicepartner verwalten</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Dienstleister</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">Handwerker und Servicepartner verwalten</p>
         </div>
         <button
           onClick={() => { setShowForm(!showForm); setEditId(null); resetForm(); }}
@@ -67,36 +67,36 @@ export default function DienstleisterPage() {
       {errorMsg && <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{errorMsg}</div>}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <form onSubmit={handleSubmit} className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-medium">{editId ? "Dienstleister bearbeiten" : "Neuer Dienstleister"}</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Name *</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">Name *</label>
               <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Kategorie</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">Kategorie</label>
               <select value={form.kategorie} onChange={(e) => setForm({ ...form, kategorie: e.target.value })}
-                className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Keine</option>
                 {KATEGORIEN.map((k) => <option key={k} value={k}>{k}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Telefon</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">Telefon</label>
               <input value={form.telefon} onChange={(e) => setForm({ ...form, telefon: e.target.value })}
-                className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">E-Mail</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">E-Mail</label>
               <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Notiz</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)]">Notiz</label>
               <textarea value={form.notiz} onChange={(e) => setForm({ ...form, notiz: e.target.value })} rows={2}
-                className="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
           </div>
           <div className="mt-4 flex gap-2">
@@ -105,40 +105,40 @@ export default function DienstleisterPage() {
               {createMutation.isPending || updateMutation.isPending ? "Speichern..." : "Speichern"}
             </button>
             <button type="button" onClick={() => { setShowForm(false); setEditId(null); resetForm(); }}
-              className="rounded border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]">
               Abbrechen
             </button>
           </div>
         </form>
       )}
 
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
         {!dienstleister?.length ? (
           <div className="p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900">Keine Dienstleister</h3>
-            <p className="mt-2 text-gray-600">Fügen Sie Ihren ersten Dienstleister hinzu.</p>
+            <h3 className="text-lg font-medium text-[var(--text-primary)]">Keine Dienstleister</h3>
+            <p className="mt-2 text-[var(--text-secondary)]">Fügen Sie Ihren ersten Dienstleister hinzu.</p>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Kategorie</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Kontakt</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Tickets</th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Aktionen</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Kategorie</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Kontakt</th>
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Tickets</th>
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">Aktionen</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {dienstleister.map((d: any) => (
-                <tr key={d.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900">{d.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{d.kategorie || "—"}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                <tr key={d.id} className="hover:bg-[var(--bg-card-hover)]">
+                  <td className="px-6 py-4 font-medium text-[var(--text-primary)]">{d.name}</td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{d.kategorie || "—"}</td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {d.telefon && <div>{d.telefon}</div>}
                     {d.email && <div className="text-blue-600">{d.email}</div>}
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-gray-500">{d._count?.tickets || 0}</td>
+                  <td className="px-6 py-4 text-right text-sm text-[var(--text-secondary)]">{d._count?.tickets || 0}</td>
                   <td className="px-6 py-4 text-right">
                     <button onClick={() => handleEdit(d)} className="mr-2 text-sm text-blue-600 hover:text-blue-800">Bearbeiten</button>
                     <button onClick={() => handleDelete(d.id)} className="text-sm text-red-600 hover:text-red-800">Löschen</button>

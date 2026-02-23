@@ -60,14 +60,14 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-2xl">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl bg-[var(--bg-card)] shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-gray-200 bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--bg-card)] px-6 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Neue Sollstellung</h2>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">Neue Sollstellung</h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-2 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -79,13 +79,13 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {/* Mietverhältnis */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Mietverhältnis
             </label>
             <select
               value={formData.mietverhaeltnisId}
               onChange={(e) => setFormData({ ...formData, mietverhaeltnisId: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Ohne Zuordnung</option>
               {aktiveMV.map((mv: any) => (
@@ -99,14 +99,14 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
 
           {/* Typ */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Typ <span className="text-red-500">*</span>
             </label>
             <select
               required
               value={formData.typ}
               onChange={(e) => setFormData({ ...formData, typ: e.target.value as typeof formData.typ })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               {TYP_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -118,7 +118,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
 
           {/* Titel */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Titel <span className="text-red-500">*</span>
             </label>
             <input
@@ -127,13 +127,13 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               value={formData.titel}
               onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
               placeholder="z.B. Warmmiete Februar 2026"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           {/* Betrag gesamt */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Betrag gesamt <span className="text-red-500">*</span>
             </label>
             <input
@@ -144,13 +144,13 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               value={formData.betragGesamt}
               onChange={(e) => setFormData({ ...formData, betragGesamt: e.target.value })}
               placeholder="z.B. 850.00"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           {/* Fälligkeitsdatum */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Fälligkeitsdatum <span className="text-red-500">*</span>
             </label>
             <input
@@ -158,7 +158,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               required
               value={formData.faelligkeitsdatum}
               onChange={(e) => setFormData({ ...formData, faelligkeitsdatum: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -172,12 +172,12 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border)]">
             <button
               type="button"
               onClick={onClose}
               disabled={createMutation.isPending}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)] disabled:opacity-50"
             >
               Abbrechen
             </button>

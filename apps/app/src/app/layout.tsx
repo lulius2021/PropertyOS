@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@/lib/trpc/Provider";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,12 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de" suppressHydrationWarning>
-      {/* Anti-flash: read propgate-theme from localStorage before first paint */}
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var u=new URLSearchParams(window.location.search).get('theme');var s=localStorage.getItem('propgate-theme');var t=u||s||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(u)localStorage.setItem('propgate-theme',u);document.documentElement.setAttribute('data-theme',t);}catch(e){}})()` }} />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TRPCProvider>{children}</TRPCProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          storageKey="propgate-theme"
+        >
+          <TRPCProvider>{children}</TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

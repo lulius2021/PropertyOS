@@ -89,8 +89,8 @@ export default function KreditePage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Kreditverwaltung</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Kreditverwaltung</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Übersicht über Finanzierungen und Darlehen
           </p>
         </div>
@@ -101,25 +101,25 @@ export default function KreditePage() {
       {stats && (
         <div className="mb-6 grid grid-cols-4 gap-4">
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Anzahl Darlehen</div>
-            <div className="mt-1 text-2xl font-bold text-gray-900">
+            <div className="text-sm text-[var(--text-secondary)]">Anzahl Darlehen</div>
+            <div className="mt-1 text-2xl font-bold text-[var(--text-primary)]">
               {stats.gesamt}
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Restschuld gesamt</div>
+            <div className="text-sm text-[var(--text-secondary)]">Restschuld gesamt</div>
             <div className="mt-1 text-2xl font-bold text-red-600">
               {stats.gesamtRestschuld} €
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Gesamt-Rate (monatlich)</div>
+            <div className="text-sm text-[var(--text-secondary)]">Gesamt-Rate (monatlich)</div>
             <div className="mt-1 text-2xl font-bold text-blue-600">
               {stats.gesamtRate} €
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-[var(--text-secondary)]">
               Zinsbindung endet (12 Mon.)
             </div>
             <div className="mt-1 text-2xl font-bold text-orange-600">
@@ -132,13 +132,13 @@ export default function KreditePage() {
       {/* Dialog für neues Darlehen */}
       {showDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-[var(--bg-card)] p-6">
             <h2 className="mb-4 text-xl font-bold">Neues Darlehen anlegen</h2>
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 {/* Grunddaten */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Bezeichnung *
                   </label>
                   <Input
@@ -154,7 +154,7 @@ export default function KreditePage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Bank *
                     </label>
                     <Input
@@ -168,7 +168,7 @@ export default function KreditePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Referenznummer
                     </label>
                     <Input
@@ -188,7 +188,7 @@ export default function KreditePage() {
                 {/* Datums-Felder */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Startdatum *
                     </label>
                     <Input
@@ -201,7 +201,7 @@ export default function KreditePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Auszahlungsdatum
                     </label>
                     <Input
@@ -220,7 +220,7 @@ export default function KreditePage() {
                 {/* Finanzielle Details */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Ursprungsbetrag * (€)
                     </label>
                     <Input
@@ -238,7 +238,7 @@ export default function KreditePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Monatliche Rate * (€)
                     </label>
                     <Input
@@ -256,7 +256,7 @@ export default function KreditePage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Zinssatz * (%)
                     </label>
                     <Input
@@ -274,7 +274,7 @@ export default function KreditePage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Laufzeit * (Monate)
                     </label>
                     <Input
@@ -291,7 +291,7 @@ export default function KreditePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)]">
                       Zinsbindung bis
                     </label>
                     <Input
@@ -308,11 +308,11 @@ export default function KreditePage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Notizen
                   </label>
                   <textarea
-                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    className="w-full rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-[var(--text-primary)]"
                     rows={3}
                     value={formData.notizen}
                     onChange={(e) =>
@@ -342,11 +342,11 @@ export default function KreditePage() {
 
       {/* Tabelle */}
       {kredite && kredite.length === 0 ? (
-        <Card className="border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <h3 className="text-lg font-medium text-gray-900">
+        <Card className="border-dashed border-[var(--border)] bg-[var(--bg-page)] p-12 text-center">
+          <h3 className="text-lg font-medium text-[var(--text-primary)]">
             Keine Darlehen erfasst
           </h3>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-[var(--text-secondary)]">
             Erfassen Sie Ihre Finanzierungen für bessere Übersicht.
           </p>
           <Button className="mt-4" onClick={() => setShowDialog(true)}>
@@ -355,74 +355,74 @@ export default function KreditePage() {
         </Card>
       ) : (
         <Card>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Bezeichnung
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Bank
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Ursprungsbetrag
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Rate (mtl.)
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Zinssatz
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Laufzeit
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Sondertilgungen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {kredite?.map((kredit: any) => (
                 <tr
                   key={kredit.id}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-[var(--bg-card-hover)]"
                   onClick={() => router.push(`/kredite/${kredit.id}`)}
                 >
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-[var(--text-primary)]">
                       {kredit.bezeichnung}
                     </div>
                     {kredit.referenznummer && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[var(--text-secondary)]">
                         Ref: {kredit.referenznummer}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {kredit.bank}
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-gray-900">
+                  <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                     {parseFloat(kredit.ursprungsbetrag).toLocaleString("de-DE", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}{" "}
                     €
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-gray-900">
+                  <td className="px-6 py-4 text-right text-sm text-[var(--text-primary)]">
                     {parseFloat(kredit.rate).toLocaleString("de-DE", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}{" "}
                     €
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-gray-500">
+                  <td className="px-6 py-4 text-right text-sm text-[var(--text-secondary)]">
                     {(parseFloat(kredit.zinssatz) * 100).toFixed(2)} %
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {kredit.laufzeitMonate} Monate
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <span className="inline-flex rounded-full bg-blue-100 px-2 text-xs font-semibold leading-5 text-blue-800">
+                    <span className="inline-flex rounded-full bg-blue-500/15 px-2 text-xs font-semibold leading-5 text-blue-400">
                       {kredit.sondertilgungen?.length || 0}
                     </span>
                   </td>

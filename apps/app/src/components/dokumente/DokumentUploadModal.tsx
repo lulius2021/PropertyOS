@@ -97,12 +97,12 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--bg-card)] p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Beleg hochladen</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Beleg hochladen</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-full p-1 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -125,7 +125,7 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
             {/* Drop Zone */}
             <div
               className={`cursor-pointer rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
-                isDragging ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400"
+                isDragging ? "border-blue-400 bg-blue-50" : "border-[var(--border)] hover:border-[var(--border)]"
               }`}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
@@ -141,30 +141,30 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
               />
               {file ? (
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                  <p className="mt-1 text-xs text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">{file.name}</p>
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">{(file.size / 1024).toFixed(1)} KB</p>
                 </div>
               ) : (
                 <div>
-                  <svg className="mx-auto mb-2 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="mx-auto mb-2 h-10 w-10 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[var(--text-secondary)]">
                     Datei hierher ziehen oder{" "}
                     <span className="text-blue-600">auswählen</span>
                   </p>
-                  <p className="mt-1 text-xs text-gray-400">PDF, Bilder, max. 10 MB</p>
+                  <p className="mt-1 text-xs text-[var(--text-muted)]">PDF, Bilder, max. 10 MB</p>
                 </div>
               )}
             </div>
 
             {/* Kategorie */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Kategorie</label>
+              <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Kategorie</label>
               <select
                 value={typ}
                 onChange={(e) => setTyp(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
               >
                 {KATEGORIEN.map((k) => (
                   <option key={k.value} value={k.value}>{k.label}</option>
@@ -174,11 +174,11 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
 
             {/* Objekt */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Objekt (optional)</label>
+              <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Objekt (optional)</label>
               <select
                 value={objektId}
                 onChange={(e) => { setObjektId(e.target.value); setEinheitId(""); }}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
               >
                 <option value="">-- Kein Objekt --</option>
                 {objekte?.map((o: any) => (
@@ -190,11 +190,11 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
             {/* Einheit (nur wenn Objekt gewählt) */}
             {objektId && (
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Einheit (optional)</label>
+                <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Einheit (optional)</label>
                 <select
                   value={einheitId}
                   onChange={(e) => setEinheitId(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">-- Alle Einheiten --</option>
                   {einheiten?.map((e: any) => (
@@ -206,12 +206,12 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
 
             {/* Notiz */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Notiz (optional)</label>
+              <label className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">Notiz (optional)</label>
               <textarea
                 value={notiz}
                 onChange={(e) => setNotiz(e.target.value)}
                 rows={2}
-                className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                className="w-full resize-none rounded-lg border border-[var(--border)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                 placeholder="Notiz zum Dokument..."
               />
             </div>
@@ -219,7 +219,7 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
             <div className="flex gap-3 pt-2">
               <button
                 onClick={onClose}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
               >
                 Abbrechen
               </button>

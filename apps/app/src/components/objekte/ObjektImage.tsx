@@ -53,7 +53,7 @@ export function ObjektImage({ bildUrl, alt, className = "", size = "medium" }: O
 
   // Fallback: PropGate Haus-Icon (wie in der Sidebar)
   return (
-    <div className={`${baseClasses} flex items-center justify-center bg-white border-2 border-gray-200 shadow-sm`}>
+    <div className={`${baseClasses} flex items-center justify-center bg-[var(--bg-card-hover)] border-2 border-[var(--border)] shadow-sm`}>
       <HausIcon className={`${iconSizes[size]} text-blue-600`} />
     </div>
   );

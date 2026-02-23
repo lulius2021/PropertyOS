@@ -9,7 +9,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-2xl border bg-[var(--bg-card)] border-[var(--border)] text-[var(--text-primary)] shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow duration-200",
       className
     )}
     {...props}
@@ -50,7 +50,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-[var(--text-secondary)]", className)}
     {...props}
   />
 ))
@@ -76,4 +76,21 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+/** Gradient-border wrapper for KPI cards */
+function GradientCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("p-px rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600", className)}>
+      <div className="bg-[var(--bg-card)] rounded-2xl h-full">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, GradientCard }

@@ -53,8 +53,8 @@ export default function BankPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Bankimport</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Bankimport</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Zahlungen importieren und zuordnen
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function BankPage() {
           className={`rounded px-3 py-1 text-sm ${
             statusFilter === "UNKLAR"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Unklar ({zahlungen?.filter((z: { status: string }) => z.status === "UNKLAR").length || 0})
@@ -122,7 +122,7 @@ export default function BankPage() {
           className={`rounded px-3 py-1 text-sm ${
             statusFilter === "ZUGEORDNET"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Zugeordnet
@@ -132,7 +132,7 @@ export default function BankPage() {
           className={`rounded px-3 py-1 text-sm ${
             statusFilter === "TEILWEISE_ZUGEORDNET"
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Teilweise
@@ -142,7 +142,7 @@ export default function BankPage() {
           className={`rounded px-3 py-1 text-sm ${
             !statusFilter
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Alle
@@ -151,11 +151,11 @@ export default function BankPage() {
 
       {/* Tabelle */}
       {zahlungen && zahlungen.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <h3 className="text-lg font-medium text-gray-900">
+        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-page)] p-12 text-center">
+          <h3 className="text-lg font-medium text-[var(--text-primary)]">
             Keine Zahlungen vorhanden
           </h3>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-[var(--text-secondary)]">
             Importieren Sie Ihre erste CSV-Datei.
           </p>
           <Link
@@ -166,54 +166,54 @@ export default function BankPage() {
           </Link>
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Datum
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Verwendungszweck
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Betrag
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {zahlungen?.map((zahlung: any) => (
-                <tr key={zahlung.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                <tr key={zahlung.id} className="hover:bg-[var(--bg-card-hover)]">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {new Date(zahlung.datum).toLocaleDateString("de-DE")}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)]">
                     <div className="max-w-md truncate">
                       {zahlung.verwendungszweck}
                     </div>
                     {zahlung.iban && (
-                      <div className="text-xs text-gray-500">{zahlung.iban}</div>
+                      <div className="text-xs text-[var(--text-secondary)]">{zahlung.iban}</div>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium text-gray-900">
+                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium text-[var(--text-primary)]">
                     {zahlung.betrag} €
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
                     <span
                       className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
                         zahlung.status === "UNKLAR"
-                          ? "bg-orange-100 text-orange-800"
+                          ? "bg-orange-500/15 text-orange-400"
                           : zahlung.status === "ZUGEORDNET"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-500/15 text-green-400"
                             : zahlung.status === "TEILWEISE_ZUGEORDNET"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-blue-500/15 text-blue-400"
+                              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
                       }`}
                     >
                       {zahlung.status}
@@ -226,7 +226,7 @@ export default function BankPage() {
                           onClick={() =>
                             ignorierenMutation.mutate({ zahlungId: zahlung.id })
                           }
-                          className="text-gray-600 hover:text-gray-900"
+                          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                         >
                           Ignorieren
                         </button>
@@ -236,7 +236,7 @@ export default function BankPage() {
                       </div>
                     )}
                     {zahlung.zuordnungen.length > 0 && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[var(--text-secondary)]">
                         {zahlung.zuordnungen.length} Zuordnung(en)
                       </div>
                     )}

@@ -139,8 +139,8 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Dashboard</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
             {new Date().toLocaleDateString("de-DE", {
               weekday: "long",
               year: "numeric",
@@ -153,7 +153,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
           {isEditing && (
             <button
               onClick={() => setIsLibraryOpen(true)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]"
             >
               + Widget hinzufügen
             </button>
@@ -163,7 +163,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               isEditing
                 ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                : "border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             {isEditing ? "Fertig" : "Bearbeiten"}
@@ -177,7 +177,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
           <select
             value={objektFilter}
             onChange={(e) => onObjektChange?.(e.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-blue-500 focus:outline-none"
           >
             <option value="">Alle Objekte</option>
             {objekte?.map((o: any) => (
@@ -187,7 +187,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
           <select
             value={zeitraum}
             onChange={(e) => onZeitraumChange?.(e.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-blue-500 focus:outline-none"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] shadow-sm focus:border-blue-500 focus:outline-none"
           >
             <option value="">Gesamtzeitraum</option>
             <option value="MONAT">Letzter Monat</option>
@@ -197,7 +197,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
           {(objektFilter || zeitraum) && (
             <button
               onClick={() => { onObjektChange?.(""); onZeitraumChange?.(""); }}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 hover:bg-gray-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             >
               Filter zurücksetzen
             </button>
@@ -207,12 +207,12 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
 
       {/* Edit Mode Hint */}
       {isEditing && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
+        <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-3">
           <div className="flex items-center gap-3">
-            <svg className="h-5 w-5 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 flex-shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-blue-300">
               <span className="font-semibold">Bearbeitungsmodus aktiv:</span> Klicken Sie auf das X, um Widgets zu entfernen.
             </p>
           </div>
@@ -255,7 +255,7 @@ export function SimpleDashboard({ data, isLoading, objektFilter, zeitraum, objek
                 {/* Verlauf button — inside the card's padded bottom area */}
                 {!isEditing && (
                   <button
-                    className="no-drag absolute bottom-2.5 left-1/2 z-10 -translate-x-1/2 flex items-center gap-1.5 rounded-full border border-gray-300 bg-white/95 px-3 py-1 text-xs font-semibold text-gray-600 shadow transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md"
+                    className="no-drag absolute bottom-2.5 left-1/2 z-10 -translate-x-1/2 flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--bg-card)]/95 px-3 py-1 text-xs font-semibold text-[var(--text-secondary)] shadow transition-all hover:border-blue-400 hover:bg-blue-500/10 hover:text-blue-400 hover:shadow-md"
                     onClick={(e) => {
                       e.stopPropagation();
                       setVerlaufWidget({ type: widget.type, name: widgetName });

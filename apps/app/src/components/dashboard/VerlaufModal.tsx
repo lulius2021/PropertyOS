@@ -23,13 +23,13 @@ const STATUS_STYLE: Record<string, string> = {
   UNKLAR: "text-orange-600",
   ZUGEORDNET: "text-green-600",
   TEILWEISE_ZUGEORDNET: "text-yellow-600",
-  IGNORIERT: "text-gray-400",
+  IGNORIERT: "text-[var(--text-muted)]",
   SPLITTET: "text-blue-600",
-  ERFASST: "text-gray-600",
+  ERFASST: "text-[var(--text-secondary)]",
   IN_BEARBEITUNG: "text-blue-600",
   ZUR_PRUEFUNG: "text-yellow-600",
   ABGESCHLOSSEN: "text-green-600",
-  VERFUEGBAR: "text-gray-600",
+  VERFUEGBAR: "text-[var(--text-secondary)]",
   VERMIETET: "text-green-600",
   KUENDIGUNG: "text-orange-600",
   SANIERUNG: "text-yellow-600",
@@ -74,16 +74,16 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
       />
 
       {/* Slide-over Panel */}
-      <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
+      <div className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-[var(--bg-card)] shadow-2xl">
         {/* Header */}
-        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 px-6 py-4">
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-[var(--border)] px-6 py-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Verlauf</h2>
-            <p className="text-sm text-gray-500">{widgetName}</p>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Verlauf</h2>
+            <p className="text-sm text-[var(--text-secondary)]">{widgetName}</p>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -96,13 +96,13 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
 
           {/* ── Statistik-Verlauf (Snapshots) ── */}
           {(snapshotsLoading || (snapshots && snapshots.length > 0)) && (
-            <div className="border-b border-gray-100 px-6 py-4">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <div className="border-b border-[var(--border)] px-6 py-4">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
                 Wert-Verlauf
               </h3>
               {snapshotsLoading ? (
-                <div className="flex items-center gap-2 text-xs text-gray-400">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-200 border-t-blue-500" />
+                <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--border)] border-t-blue-500" />
                   Lade...
                 </div>
               ) : (
@@ -120,19 +120,19 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
                         {/* Timeline dot */}
                         <div className="flex flex-col items-center">
                           <div className="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-blue-500" />
-                          {!isLast && <div className="w-px flex-1 bg-gray-200" style={{ minHeight: 16 }} />}
+                          {!isLast && <div className="w-px flex-1 bg-[var(--border)]" style={{ minHeight: 16 }} />}
                         </div>
                         {/* Content */}
                         <div className="flex-1 pb-3 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-bold text-gray-900">{snap.wertText}</span>
+                            <span className="text-sm font-bold text-[var(--text-primary)]">{snap.wertText}</span>
                             {delta !== null && (
-                              <span className={`text-xs font-semibold flex-shrink-0 ${delta > 0 ? "text-green-600" : delta < 0 ? "text-red-500" : "text-gray-400"}`}>
+                              <span className={`text-xs font-semibold flex-shrink-0 ${delta > 0 ? "text-green-600" : delta < 0 ? "text-red-500" : "text-[var(--text-muted)]"}`}>
                                 {delta > 0 ? "+" : ""}{delta.toLocaleString("de-DE", { maximumFractionDigits: 1 })}
                               </span>
                             )}
                           </div>
-                          <p className="mt-0.5 text-xs text-gray-400">{datum} · {uhrzeit} Uhr</p>
+                          <p className="mt-0.5 text-xs text-[var(--text-muted)]">{datum} · {uhrzeit} Uhr</p>
                         </div>
                       </div>
                     );
@@ -145,23 +145,23 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
           {/* ── Ereignis-Verlauf (Transaktionen) ── */}
           <div className="px-6 py-4">
           {snapshots && snapshots.length > 0 && (
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
               Ereignisse
             </h3>
           )}
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--border)] border-t-blue-600" />
             </div>
           ) : !data?.eintraege?.length ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                <svg className="h-7 w-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--bg-card-hover)]">
+                <svg className="h-7 w-7 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <p className="text-sm font-medium text-gray-600">Noch keine Einträge</p>
-              <p className="mt-1 text-xs text-gray-400">Änderungen erscheinen hier sobald Daten vorhanden sind.</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Noch keine Einträge</p>
+              <p className="mt-1 text-xs text-[var(--text-muted)]">Änderungen erscheinen hier sobald Daten vorhanden sind.</p>
             </div>
           ) : (
             <div className="space-y-0">
@@ -178,22 +178,22 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
                     <div className="flex flex-col items-center">
                       <div className={`mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full ${dotColor}`} />
                       {!isLast && (
-                        <div className="w-px flex-1 bg-gray-200" style={{ minHeight: 20 }} />
+                        <div className="w-px flex-1 bg-[var(--border)]" style={{ minHeight: 20 }} />
                       )}
                     </div>
 
                     {/* Entry content */}
                     <div className={`pb-4 flex-1 min-w-0`}>
                       <div className="flex items-start justify-between gap-2">
-                        <p className="truncate text-sm font-semibold text-gray-900">{eintrag.titel}</p>
+                        <p className="truncate text-sm font-semibold text-[var(--text-primary)]">{eintrag.titel}</p>
                         {statusLabel && statusColor && (
                           <span className={`flex-shrink-0 text-xs font-medium ${statusColor}`}>
                             {statusLabel}
                           </span>
                         )}
                       </div>
-                      <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">{eintrag.beschreibung}</p>
-                      <p className="mt-1 text-xs text-gray-400">{datum} · {uhrzeit} Uhr</p>
+                      <p className="mt-0.5 line-clamp-2 text-xs text-[var(--text-secondary)]">{eintrag.beschreibung}</p>
+                      <p className="mt-1 text-xs text-[var(--text-muted)]">{datum} · {uhrzeit} Uhr</p>
                     </div>
                   </div>
                 );
@@ -204,8 +204,8 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 border-t border-gray-100 px-6 py-3">
-          <p className="text-center text-xs text-gray-400">
+        <div className="flex-shrink-0 border-t border-[var(--border)] px-6 py-3">
+          <p className="text-center text-xs text-[var(--text-muted)]">
             Zeigt die letzten 50 Einträge
           </p>
         </div>

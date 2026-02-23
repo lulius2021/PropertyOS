@@ -57,55 +57,55 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className={`h-2.5 w-2.5 rounded-full ${step >= 1 ? "bg-blue-600" : "bg-gray-300"}`} />
-            <div className={`h-0.5 flex-1 ${step >= 2 ? "bg-blue-600" : "bg-gray-200"}`} />
-            <div className={`h-2.5 w-2.5 rounded-full ${step >= 2 ? "bg-blue-600" : "bg-gray-300"}`} />
+            <div className={`h-2.5 w-2.5 rounded-full ${step >= 1 ? "bg-blue-600" : "bg-[var(--border)]"}`} />
+            <div className={`h-0.5 flex-1 ${step >= 2 ? "bg-blue-600" : "bg-[var(--border)]"}`} />
+            <div className={`h-2.5 w-2.5 rounded-full ${step >= 2 ? "bg-blue-600" : "bg-[var(--border)]"}`} />
           </div>
-          <div className="flex justify-between text-xs text-gray-500">
+          <div className="flex justify-between text-xs text-[var(--text-secondary)]">
             <span>Design</span>
             <span>Dashboard-Vorlage</span>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-200">
+        <div className="rounded-2xl bg-[var(--bg-card)] p-8 shadow-sm border border-[var(--border)]">
           {step === 1 && (
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Willkommen bei PropGate!</h1>
-              <p className="text-gray-500 mb-8">Richten Sie Ihr Dashboard in wenigen Schritten ein.</p>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Willkommen bei PropGate!</h1>
+              <p className="text-[var(--text-secondary)] mb-8">Richten Sie Ihr Dashboard in wenigen Schritten ein.</p>
 
-              <h2 className="text-base font-semibold text-gray-900 mb-4">Design wählen</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)] mb-4">Design wählen</h2>
               <div className="grid grid-cols-3 gap-3 mb-6">
                 {THEMES.map((t) => (
                   <button
                     key={t.value}
                     onClick={() => setThemeMode(t.value)}
                     className={`rounded-xl border-2 p-4 text-left transition-all ${
-                      themeMode === t.value ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                      themeMode === t.value ? "border-blue-500 bg-blue-500/10" : "border-[var(--border)] hover:border-[var(--border)]"
                     }`}
                   >
-                    <p className="text-sm font-medium text-gray-900">{t.label}</p>
-                    <p className="text-xs text-gray-500 mt-1">{t.description}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{t.label}</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{t.description}</p>
                   </button>
                 ))}
               </div>
 
-              <h2 className="text-base font-semibold text-gray-900 mb-4">Akzentfarbe</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)] mb-4">Akzentfarbe</h2>
               <div className="flex gap-3 mb-8">
                 {COLORS.map((c) => (
                   <button
                     key={c.value}
                     onClick={() => setAccentColor(c.value)}
                     className={`flex items-center gap-2 rounded-lg border-2 px-4 py-2.5 transition-all ${
-                      accentColor === c.value ? "border-gray-900" : "border-gray-200 hover:border-gray-300"
+                      accentColor === c.value ? "border-[var(--text-primary)]" : "border-[var(--border)] hover:border-[var(--border)]"
                     }`}
                   >
                     <span className={`h-4 w-4 rounded-full ${c.class}`} />
-                    <span className="text-sm font-medium text-gray-700">{c.label}</span>
+                    <span className="text-sm font-medium text-[var(--text-secondary)]">{c.label}</span>
                   </button>
                 ))}
               </div>
@@ -121,8 +121,8 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">Dashboard-Vorlage</h2>
-              <p className="text-gray-500 mb-8">Wählen Sie, welche Informationen Ihr Dashboard zeigen soll.</p>
+              <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Dashboard-Vorlage</h2>
+              <p className="text-[var(--text-secondary)] mb-8">Wählen Sie, welche Informationen Ihr Dashboard zeigen soll.</p>
 
               <div className="space-y-3 mb-8">
                 {VORLAGEN.map((v) => (
@@ -130,14 +130,14 @@ export default function OnboardingPage() {
                     key={v.value}
                     onClick={() => setDashboardVorlage(v.value)}
                     className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
-                      dashboardVorlage === v.value ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                      dashboardVorlage === v.value ? "border-blue-500 bg-blue-500/10" : "border-[var(--border)] hover:border-[var(--border)]"
                     }`}
                   >
-                    <p className="text-sm font-semibold text-gray-900">{v.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 mb-2">{v.description}</p>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">{v.label}</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-0.5 mb-2">{v.description}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {v.widgets.map((w) => (
-                        <span key={w} className="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{w}</span>
+                        <span key={w} className="rounded-md bg-[var(--bg-card-hover)] px-2 py-0.5 text-xs text-[var(--text-secondary)]">{w}</span>
                       ))}
                     </div>
                   </button>
@@ -147,7 +147,7 @@ export default function OnboardingPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setStep(1)}
-                  className="flex-1 rounded-xl border border-gray-300 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="flex-1 rounded-xl border border-[var(--border)] py-3 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
                 >
                   Zurück
                 </button>

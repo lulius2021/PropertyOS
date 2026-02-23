@@ -82,11 +82,11 @@ export default function KostenDetailPage() {
     }
     switch (kosten.zahlungsstatus) {
       case "BEZAHLT":
-        return <Badge className="bg-green-100 text-green-800">Bezahlt</Badge>;
+        return <Badge className="bg-green-500/15 text-green-400">Bezahlt</Badge>;
       case "TEILBEZAHLT":
-        return <Badge className="bg-yellow-100 text-yellow-800">Teilbezahlt</Badge>;
+        return <Badge className="bg-yellow-500/15 text-yellow-400">Teilbezahlt</Badge>;
       case "OFFEN":
-        return <Badge className="bg-orange-100 text-orange-800">Offen</Badge>;
+        return <Badge className="bg-orange-500/15 text-orange-400">Offen</Badge>;
       default:
         return null;
     }
@@ -100,10 +100,10 @@ export default function KostenDetailPage() {
           <Button variant="outline" onClick={() => router.back()}>
             ← Zurück
           </Button>
-          <h1 className="mt-4 text-3xl font-bold text-gray-900">
+          <h1 className="mt-4 text-3xl font-bold text-[var(--text-primary)]">
             {kosten.lieferant}
           </h1>
-          <p className="mt-2 text-gray-600">{kosten.kategorie}</p>
+          <p className="mt-2 text-[var(--text-secondary)]">{kosten.kategorie}</p>
         </div>
         {kosten.zahlungsstatus !== "BEZAHLT" && (
           <Button onClick={() => setShowZahlungDialog(true)}>
@@ -115,8 +115,8 @@ export default function KostenDetailPage() {
       {/* Stammdaten */}
       <div className="mb-6 grid grid-cols-4 gap-4">
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Rechnungsbetrag</div>
-          <div className="mt-1 text-2xl font-bold text-gray-900">
+          <div className="text-sm text-[var(--text-secondary)]">Rechnungsbetrag</div>
+          <div className="mt-1 text-2xl font-bold text-[var(--text-primary)]">
             {parseFloat(kosten.betragBrutto).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -125,7 +125,7 @@ export default function KostenDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Gezahlt</div>
+          <div className="text-sm text-[var(--text-secondary)]">Gezahlt</div>
           <div className="mt-1 text-2xl font-bold text-blue-600">
             {kosten.summeZahlungen.toLocaleString("de-DE", {
               minimumFractionDigits: 2,
@@ -135,7 +135,7 @@ export default function KostenDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Restbetrag</div>
+          <div className="text-sm text-[var(--text-secondary)]">Restbetrag</div>
           <div className="mt-1 text-2xl font-bold text-orange-600">
             {kosten.restbetrag.toLocaleString("de-DE", {
               minimumFractionDigits: 2,
@@ -145,7 +145,7 @@ export default function KostenDetailPage() {
           </div>
         </Card>
         <Card className="p-4">
-          <div className="text-sm text-gray-500">Zahlungsstatus</div>
+          <div className="text-sm text-[var(--text-secondary)]">Zahlungsstatus</div>
           <div className="mt-1">{getZahlungsstatusBadge()}</div>
         </Card>
       </div>
@@ -155,13 +155,13 @@ export default function KostenDetailPage() {
         <h2 className="mb-4 text-xl font-bold">Details</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-sm text-gray-500">Kostendatum</div>
+            <div className="text-sm text-[var(--text-secondary)]">Kostendatum</div>
             <div className="font-medium">
               {new Date(kosten.datum).toLocaleDateString("de-DE")}
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Rechnungsdatum</div>
+            <div className="text-sm text-[var(--text-secondary)]">Rechnungsdatum</div>
             <div className="font-medium">
               {kosten.rechnungsdatum
                 ? new Date(kosten.rechnungsdatum).toLocaleDateString("de-DE")
@@ -169,7 +169,7 @@ export default function KostenDetailPage() {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Fälligkeitsdatum</div>
+            <div className="text-sm text-[var(--text-secondary)]">Fälligkeitsdatum</div>
             <div className="font-medium">
               {kosten.faelligkeitsdatum
                 ? new Date(kosten.faelligkeitsdatum).toLocaleDateString("de-DE")
@@ -177,21 +177,21 @@ export default function KostenDetailPage() {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Rechnungsnummer</div>
+            <div className="text-sm text-[var(--text-secondary)]">Rechnungsnummer</div>
             <div className="font-medium">{kosten.rechnungsnummer || "-"}</div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Lieferantenreferenz</div>
+            <div className="text-sm text-[var(--text-secondary)]">Lieferantenreferenz</div>
             <div className="font-medium">{kosten.lieferantenRef || "-"}</div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Relevanz</div>
+            <div className="text-sm text-[var(--text-secondary)]">Relevanz</div>
             <div className="flex gap-1">
               {kosten.bkRelevant && (
-                <Badge className="bg-blue-100 text-blue-800">BK</Badge>
+                <Badge className="bg-blue-500/15 text-blue-400">BK</Badge>
               )}
               {kosten.hkRelevant && (
-                <Badge className="bg-orange-100 text-orange-800">HK</Badge>
+                <Badge className="bg-orange-500/15 text-orange-400">HK</Badge>
               )}
               {!kosten.bkRelevant && !kosten.hkRelevant && (
                 <span>-</span>
@@ -201,7 +201,7 @@ export default function KostenDetailPage() {
         </div>
         {kosten.beschreibung && (
           <div className="mt-4">
-            <div className="text-sm text-gray-500">Beschreibung</div>
+            <div className="text-sm text-[var(--text-secondary)]">Beschreibung</div>
             <div className="mt-1 whitespace-pre-wrap">{kosten.beschreibung}</div>
           </div>
         )}
@@ -212,37 +212,37 @@ export default function KostenDetailPage() {
         <div className="p-6">
           <h2 className="mb-4 text-xl font-bold">Zahlungen</h2>
           {kosten.zahlungen && kosten.zahlungen.length > 0 ? (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Betrag
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Notiz
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Aktion
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {kosten.zahlungen.map((zahlung: any) => (
                   <tr key={zahlung.id}>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-[var(--text-primary)]">
                       {new Date(zahlung.datum).toLocaleDateString("de-DE")}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-gray-900">
+                    <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                       {parseFloat(zahlung.betrag).toLocaleString("de-DE", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{" "}
                       €
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {zahlung.notiz || "-"}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -259,7 +259,7 @@ export default function KostenDetailPage() {
               </tbody>
             </table>
           ) : (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-[var(--text-secondary)]">
               Noch keine Zahlungen erfasst
             </div>
           )}
@@ -269,12 +269,12 @@ export default function KostenDetailPage() {
       {/* Dialog für Zahlung */}
       {showZahlungDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6">
+          <div className="w-full max-w-md rounded-lg bg-[var(--bg-card)] p-6">
             <h2 className="mb-4 text-xl font-bold">Zahlung erfassen</h2>
             <form onSubmit={handleCreateZahlung}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Zahlungsdatum *
                   </label>
                   <Input
@@ -291,7 +291,7 @@ export default function KostenDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Betrag * (€)
                   </label>
                   <Input
@@ -307,17 +307,17 @@ export default function KostenDetailPage() {
                     }
                     placeholder={`Max: ${kosten.restbetrag.toFixed(2)} €`}
                   />
-                  <div className="mt-1 text-xs text-gray-500">
+                  <div className="mt-1 text-xs text-[var(--text-secondary)]">
                     Restbetrag: {kosten.restbetrag.toFixed(2)} €
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[var(--text-secondary)]">
                     Notiz
                   </label>
                   <textarea
-                    className="w-full rounded border border-gray-300 px-3 py-2"
+                    className="w-full rounded border border-[var(--border)] px-3 py-2"
                     rows={2}
                     value={zahlungData.notiz}
                     onChange={(e) =>

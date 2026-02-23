@@ -109,38 +109,38 @@ export default function BankImportPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">CSV-Import</h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">CSV-Import</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
             Bankumsätze als CSV-Datei importieren
           </p>
         </div>
         <Link
           href="/bank"
-          className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
         >
           Zurück
         </Link>
       </div>
 
       {/* Upload */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-sm font-semibold text-gray-900">CSV-Datei auswählen</h2>
-        <p className="mb-4 text-sm text-gray-600">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <h2 className="mb-4 text-sm font-semibold text-[var(--text-primary)]">CSV-Datei auswählen</h2>
+        <p className="mb-4 text-sm text-[var(--text-secondary)]">
           Unterstützte Formate: Komma- oder Semikolon-getrennt. Erwartete Spalten:{" "}
-          <code className="rounded bg-gray-100 px-1">Datum</code>,{" "}
-          <code className="rounded bg-gray-100 px-1">Betrag</code>,{" "}
-          <code className="rounded bg-gray-100 px-1">Verwendungszweck</code>,{" "}
-          <code className="rounded bg-gray-100 px-1">IBAN</code> (optional)
+          <code className="rounded bg-[var(--bg-card-hover)] px-1">Datum</code>,{" "}
+          <code className="rounded bg-[var(--bg-card-hover)] px-1">Betrag</code>,{" "}
+          <code className="rounded bg-[var(--bg-card-hover)] px-1">Verwendungszweck</code>,{" "}
+          <code className="rounded bg-[var(--bg-card-hover)] px-1">IBAN</code> (optional)
         </p>
 
-        <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 hover:bg-gray-100">
-          <svg className="mb-3 h-10 w-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] bg-[var(--bg-page)] p-8 hover:bg-[var(--bg-card-hover)]">
+          <svg className="mb-3 h-10 w-10 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-[var(--text-secondary)]">
             {fileName ? fileName : "CSV-Datei auswählen oder hierher ziehen"}
           </span>
-          <span className="mt-1 text-xs text-gray-500">.csv</span>
+          <span className="mt-1 text-xs text-[var(--text-secondary)]">.csv</span>
           <input type="file" accept=".csv,text/csv" onChange={handleFile} className="hidden" />
         </label>
 
@@ -151,12 +151,12 @@ export default function BankImportPage() {
 
       {/* Preview */}
       {preview && preview.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-            <h2 className="text-sm font-semibold text-gray-900">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">
               Vorschau – {preview.length} Zahlungen erkannt
             </h2>
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
               <input
                 type="checkbox"
                 checked={autoMatch}
@@ -168,28 +168,28 @@ export default function BankImportPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-[var(--bg-page)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Datum</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Betrag</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Verwendungszweck</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">IBAN</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-[var(--text-secondary)]">Datum</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium uppercase text-[var(--text-secondary)]">Betrag</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-[var(--text-secondary)]">Verwendungszweck</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-[var(--text-secondary)]">IBAN</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
+              <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {preview.slice(0, 20).map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-600">
+                  <tr key={i} className="hover:bg-[var(--bg-card-hover)]">
+                    <td className="whitespace-nowrap px-4 py-3 text-sm text-[var(--text-secondary)]">
                       {row.datum.toLocaleDateString("de-DE")}
                     </td>
                     <td className={`whitespace-nowrap px-4 py-3 text-right text-sm font-medium ${row.betrag >= 0 ? "text-green-700" : "text-red-700"}`}>
                       {row.betrag.toLocaleString("de-DE", { minimumFractionDigits: 2 })} €
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
+                    <td className="px-4 py-3 text-sm text-[var(--text-primary)]">
                       <div className="max-w-sm truncate">{row.verwendungszweck}</div>
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-500">{row.iban || "–"}</td>
+                    <td className="px-4 py-3 text-xs text-[var(--text-secondary)]">{row.iban || "–"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -197,15 +197,15 @@ export default function BankImportPage() {
           </div>
 
           {preview.length > 20 && (
-            <p className="px-6 py-3 text-xs text-gray-500">
+            <p className="px-6 py-3 text-xs text-[var(--text-secondary)]">
               … und {preview.length - 20} weitere Einträge
             </p>
           )}
 
-          <div className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+          <div className="flex justify-end gap-3 border-t border-[var(--border)] px-6 py-4">
             <button
               onClick={() => { setPreview(null); setFileName(""); }}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             >
               Abbrechen
             </button>

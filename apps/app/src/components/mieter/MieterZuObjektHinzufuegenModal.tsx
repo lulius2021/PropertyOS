@@ -171,16 +171,16 @@ export function MieterZuObjektHinzufuegenModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
-      <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
+      <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl bg-[var(--bg-card)] shadow-2xl flex flex-col">
           {/* Header */}
-          <div className="border-b border-gray-200 px-6 py-4">
+          <div className="border-b border-[var(--border)] px-6 py-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-[var(--text-primary)]">
                 Neuer Mieter für {objekt?.bezeichnung}
               </h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               >
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -190,14 +190,14 @@ export function MieterZuObjektHinzufuegenModal({
           </div>
 
           {/* Tabs */}
-          <div className="border-b border-gray-200 px-6">
+          <div className="border-b border-[var(--border)] px-6">
             <div className="flex gap-8">
               <button
                 onClick={() => setActiveTab("mieter")}
                 className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors ${
                   activeTab === "mieter"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
                 }`}
               >
                 1. Mieterdaten
@@ -207,7 +207,7 @@ export function MieterZuObjektHinzufuegenModal({
                 className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors ${
                   activeTab === "vertrag"
                     ? "border-blue-600 text-blue-600"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
                 }`}
               >
                 2. Mietvertrag
@@ -222,7 +222,7 @@ export function MieterZuObjektHinzufuegenModal({
                 <div className="space-y-6">
                   {/* Typ */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                       Mietertyp *
                     </label>
                     <div className="flex gap-4">
@@ -253,27 +253,27 @@ export function MieterZuObjektHinzufuegenModal({
                   <div className="grid grid-cols-2 gap-4">
                     {formData.typ === "GESCHAEFTLICH" && (
                       <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Firma *
                         </label>
                         <input
                           type="text"
                           value={formData.firma}
                           onChange={(e) => setFormData({ ...formData, firma: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                           required={formData.typ === "GESCHAEFTLICH"}
                         />
                       </div>
                     )}
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                         Anrede
                       </label>
                       <select
                         value={formData.anrede}
                         onChange={(e) => setFormData({ ...formData, anrede: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       >
                         <option value="">Bitte wählen</option>
                         <option value="Herr">Herr</option>
@@ -283,7 +283,7 @@ export function MieterZuObjektHinzufuegenModal({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                         Titel
                       </label>
                       <input
@@ -291,31 +291,31 @@ export function MieterZuObjektHinzufuegenModal({
                         value={formData.titel}
                         onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
                         placeholder="z.B. Dr., Prof."
-                        className="w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                         Vorname
                       </label>
                       <input
                         type="text"
                         value={formData.vorname}
                         onChange={(e) => setFormData({ ...formData, vorname: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                         Nachname *
                       </label>
                       <input
                         type="text"
                         value={formData.nachname}
                         onChange={(e) => setFormData({ ...formData, nachname: e.target.value })}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         required
                       />
                     </div>
@@ -323,41 +323,41 @@ export function MieterZuObjektHinzufuegenModal({
 
                   {/* Kontaktdaten */}
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Kontaktdaten</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Kontaktdaten</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           E-Mail
                         </label>
                         <input
                           type="email"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Telefon (Mobil)
                         </label>
                         <input
                           type="tel"
                           value={formData.telefonMobil}
                           onChange={(e) => setFormData({ ...formData, telefonMobil: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Telefon (Festnetz)
                         </label>
                         <input
                           type="tel"
                           value={formData.telefonFestnetz}
                           onChange={(e) => setFormData({ ...formData, telefonFestnetz: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
                     </div>
@@ -365,65 +365,65 @@ export function MieterZuObjektHinzufuegenModal({
 
                   {/* Adresse */}
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Adresse</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Adresse</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Straße
                         </label>
                         <input
                           type="text"
                           value={formData.strasse}
                           onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Hausnummer
                         </label>
                         <input
                           type="text"
                           value={formData.hausnummer}
                           onChange={(e) => setFormData({ ...formData, hausnummer: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           PLZ
                         </label>
                         <input
                           type="text"
                           value={formData.plz}
                           onChange={(e) => setFormData({ ...formData, plz: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Ort
                         </label>
                         <input
                           type="text"
                           value={formData.ort}
                           onChange={(e) => setFormData({ ...formData, ort: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Land
                         </label>
                         <input
                           type="text"
                           value={formData.land}
                           onChange={(e) => setFormData({ ...formData, land: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
                     </div>
@@ -431,14 +431,14 @@ export function MieterZuObjektHinzufuegenModal({
 
                   {/* Notizen */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Notizen
                     </label>
                     <textarea
                       value={formData.notizen}
                       onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
                       rows={3}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                     />
                   </div>
                 </div>
@@ -448,13 +448,13 @@ export function MieterZuObjektHinzufuegenModal({
                 <div className="space-y-6">
                   {/* Einheit auswählen */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Einheit *
                     </label>
                     <select
                       value={formData.einheitId}
                       onChange={(e) => setFormData({ ...formData, einheitId: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       required
                     >
                       <option value="">Bitte wählen Sie eine Einheit</option>
@@ -474,24 +474,24 @@ export function MieterZuObjektHinzufuegenModal({
 
                   {/* Einzugsdatum */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Einzugsdatum *
                     </label>
                     <input
                       type="date"
                       value={formData.einzugsdatum}
                       onChange={(e) => setFormData({ ...formData, einzugsdatum: e.target.value })}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       required
                     />
                   </div>
 
                   {/* Miete */}
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Miete</h3>
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Miete</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Kaltmiete (€) *
                         </label>
                         <input
@@ -499,13 +499,13 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.kaltmiete}
                           onChange={(e) => setFormData({ ...formData, kaltmiete: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                           required
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Nebenkosten (€)
                         </label>
                         <input
@@ -513,12 +513,12 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.bkVorauszahlung}
                           onChange={(e) => setFormData({ ...formData, bkVorauszahlung: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Heizkosten (€)
                         </label>
                         <input
@@ -526,12 +526,12 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.hkVorauszahlung}
                           onChange={(e) => setFormData({ ...formData, hkVorauszahlung: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                           Kaution (€)
                         </label>
                         <input
@@ -539,7 +539,7 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.kaution}
                           onChange={(e) => setFormData({ ...formData, kaution: e.target.value })}
-                          className="w-full rounded-md border border-gray-300 px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                         />
                       </div>
                     </div>
@@ -548,7 +548,7 @@ export function MieterZuObjektHinzufuegenModal({
                     {(formData.kaltmiete || formData.bkVorauszahlung || formData.hkVorauszahlung) && (
                       <div className="mt-4 rounded-lg bg-blue-50 p-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-700">Warmmiete gesamt:</span>
+                          <span className="text-sm font-medium text-[var(--text-secondary)]">Warmmiete gesamt:</span>
                           <span className="text-lg font-bold text-blue-600">
                             {(
                               (parseFloat(formData.kaltmiete) || 0) +
@@ -563,14 +563,14 @@ export function MieterZuObjektHinzufuegenModal({
 
                   {/* Vertragsnotizen */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                       Notizen zum Mietvertrag
                     </label>
                     <textarea
                       value={formData.vertragsnotizen}
                       onChange={(e) => setFormData({ ...formData, vertragsnotizen: e.target.value })}
                       rows={3}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
                       placeholder="z.B. Besonderheiten, Vereinbarungen, etc."
                     />
                   </div>
@@ -579,12 +579,12 @@ export function MieterZuObjektHinzufuegenModal({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
+            <div className="border-t border-[var(--border)] bg-[var(--bg-page)] px-6 py-4">
               <div className="flex items-center justify-between">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
                 >
                   Abbrechen
                 </button>
@@ -594,7 +594,7 @@ export function MieterZuObjektHinzufuegenModal({
                     <button
                       type="button"
                       onClick={() => setActiveTab("mieter")}
-                      className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      className="rounded-md border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
                     >
                       ← Zurück
                     </button>

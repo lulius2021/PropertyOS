@@ -114,38 +114,38 @@ export default function TicketsPage() {
   const getPrioColor = (prio: string) => {
     switch (prio) {
       case "KRITISCH":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/15 text-red-400";
       case "HOCH":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "MITTEL":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/15 text-yellow-400";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "ERFASST":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/15 text-blue-400";
       case "IN_BEARBEITUNG":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-500/15 text-purple-400";
       case "ZUR_PRUEFUNG":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "ABGESCHLOSSEN":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/15 text-green-400";
       case "BEAUFTRAGT":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-500/15 text-purple-400";
       case "TERMIN_VEREINBART":
         return "bg-indigo-100 text-indigo-800";
       case "IN_ARBEIT":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/15 text-blue-400";
       case "RUECKFRAGE":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "ABGERECHNET":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/15 text-green-400";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
   };
 
@@ -158,20 +158,20 @@ export default function TicketsPage() {
 
     if (diffDays < 0) {
       return (
-        <span className="ml-2 inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+        <span className="ml-2 inline-flex rounded-full bg-red-500/15 px-2 text-xs font-semibold leading-5 text-red-400">
           SLA {Math.abs(diffDays)}d überfällig
         </span>
       );
     }
     if (diffDays <= 2) {
       return (
-        <span className="ml-2 inline-flex rounded-full bg-yellow-100 px-2 text-xs font-semibold leading-5 text-yellow-800">
+        <span className="ml-2 inline-flex rounded-full bg-yellow-500/15 px-2 text-xs font-semibold leading-5 text-yellow-400">
           SLA {diffDays}d
         </span>
       );
     }
     return (
-      <span className="ml-2 inline-flex rounded-full bg-gray-100 px-2 text-xs font-semibold leading-5 text-gray-600">
+      <span className="ml-2 inline-flex rounded-full bg-[var(--bg-card-hover)] px-2 text-xs font-semibold leading-5 text-[var(--text-secondary)]">
         SLA {diffDays}d
       </span>
     );
@@ -181,8 +181,8 @@ export default function TicketsPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tickets</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Tickets</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Schadensmeldungen, Wartung und Anfragen
           </p>
         </div>
@@ -197,20 +197,20 @@ export default function TicketsPage() {
       {/* Statistiken */}
       {stats && (
         <div className="mb-6 grid grid-cols-3 gap-4">
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Erfasst</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+            <div className="text-sm text-[var(--text-secondary)]">Erfasst</div>
             <div className="mt-1 text-2xl font-bold text-blue-600">
               {stats.erfasst}
             </div>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="text-sm text-gray-500">In Bearbeitung</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+            <div className="text-sm text-[var(--text-secondary)]">In Bearbeitung</div>
             <div className="mt-1 text-2xl font-bold text-purple-600">
               {stats.inBearbeitung}
             </div>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Kritisch (offen)</div>
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+            <div className="text-sm text-[var(--text-secondary)]">Kritisch (offen)</div>
             <div className="mt-1 text-2xl font-bold text-red-600">
               {stats.kritisch}
             </div>
@@ -225,7 +225,7 @@ export default function TicketsPage() {
           className={`rounded px-3 py-1 text-sm ${
             !statusFilter
               ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
           }`}
         >
           Alle
@@ -237,7 +237,7 @@ export default function TicketsPage() {
             className={`rounded px-3 py-1 text-sm ${
               statusFilter === status
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             {STATUS_LABELS[status]}
@@ -247,11 +247,11 @@ export default function TicketsPage() {
 
       {/* Tabelle */}
       {tickets && tickets.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <h3 className="text-lg font-medium text-gray-900">
+        <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-page)] p-12 text-center">
+          <h3 className="text-lg font-medium text-[var(--text-primary)]">
             Keine Tickets vorhanden
           </h3>
-          <p className="mt-2 text-gray-600">Erstellen Sie Ihr erstes Ticket.</p>
+          <p className="mt-2 text-[var(--text-secondary)]">Erstellen Sie Ihr erstes Ticket.</p>
           <Button
             onClick={() => setCreateDialogOpen(true)}
             className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
@@ -260,42 +260,42 @@ export default function TicketsPage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Titel
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Kategorie
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Priorität
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Erstellt
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {tickets?.map((ticket: any) => (
-                <tr key={ticket.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => router.push(`/tickets/${ticket.id}`)}>
+                <tr key={ticket.id} className="hover:bg-[var(--bg-card-hover)] cursor-pointer" onClick={() => router.push(`/tickets/${ticket.id}`)}>
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{ticket.titel}</div>
+                    <div className="font-medium text-[var(--text-primary)]">{ticket.titel}</div>
                     {ticket._count.kommentare > 0 && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[var(--text-secondary)]">
                         {ticket._count.kommentare} Kommentar(e)
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {ticket.kategorie}
                   </td>
                   <td className="px-6 py-4">
@@ -313,7 +313,7 @@ export default function TicketsPage() {
                     </span>
                     {getSLABadge(ticket)}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {new Date(ticket.createdAt).toLocaleDateString("de-DE")}
                   </td>
                   <td className="px-6 py-4 text-right text-sm">
@@ -333,9 +333,9 @@ export default function TicketsPage() {
 
       {/* Create Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="max-w-2xl bg-white p-6">
+        <DialogContent className="max-w-2xl bg-[var(--bg-card)] p-6">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-gray-900">
+            <DialogTitle className="text-xl font-semibold text-[var(--text-primary)]">
               Neues Ticket erstellen
             </DialogTitle>
           </DialogHeader>
@@ -343,13 +343,13 @@ export default function TicketsPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
             {/* Titel */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Titel *
               </label>
               <Input
                 {...form.register("titel")}
                 placeholder="z.B. Wasserhahn tropft"
-                className="bg-white text-gray-900 border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder:text-gray-400"
+                className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)] focus:border-blue-500 focus:ring-blue-500 placeholder:text-[var(--text-muted)]"
               />
               {form.formState.errors.titel && (
                 <p className="text-sm text-red-600 mt-1">
@@ -360,21 +360,21 @@ export default function TicketsPage() {
 
             {/* Beschreibung */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Beschreibung
               </label>
               <Textarea
                 {...form.register("beschreibung")}
                 placeholder="Details zum Problem..."
                 rows={4}
-                className="bg-white text-gray-900 border-gray-300 focus:border-blue-500 focus:ring-blue-500 resize-none placeholder:text-gray-400"
+                className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)] focus:border-blue-500 focus:ring-blue-500 resize-none placeholder:text-[var(--text-muted)]"
               />
             </div>
 
             {/* Kategorie & Priorität nebeneinander */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Kategorie *
                 </label>
                 <Select
@@ -383,23 +383,23 @@ export default function TicketsPage() {
                     form.setValue("kategorie", value as any)
                   }
                 >
-                  <SelectTrigger className="bg-white text-gray-900 border-gray-300">
+                  <SelectTrigger className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="SCHADENSMELDUNG" className="text-gray-900">
+                  <SelectContent className="bg-[var(--bg-card)]">
+                    <SelectItem value="SCHADENSMELDUNG" className="text-[var(--text-primary)]">
                       Schadensmeldung
                     </SelectItem>
-                    <SelectItem value="WARTUNG" className="text-gray-900">
+                    <SelectItem value="WARTUNG" className="text-[var(--text-primary)]">
                       Wartung
                     </SelectItem>
-                    <SelectItem value="ANFRAGE" className="text-gray-900">
+                    <SelectItem value="ANFRAGE" className="text-[var(--text-primary)]">
                       Anfrage
                     </SelectItem>
-                    <SelectItem value="BESCHWERDE" className="text-gray-900">
+                    <SelectItem value="BESCHWERDE" className="text-[var(--text-primary)]">
                       Beschwerde
                     </SelectItem>
-                    <SelectItem value="SANIERUNG" className="text-gray-900">
+                    <SelectItem value="SANIERUNG" className="text-[var(--text-primary)]">
                       Sanierung
                     </SelectItem>
                   </SelectContent>
@@ -407,7 +407,7 @@ export default function TicketsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                   Priorität *
                 </label>
                 <Select
@@ -416,20 +416,20 @@ export default function TicketsPage() {
                     form.setValue("prioritaet", value as any)
                   }
                 >
-                  <SelectTrigger className="bg-white text-gray-900 border-gray-300">
+                  <SelectTrigger className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="NIEDRIG" className="text-gray-900">
+                  <SelectContent className="bg-[var(--bg-card)]">
+                    <SelectItem value="NIEDRIG" className="text-[var(--text-primary)]">
                       Niedrig
                     </SelectItem>
-                    <SelectItem value="MITTEL" className="text-gray-900">
+                    <SelectItem value="MITTEL" className="text-[var(--text-primary)]">
                       Mittel
                     </SelectItem>
-                    <SelectItem value="HOCH" className="text-gray-900">
+                    <SelectItem value="HOCH" className="text-[var(--text-primary)]">
                       Hoch
                     </SelectItem>
-                    <SelectItem value="KRITISCH" className="text-gray-900">
+                    <SelectItem value="KRITISCH" className="text-[var(--text-primary)]">
                       Kritisch
                     </SelectItem>
                   </SelectContent>
@@ -439,23 +439,23 @@ export default function TicketsPage() {
 
             {/* Frist */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Frist (Optional)
               </label>
               <Input
                 type="date"
                 {...form.register("frist")}
-                className="bg-white text-gray-900 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)] focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
             {/* Submit Buttons */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-6">
+            <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)] mt-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setCreateDialogOpen(false)}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
               >
                 Abbrechen
               </Button>

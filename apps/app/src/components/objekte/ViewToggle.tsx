@@ -7,13 +7,13 @@ interface ViewToggleProps {
 
 export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
   return (
-    <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1 shadow-sm">
+    <div className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-1">
       <button
         onClick={() => onViewChange("table")}
         className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
           view === "table"
-            ? "bg-gray-100 text-gray-900"
-            : "text-gray-600 hover:text-gray-900"
+            ? "bg-[var(--bg-card-hover)] text-[var(--text-primary)]"
+            : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         }`}
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,8 +30,8 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
         onClick={() => onViewChange("grid")}
         className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
           view === "grid"
-            ? "bg-gray-100 text-gray-900"
-            : "text-gray-600 hover:text-gray-900"
+            ? "bg-[var(--bg-card-hover)] text-[var(--text-primary)]"
+            : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         }`}
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

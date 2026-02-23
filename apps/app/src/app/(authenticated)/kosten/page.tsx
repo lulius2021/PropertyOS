@@ -46,17 +46,17 @@ export default function KostenPage() {
     switch (kosten.zahlungsstatus) {
       case "BEZAHLT":
         return (
-          <Badge className="bg-green-100 text-green-800 text-xs">Bezahlt</Badge>
+          <Badge className="bg-green-500/15 text-green-400 text-xs">Bezahlt</Badge>
         );
       case "TEILBEZAHLT":
         return (
-          <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+          <Badge className="bg-yellow-500/15 text-yellow-400 text-xs">
             Teilbezahlt
           </Badge>
         );
       case "OFFEN":
         return (
-          <Badge className="bg-orange-100 text-orange-800 text-xs">Offen</Badge>
+          <Badge className="bg-orange-500/15 text-orange-400 text-xs">Offen</Badge>
         );
       default:
         return null;
@@ -67,8 +67,8 @@ export default function KostenPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Kosten</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Kosten</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">
             Erfassung und Verwaltung von Betriebskosten
           </p>
         </div>
@@ -81,40 +81,40 @@ export default function KostenPage() {
       {stats && (
         <div className="mb-6 grid grid-cols-5 gap-4">
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Gesamt ({jahr})</div>
-            <div className="mt-1 text-2xl font-bold text-gray-900">
+            <div className="text-sm text-[var(--text-secondary)]">Gesamt ({jahr})</div>
+            <div className="mt-1 text-2xl font-bold text-[var(--text-primary)]">
               {stats.gesamt.summe.toFixed(2)} €
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-secondary)]">
               {stats.gesamt.anzahl} Posten
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Offen</div>
+            <div className="text-sm text-[var(--text-secondary)]">Offen</div>
             <div className="mt-1 text-2xl font-bold text-orange-600">
               {stats.offen.summe.toFixed(2)} €
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-secondary)]">
               {stats.offen.anzahl} Posten
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">Überfällig</div>
+            <div className="text-sm text-[var(--text-secondary)]">Überfällig</div>
             <div className="mt-1 text-2xl font-bold text-red-600">
               {stats.ueberfaellig.summe.toFixed(2)} €
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-secondary)]">
               {stats.ueberfaellig.anzahl} Posten
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">BK-relevant</div>
+            <div className="text-sm text-[var(--text-secondary)]">BK-relevant</div>
             <div className="mt-1 text-2xl font-bold text-blue-600">
               {stats.bk.toFixed(2)} €
             </div>
           </Card>
           <Card className="p-4">
-            <div className="text-sm text-gray-500">HK-relevant</div>
+            <div className="text-sm text-[var(--text-secondary)]">HK-relevant</div>
             <div className="mt-1 text-2xl font-bold text-orange-600">
               {stats.hk.toFixed(2)} €
             </div>
@@ -131,7 +131,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterZahlungsstatus === "alle"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             Alle
@@ -141,7 +141,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterZahlungsstatus === "OFFEN"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             Offen
@@ -151,7 +151,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterZahlungsstatus === "UEBERFAELLIG"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             Überfällig
@@ -161,7 +161,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterZahlungsstatus === "BEZAHLT"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             Bezahlt
@@ -175,7 +175,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterTyp === "alle"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             Alle
@@ -185,7 +185,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterTyp === "bk"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             BK
@@ -195,7 +195,7 @@ export default function KostenPage() {
             className={`rounded px-3 py-1 text-sm ${
               filterTyp === "hk"
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
             HK
@@ -203,11 +203,11 @@ export default function KostenPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-700">Jahr:</label>
+          <label className="text-sm text-[var(--text-secondary)]">Jahr:</label>
           <select
             value={jahr}
             onChange={(e) => setJahr(Number(e.target.value))}
-            className="rounded border border-gray-300 px-2 py-1 text-sm"
+            className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-2 py-1 text-sm text-[var(--text-primary)]"
           >
             {[currentYear, currentYear - 1, currentYear - 2].map((y) => (
               <option key={y} value={y}>
@@ -220,11 +220,11 @@ export default function KostenPage() {
 
       {/* Tabelle */}
       {kosten && kosten.length === 0 ? (
-        <Card className="border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <h3 className="text-lg font-medium text-gray-900">
+        <Card className="border-dashed border-[var(--border)] bg-[var(--bg-page)] p-12 text-center">
+          <h3 className="text-lg font-medium text-[var(--text-primary)]">
             Keine Kosten erfasst
           </h3>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-[var(--text-secondary)]">
             Erfassen Sie die ersten Betriebskosten für {jahr}.
           </p>
           <button className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
@@ -233,66 +233,66 @@ export default function KostenPage() {
         </Card>
       ) : (
         <Card>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Datum
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Lieferant
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Kategorie
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Betrag
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Offen
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Fällig
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Relevanz
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               {kosten?.map((kost: any) => (
                 <tr
                   key={kost.id}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-[var(--bg-card-hover)]"
                   onClick={() => router.push(`/kosten/${kost.id}`)}
                 >
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {new Date(kost.datum).toLocaleDateString("de-DE")}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-[var(--text-primary)]">
                       {kost.lieferant}
                     </div>
                     {kost.rechnungsnummer && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[var(--text-secondary)]">
                         RE: {kost.rechnungsnummer}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {kost.kategorie}
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-gray-900">
+                  <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                     {parseFloat(kost.betragBrutto).toFixed(2)} €
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-orange-600">
                     {kost.restbetrag > 0 ? `${kost.restbetrag.toFixed(2)} €` : "-"}
                   </td>
                   <td className="px-6 py-4">{getZahlungsstatusBadge(kost)}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {kost.faelligkeitsdatum
                       ? new Date(kost.faelligkeitsdatum).toLocaleDateString(
                           "de-DE"
@@ -302,17 +302,17 @@ export default function KostenPage() {
                   <td className="px-6 py-4">
                     <div className="flex gap-1">
                       {kost.bkRelevant && (
-                        <Badge className="bg-blue-100 text-blue-800 text-xs">
+                        <Badge className="bg-blue-500/15 text-blue-400 text-xs">
                           BK
                         </Badge>
                       )}
                       {kost.hkRelevant && (
-                        <Badge className="bg-orange-100 text-orange-800 text-xs">
+                        <Badge className="bg-orange-500/15 text-orange-400 text-xs">
                           HK
                         </Badge>
                       )}
                       {!kost.bkRelevant && !kost.hkRelevant && (
-                        <span className="text-xs text-gray-400">-</span>
+                        <span className="text-xs text-[var(--text-muted)]">-</span>
                       )}
                     </div>
                   </td>

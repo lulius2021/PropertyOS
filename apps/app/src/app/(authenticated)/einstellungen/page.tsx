@@ -57,8 +57,8 @@ function SecurityTab() {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <p className="text-sm text-gray-500">Laden…</p>
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <p className="text-sm text-[var(--text-secondary)]">Laden…</p>
       </div>
     );
   }
@@ -66,11 +66,11 @@ function SecurityTab() {
   return (
     <div className="space-y-6">
       {/* 2FA Section */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
           Zwei-Faktor-Authentifizierung (2FA)
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-[var(--text-secondary)] mb-4">
           Schützen Sie Ihren Account mit einem zusätzlichen Sicherheitscode.
         </p>
 
@@ -114,11 +114,11 @@ function SecurityTab() {
       </div>
 
       {/* Change Password Section */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">
           Passwort ändern
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-[var(--text-secondary)] mb-4">
           Aktualisieren Sie Ihr Passwort regelmäßig für mehr Sicherheit.
         </p>
 
@@ -136,7 +136,7 @@ function SecurityTab() {
 
         <div className="space-y-4 max-w-md">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Aktuelles Passwort
             </label>
             <input
@@ -145,12 +145,12 @@ function SecurityTab() {
               onChange={(e) =>
                 setPwForm((f) => ({ ...f, currentPassword: e.target.value }))
               }
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Neues Passwort
             </label>
             <input
@@ -159,13 +159,13 @@ function SecurityTab() {
               onChange={(e) =>
                 setPwForm((f) => ({ ...f, newPassword: e.target.value }))
               }
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <PasswordStrengthMeter password={pwForm.newPassword} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Neues Passwort bestätigen
             </label>
             <input
@@ -174,7 +174,7 @@ function SecurityTab() {
               onChange={(e) =>
                 setPwForm((f) => ({ ...f, confirmPassword: e.target.value }))
               }
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -215,9 +215,9 @@ function DemoDataTab() {
   });
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 mb-1">Demo-Daten</h2>
-      <p className="text-sm text-gray-500 mb-6">
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Demo-Daten</h2>
+      <p className="text-sm text-[var(--text-secondary)] mb-6">
         Erstellt realistische Demo-Daten (Objekte, Einheiten, Mieter, Mietverhältnisse, Tickets und Mahnungen) für Testzwecke.
         Nur möglich wenn die Datenbank noch leer ist.
       </p>
@@ -251,7 +251,7 @@ function DemoDataTab() {
           <div className="flex gap-3">
             <button
               onClick={() => setShowConfirm(false)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             >
               Abbrechen
             </button>
@@ -301,12 +301,12 @@ function AutoMahnungTab() {
     },
   });
 
-  if (isLoading) return <div className="p-6 text-sm text-gray-500">Laden...</div>;
+  if (isLoading) return <div className="p-6 text-sm text-[var(--text-secondary)]">Laden...</div>;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 mb-1">Automatische Mahnungen</h2>
-      <p className="text-sm text-gray-500 mb-6">
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Automatische Mahnungen</h2>
+      <p className="text-sm text-[var(--text-secondary)] mb-6">
         Automatisch Mahnungen für überfällige Mieter erstellen.
       </p>
 
@@ -319,8 +319,8 @@ function AutoMahnungTab() {
       <div className="space-y-5 max-w-md">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-900">Auto-Mahnung aktiv</p>
-            <p className="text-xs text-gray-500">Mahnungen automatisch erstellen</p>
+            <p className="text-sm font-medium text-[var(--text-primary)]">Auto-Mahnung aktiv</p>
+            <p className="text-xs text-[var(--text-secondary)]">Mahnungen automatisch erstellen</p>
           </div>
           <button
             onClick={() => setForm(f => ({ ...f, autoMahnungAktiv: !f.autoMahnungAktiv }))}
@@ -331,22 +331,22 @@ function AutoMahnungTab() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tage nach Fälligkeit</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Tage nach Fälligkeit</label>
           <input
             type="number"
             min={1}
             max={60}
             value={form.autoMahnungTageNachFaelligkeit}
             onChange={(e) => setForm(f => ({ ...f, autoMahnungTageNachFaelligkeit: parseInt(e.target.value) || 7 }))}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           />
-          <p className="mt-1 text-xs text-gray-500">Nach wie vielen Tagen nach Fälligkeit eine Mahnung erstellt wird</p>
+          <p className="mt-1 text-xs text-[var(--text-secondary)]">Nach wie vielen Tagen nach Fälligkeit eine Mahnung erstellt wird</p>
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-900">E-Mail automatisch senden</p>
-            <p className="text-xs text-gray-500">Mahnung per E-Mail versenden (coming soon)</p>
+            <p className="text-sm font-medium text-[var(--text-primary)]">E-Mail automatisch senden</p>
+            <p className="text-xs text-[var(--text-secondary)]">Mahnung per E-Mail versenden (coming soon)</p>
           </div>
           <button
             onClick={() => setForm(f => ({ ...f, autoMahnungEmailAktiv: !f.autoMahnungEmailAktiv }))}
@@ -376,21 +376,21 @@ export default function EinstellungenPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Einstellungen</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">Einstellungen</h1>
+        <p className="mt-2 text-[var(--text-secondary)]">
           Systemparameter und Benutzerverwaltung
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 border-b border-gray-200">
+      <div className="mb-6 border-b border-[var(--border)]">
         <nav className="-mb-px flex gap-8">
           <button
             onClick={() => setActiveTab("parameter")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "parameter"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Parameter
@@ -400,7 +400,7 @@ export default function EinstellungenPage() {
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "benutzer"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Benutzerverwaltung
@@ -410,7 +410,7 @@ export default function EinstellungenPage() {
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "sicherheit"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Sicherheit
@@ -420,7 +420,7 @@ export default function EinstellungenPage() {
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "audit"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Audit-Log
@@ -430,7 +430,7 @@ export default function EinstellungenPage() {
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "automahnung"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Auto-Mahnung
@@ -440,7 +440,7 @@ export default function EinstellungenPage() {
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "demo"
                 ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Demo-Daten
@@ -453,30 +453,30 @@ export default function EinstellungenPage() {
 
       {/* Parameter Tab */}
       {activeTab === "parameter" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             System-Parameter
           </h2>
 
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Verzugszins-Satz (p.a.)
               </label>
               <input
                 type="number"
                 step="0.0001"
                 defaultValue="0.05"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
                 placeholder="0.05 = 5%"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
                 Beispiel: 0.05 = 5% per annum
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Fälligkeitstag Warmmiete
               </label>
               <input
@@ -484,63 +484,63 @@ export default function EinstellungenPage() {
                 min="1"
                 max="28"
                 defaultValue="3"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
                 Tag im Monat (1-28)
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Mahngebühr Erinnerung
               </label>
               <input
                 type="number"
                 step="0.01"
                 defaultValue="0.00"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
               />
-              <p className="mt-1 text-xs text-gray-500">In Euro (€)</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">In Euro (€)</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Mahngebühr 1. Mahnung
               </label>
               <input
                 type="number"
                 step="0.01"
                 defaultValue="5.00"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
               />
-              <p className="mt-1 text-xs text-gray-500">In Euro (€)</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">In Euro (€)</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Mahngebühr 2. Mahnung
               </label>
               <input
                 type="number"
                 step="0.01"
                 defaultValue="10.00"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
               />
-              <p className="mt-1 text-xs text-gray-500">In Euro (€)</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">In Euro (€)</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Mahngebühr 3. Mahnung
               </label>
               <input
                 type="number"
                 step="0.01"
                 defaultValue="15.00"
-                className="w-full rounded border border-gray-300 px-3 py-2"
+                className="w-full rounded border border-[var(--border)] px-3 py-2"
               />
-              <p className="mt-1 text-xs text-gray-500">In Euro (€)</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">In Euro (€)</p>
             </div>
 
             <div className="pt-4">
@@ -554,9 +554,9 @@ export default function EinstellungenPage() {
 
       {/* Benutzerverwaltung Tab */}
       {activeTab === "benutzer" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">
               Benutzerverwaltung
             </h2>
             <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
@@ -564,28 +564,28 @@ export default function EinstellungenPage() {
             </button>
           </div>
 
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   E-Mail
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Rolle
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktionen
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               <tr>
                 <td
                   colSpan={4}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
+                  className="px-6 py-4 text-center text-sm text-[var(--text-secondary)]"
                 >
                   Benutzerverwaltung in Entwicklung
                 </td>
@@ -597,8 +597,8 @@ export default function EinstellungenPage() {
 
       {/* Audit-Log Tab */}
       {activeTab === "audit" && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Audit-Log (Änderungshistorie)
           </h2>
 
@@ -608,7 +608,7 @@ export default function EinstellungenPage() {
               placeholder="Suche nach Entität..."
               className="flex-1 rounded border px-3 py-2"
             />
-            <select className="rounded border border-gray-300 px-3 py-2">
+            <select className="rounded border border-[var(--border)] px-3 py-2">
               <option value="">Alle Aktionen</option>
               <option value="CREATE">Erstellt</option>
               <option value="UPDATE">Geändert</option>
@@ -616,28 +616,28 @@ export default function EinstellungenPage() {
             </select>
           </div>
 
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--border)]">
+            <thead className="bg-[var(--bg-page)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Zeitpunkt
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Benutzer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktion
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Entität
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
               <tr>
                 <td
                   colSpan={4}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
+                  className="px-6 py-4 text-center text-sm text-[var(--text-secondary)]"
                 >
                   Audit-Log-Ansicht in Entwicklung
                 </td>

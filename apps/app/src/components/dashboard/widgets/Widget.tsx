@@ -80,9 +80,9 @@ function DonutChart({
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className={`font-bold text-gray-900 ${isSmall ? "text-lg" : "text-2xl"}`}>{innerLabel}</span>
+        <span className={`font-bold text-[var(--text-primary)] ${isSmall ? "text-lg" : "text-2xl"}`}>{innerLabel}</span>
         {innerSublabel && !isSmall && (
-          <span className="text-xs text-gray-500">{innerSublabel}</span>
+          <span className="text-xs text-[var(--text-secondary)]">{innerSublabel}</span>
         )}
       </div>
     </div>
@@ -106,8 +106,8 @@ function HorizontalBarChart({
     <div className={`space-y-${isSmall ? "1" : "2"} w-full`}>
       {data.map((item) => (
         <div key={item.name} className="flex items-center gap-2">
-          <span className={`${isSmall ? "w-10 text-[10px]" : "w-16 text-xs"} text-gray-500 truncate`}>{item.name}</span>
-          <div className="flex-1 h-5 rounded-full bg-gray-100 overflow-hidden">
+          <span className={`${isSmall ? "w-10 text-[10px]" : "w-16 text-xs"} text-[var(--text-secondary)] truncate`}>{item.name}</span>
+          <div className="flex-1 h-5 rounded-full bg-[var(--bg-card-hover)] overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -116,7 +116,7 @@ function HorizontalBarChart({
               }}
             />
           </div>
-          <span className={`${isSmall ? "w-8 text-[10px]" : "w-14 text-xs"} text-right font-semibold text-gray-900`}>
+          <span className={`${isSmall ? "w-8 text-[10px]" : "w-14 text-xs"} text-right font-semibold text-[var(--text-primary)]`}>
             {fmt(item.value)}
           </span>
         </div>
@@ -171,23 +171,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // Objekte Widget
   if (type === "objekte") {
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Objekte</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Objekte</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {isLoading ? "—" : data?.objekte ?? 0}
               </p>
             </div>
-            <div className="ml-4 rounded-xl bg-blue-100 p-3">
-              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="ml-4 rounded-xl bg-blue-500/15 p-3">
+              <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Verwaltete Liegenschaften</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Verwaltete Liegenschaften</p>
           )}
         </div>
       </div>
@@ -197,26 +197,26 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // Einheiten Widget
   if (type === "einheiten") {
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Einheiten</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Einheiten</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {isLoading ? "—" : data?.einheiten?.gesamt ?? 0}
               </p>
             </div>
-            <div className="ml-4 rounded-xl bg-green-100 p-3">
-              <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="ml-4 rounded-xl bg-green-500/15 p-3">
+              <svg className="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             </div>
           </div>
           {!isSmall && !isLoading && data && (
-            <p className="mt-3 text-sm text-gray-500">
-              <span className="font-medium text-green-600">{data.einheiten.vermietet} vermietet</span>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
+              <span className="font-medium text-green-400">{data.einheiten.vermietet} vermietet</span>
               {" · "}
-              <span className="font-medium text-gray-400">{data.einheiten.frei} frei</span>
+              <span className="font-medium text-[var(--text-muted)]">{data.einheiten.frei} frei</span>
             </p>
           )}
         </div>
@@ -228,25 +228,25 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "rueckstaende") {
     const hasArrears = !isLoading && parseFloat(String(data?.rueckstaende ?? 0)) > 0;
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${hasArrears ? "border-orange-200 bg-orange-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${hasArrears ? "border-orange-500/25 bg-orange-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${hasArrears ? "text-orange-700" : "text-gray-500"}`}>
+              <p className={`text-sm font-medium ${hasArrears ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>
                 Offene Rückstände
               </p>
-              <p className={`mt-2 font-bold tracking-tight ${hasArrears ? "text-orange-900" : "text-gray-900"} ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className={`mt-2 font-bold tracking-tight ${hasArrears ? "text-orange-300" : "text-[var(--text-primary)]"} ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {isLoading ? "—" : formatCurrency(data?.rueckstaende ?? 0)}
               </p>
             </div>
-            <div className={`ml-4 rounded-xl p-3 ${hasArrears ? "bg-orange-200" : "bg-orange-100"}`}>
-              <svg className={`h-5 w-5 ${hasArrears ? "text-orange-700" : "text-orange-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`ml-4 rounded-xl p-3 ${hasArrears ? "bg-orange-500/20" : "bg-orange-500/15"}`}>
+              <svg className={`h-5 w-5 ${hasArrears ? "text-orange-400" : "text-orange-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className={`mt-3 text-sm ${hasArrears ? "text-orange-600" : "text-gray-500"}`}>Fällige Zahlungen</p>
+            <p className={`mt-3 text-sm ${hasArrears ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>Fällige Zahlungen</p>
           )}
         </div>
       </div>
@@ -256,23 +256,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // Tickets Widget
   if (type === "tickets") {
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Offene Tickets</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Offene Tickets</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {isLoading ? "—" : data?.offeneTickets ?? 0}
               </p>
             </div>
-            <div className="ml-4 rounded-xl bg-red-100 p-3">
-              <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="ml-4 rounded-xl bg-red-500/15 p-3">
+              <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Zu bearbeitende Meldungen</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Zu bearbeitende Meldungen</p>
           )}
         </div>
       </div>
@@ -286,23 +286,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       : 0;
 
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">Vermietungsquote</p>
-            <p className={`mt-2 font-bold text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Vermietungsquote</p>
+            <p className={`mt-2 font-bold text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
               {isLoading ? "—" : `${occupancyRate} %`}
             </p>
           </div>
           <div className="mt-4">
-            <div className="h-2.5 w-full rounded-full bg-gray-100">
+            <div className="h-2.5 w-full rounded-full bg-[var(--bg-card-hover)]">
               <div
                 className="h-2.5 rounded-full bg-green-500 transition-all duration-500"
                 style={{ width: `${occupancyRate}%` }}
               />
             </div>
             {!isSmall && (
-              <div className="mt-2 flex justify-between text-xs text-gray-400">
+              <div className="mt-2 flex justify-between text-xs text-[var(--text-muted)]">
                 <span>{data?.einheiten?.vermietet ?? 0} vermietet</span>
                 <span>{data?.einheiten?.frei ?? 0} leer</span>
               </div>
@@ -324,16 +324,16 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
 
     if (!isLoading && actionItems.length === 0) {
       return (
-        <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-3 rounded-xl bg-green-100 p-3 w-fit">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mx-auto mb-3 rounded-xl bg-green-500/15 p-3 w-fit">
+                <svg className="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="text-sm font-medium text-gray-900">Alles erledigt</p>
-              <p className="mt-1 text-xs text-gray-500">Keine offenen Aufgaben</p>
+              <p className="text-sm font-medium text-[var(--text-primary)]">Alles erledigt</p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">Keine offenen Aufgaben</p>
             </div>
           </div>
         </div>
@@ -341,8 +341,8 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     }
 
     return (
-      <div className="h-full rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm">
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-700">
+      <div className="h-full rounded-xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-400">
           Handlungsbedarf
         </h3>
         <div className="space-y-1">
@@ -351,11 +351,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
               <button
                 key="mahnungen"
                 onClick={() => setShowMahnungModal(true)}
-                className="no-drag flex w-full items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-yellow-100"
+                className="no-drag flex w-full items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-yellow-500/20"
               >
-                <span className="text-sm text-yellow-800">{item.label}</span>
+                <span className="text-sm text-yellow-300">{item.label}</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-yellow-900">{item.count}</span>
+                  <span className="text-sm font-bold text-yellow-300">{item.count}</span>
                   <span className="rounded bg-orange-600 px-2 py-0.5 text-xs font-medium text-white">Erstellen</span>
                 </div>
               </button>
@@ -363,10 +363,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
               <Link
                 key={item.href}
                 href={item.href!}
-                className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-yellow-100"
+                className="flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-colors hover:bg-yellow-500/20"
               >
-                <span className="text-sm text-yellow-800">{item.label}</span>
-                <span className="text-sm font-bold text-yellow-900">{item.count}</span>
+                <span className="text-sm text-yellow-300">{item.label}</span>
+                <span className="text-sm font-bold text-yellow-300">{item.count}</span>
               </Link>
             )
           ))}
@@ -383,46 +383,46 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // Schnellzugriff Widget
   if (type === "schnellzugriff") {
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           Schnellzugriff
         </h3>
         <div className={`grid gap-3 ${isLarge ? "grid-cols-4" : "grid-cols-2"}`}>
           <button
             onClick={() => setShowNeuesObjekt(true)}
-            className="no-drag flex flex-col items-center justify-center rounded-lg border border-blue-100 bg-blue-50 p-3 transition-all hover:scale-105 hover:bg-blue-100"
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-blue-500/25 bg-blue-500/10 p-3 transition-all hover:scale-105 hover:bg-blue-500/15"
           >
-            <svg className="h-5 w-5 text-blue-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-blue-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <p className="text-xs font-medium text-blue-700">+ Objekt</p>
+            <p className="text-xs font-medium text-blue-400">+ Objekt</p>
           </button>
           <button
             onClick={() => setShowNeueEinheit(true)}
-            className="no-drag flex flex-col items-center justify-center rounded-lg border border-green-100 bg-green-50 p-3 transition-all hover:scale-105 hover:bg-green-100"
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-green-500/25 bg-green-500/10 p-3 transition-all hover:scale-105 hover:bg-green-500/15"
           >
-            <svg className="h-5 w-5 text-green-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-green-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            <p className="text-xs font-medium text-green-700">+ Einheit</p>
+            <p className="text-xs font-medium text-green-400">+ Einheit</p>
           </button>
           <button
             onClick={() => setShowNeuerMieter(true)}
-            className="no-drag flex flex-col items-center justify-center rounded-lg border border-purple-100 bg-purple-50 p-3 transition-all hover:scale-105 hover:bg-purple-100"
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-purple-500/25 bg-purple-500/10 p-3 transition-all hover:scale-105 hover:bg-purple-500/20"
           >
-            <svg className="h-5 w-5 text-purple-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-purple-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <p className="text-xs font-medium text-purple-700">+ Mieter</p>
+            <p className="text-xs font-medium text-purple-400">+ Mieter</p>
           </button>
           <button
             onClick={() => setShowDokumentUpload(true)}
-            className="no-drag flex flex-col items-center justify-center rounded-lg border border-orange-100 bg-orange-50 p-3 transition-all hover:scale-105 hover:bg-orange-100"
+            className="no-drag flex flex-col items-center justify-center rounded-lg border border-orange-500/25 bg-orange-500/10 p-3 transition-all hover:scale-105 hover:bg-orange-500/15"
           >
-            <svg className="h-5 w-5 text-orange-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 text-orange-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            <p className="text-xs font-medium text-orange-700">Beleg</p>
+            <p className="text-xs font-medium text-orange-400">Beleg</p>
           </button>
         </div>
 
@@ -464,11 +464,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Leer", value: stats.einheitenLeer, color: CHART_COLORS.gray },
     ] : [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Belegungsquote</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Belegungsquote</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -478,13 +478,13 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && stats && (
-                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                <div className="mt-1 flex justify-between text-xs text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1">
                     <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
                     {stats.einheitenVermietet} vermietet
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-200" />
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-[var(--border)]" />
                     {stats.einheitenLeer} leer
                   </span>
                 </div>
@@ -501,12 +501,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const quote = stats?.leerstandsquote ?? 0;
     const isHigh = quote > 10;
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${isHigh ? "border-red-200 bg-red-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${isHigh ? "border-red-200 bg-red-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${isHigh ? "text-red-700" : "text-gray-500"}`}>Leerstandsquote</p>
-              <p className={`mt-2 font-bold tracking-tight ${isHigh ? "text-red-900" : "text-gray-900"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className={`text-sm font-medium ${isHigh ? "text-red-700" : "text-[var(--text-secondary)]"}`}>Leerstandsquote</p>
+              <p className={`mt-2 font-bold tracking-tight ${isHigh ? "text-red-900" : "text-[var(--text-primary)]"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : `${quote.toFixed(1)} %`}
               </p>
             </div>
@@ -517,7 +517,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <p className={`mt-3 text-sm ${isHigh ? "text-red-600" : "text-gray-500"}`}>
+            <p className={`mt-3 text-sm ${isHigh ? "text-red-400" : "text-[var(--text-secondary)]"}`}>
               {stats.einheitenLeer} von {stats.einheitenGesamt} Einheiten leer
             </p>
           )}
@@ -529,12 +529,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "leerstandsdauer") {
     const stats = vermietungData; const loading = vermietungLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Leerstandsdauer</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Leerstandsdauer</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : `${stats?.avgLeerstandsdauerTage?.toFixed(0) ?? 0} Tage`}
               </p>
             </div>
@@ -545,7 +545,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Durchschnittliche Leerstandsdauer</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Durchschnittliche Leerstandsdauer</p>
           )}
         </div>
       </div>
@@ -555,12 +555,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "fluktuationsquote") {
     const stats = vermietungData; const loading = vermietungLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Fluktuationsquote</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Fluktuationsquote</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : `${stats?.fluktuationsquote?.toFixed(1) ?? 0} %`}
               </p>
             </div>
@@ -571,7 +571,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Kuendigungen / Gesamteinheiten p.a.</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Kuendigungen / Gesamteinheiten p.a.</p>
           )}
         </div>
       </div>
@@ -583,23 +583,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const verlust = stats?.ertragsverlustLeerstand ?? 0;
     const hasLoss = verlust > 0;
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${hasLoss ? "border-orange-200 bg-orange-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${hasLoss ? "border-orange-500/25 bg-orange-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${hasLoss ? "text-orange-700" : "text-gray-500"}`}>Ertragsverlust</p>
-              <p className={`mt-2 font-bold tracking-tight ${hasLoss ? "text-orange-900" : "text-gray-900"} ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className={`text-sm font-medium ${hasLoss ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>Ertragsverlust</p>
+              <p className={`mt-2 font-bold tracking-tight ${hasLoss ? "text-orange-300" : "text-[var(--text-primary)]"} ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(verlust)}
               </p>
             </div>
-            <div className={`ml-4 rounded-xl p-3 ${hasLoss ? "bg-orange-200" : "bg-emerald-100"}`}>
-              <svg className={`h-5 w-5 ${hasLoss ? "text-orange-700" : "text-emerald-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`ml-4 rounded-xl p-3 ${hasLoss ? "bg-orange-500/20" : "bg-emerald-100"}`}>
+              <svg className={`h-5 w-5 ${hasLoss ? "text-orange-400" : "text-emerald-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className={`mt-3 text-sm ${hasLoss ? "text-orange-600" : "text-gray-500"}`}>Entgangene Mieteinnahmen durch Leerstand</p>
+            <p className={`mt-3 text-sm ${hasLoss ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>Entgangene Mieteinnahmen durch Leerstand</p>
           )}
         </div>
       </div>
@@ -613,23 +613,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "sollstellungen") {
     const stats = sollIstData; const loading = sollIstLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Sollstellungen</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Sollstellungen</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(stats?.sollSumme ?? 0)}
               </p>
             </div>
-            <div className="ml-4 rounded-xl bg-blue-100 p-3">
-              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="ml-4 rounded-xl bg-blue-500/15 p-3">
+              <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Monatliche Soll-Mieten gesamt</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Monatliche Soll-Mieten gesamt</p>
           )}
         </div>
       </div>
@@ -639,23 +639,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "istzahlungen") {
     const stats = sollIstData; const loading = sollIstLoading;
     return (
-      <div className="h-full rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-green-200 bg-green-500/10 p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-green-700">Ist-Zahlungen</p>
+              <p className="text-sm font-medium text-green-400">Ist-Zahlungen</p>
               <p className={`mt-2 font-bold tracking-tight text-green-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(stats?.istSumme ?? 0)}
               </p>
             </div>
             <div className="ml-4 rounded-xl bg-green-200 p-3">
-              <svg className="h-5 w-5 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-green-600">Tatsaechlich eingegangene Zahlungen</p>
+            <p className="mt-3 text-sm text-green-400">Tatsaechlich eingegangene Zahlungen</p>
           )}
         </div>
       </div>
@@ -672,11 +672,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Offen", value: Math.max(offen, 0), color: CHART_COLORS.gray },
     ] : [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Einzugsquote</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Einzugsquote</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -686,7 +686,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && stats && (
-                <p className="mt-1 text-center text-xs text-gray-500">
+                <p className="mt-1 text-center text-xs text-[var(--text-secondary)]">
                   {formatCurrency(stats.istSumme)} von {formatCurrency(stats.sollSumme)}
                 </p>
               )}
@@ -702,23 +702,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const rueckstaende = stats?.rueckstaende ?? 0;
     const hasArrears = rueckstaende > 0;
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${hasArrears ? "border-orange-200 bg-orange-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${hasArrears ? "border-orange-500/25 bg-orange-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${hasArrears ? "text-orange-700" : "text-gray-500"}`}>Mietrueckstaende</p>
-              <p className={`mt-2 font-bold tracking-tight ${hasArrears ? "text-orange-900" : "text-gray-900"} ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className={`text-sm font-medium ${hasArrears ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>Mietrueckstaende</p>
+              <p className={`mt-2 font-bold tracking-tight ${hasArrears ? "text-orange-300" : "text-[var(--text-primary)]"} ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(rueckstaende)}
               </p>
             </div>
-            <div className={`ml-4 rounded-xl p-3 ${hasArrears ? "bg-orange-200" : "bg-blue-100"}`}>
-              <svg className={`h-5 w-5 ${hasArrears ? "text-orange-700" : "text-blue-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`ml-4 rounded-xl p-3 ${hasArrears ? "bg-orange-500/20" : "bg-blue-500/15"}`}>
+              <svg className={`h-5 w-5 ${hasArrears ? "text-orange-400" : "text-blue-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && stats && (
-            <p className={`mt-3 text-sm ${hasArrears ? "text-orange-600" : "text-gray-500"}`}>
+            <p className={`mt-3 text-sm ${hasArrears ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>
               {stats.rueckstaendeMieterAnzahl} Mieter betroffen
             </p>
           )}
@@ -737,12 +737,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "> 90", value: aging?.ueber90 ?? 0, color: "#dc2626" },
     ];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Aging Rückstände</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Aging Rückstände</p>
           <div className="mt-3 flex-1">
             {loading ? (
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <HorizontalBarChart
                 data={bars}
@@ -759,23 +759,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "zahlungsverzug") {
     const stats = sollIstData; const loading = sollIstLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Zahlungsverzug</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Zahlungsverzug</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : `${stats?.avgZahlungsverzugTage?.toFixed(0) ?? 0} Tage`}
               </p>
             </div>
-            <div className="ml-4 rounded-xl bg-blue-100 p-3">
-              <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="ml-4 rounded-xl bg-blue-500/15 p-3">
+              <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && (
-            <p className="mt-3 text-sm text-gray-500">Durchschnittlicher Zahlungsverzug</p>
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">Durchschnittlicher Zahlungsverzug</p>
           )}
         </div>
       </div>
@@ -795,10 +795,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Ausgaben", value: stats.ausgabenOpex, fill: CHART_COLORS.red },
     ] : [];
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
         <div className="flex h-full flex-col">
           <div className="flex items-start justify-between">
-            <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>Operativer Cashflow</p>
+            <p className={`text-sm font-medium ${isPositive ? "text-green-400" : "text-red-700"}`}>Operativer Cashflow</p>
             <p className={`font-bold ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-lg" : "text-xl"}`}>
               {loading ? "—" : formatCurrency(value)}
             </p>
@@ -808,8 +808,8 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="name" width={65} tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <YAxis type="category" dataKey="name" width={65} tick={{ fontSize: 11, fill: "var(--text-secondary)" }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
                   <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20} animationDuration={600}>
                     {chartData.map((entry, idx) => (
                       <Cell key={idx} fill={entry.fill} />
@@ -820,7 +820,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           )}
           {!isSmall && stats && (
-            <div className="mt-1 flex justify-between text-xs text-gray-500">
+            <div className="mt-1 flex justify-between text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
                 Einnahmen
@@ -845,10 +845,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Kapital", value: stats.debtServiceGesamt, fill: CHART_COLORS.violet },
     ] : [];
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${isPositive ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
         <div className="flex h-full flex-col">
           <div className="flex items-start justify-between">
-            <p className={`text-sm font-medium ${isPositive ? "text-green-700" : "text-red-700"}`}>CF nach Kapitaldienst</p>
+            <p className={`text-sm font-medium ${isPositive ? "text-green-400" : "text-red-700"}`}>CF nach Kapitaldienst</p>
             <p className={`font-bold ${isPositive ? "text-green-900" : "text-red-900"} ${isSmall ? "text-lg" : "text-xl"}`}>
               {loading ? "—" : formatCurrency(value)}
             </p>
@@ -858,8 +858,8 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="name" width={55} tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <YAxis type="category" dataKey="name" width={55} tick={{ fontSize: 11, fill: "var(--text-secondary)" }} axisLine={false} tickLine={false} />
+                  <Tooltip formatter={(v) => formatCurrency(Number(v) || 0)} contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
                   <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20} animationDuration={600}>
                     {chartData.map((entry, idx) => (
                       <Cell key={idx} fill={entry.fill} />
@@ -870,7 +870,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           )}
           {!isSmall && stats && (
-            <div className="mt-1 flex justify-between text-xs text-gray-500">
+            <div className="mt-1 flex justify-between text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
                 Cashflow
@@ -893,11 +893,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Tilgung", value: stats.debtServiceTilgung, color: CHART_COLORS.violet },
     ].filter((d) => d.value > 0) : [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Kapitaldienst</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Kapitaldienst</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -906,7 +906,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && stats && (
-                <div className="mt-1 flex justify-center gap-4 text-xs text-gray-500">
+                <div className="mt-1 flex justify-center gap-4 text-xs text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1">
                     <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500" />
                     Zins {formatCurrency(stats.debtServiceZins)}
@@ -931,12 +931,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "restschuld") {
     const stats = finanzierungData; const loading = finanzierungLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Restschuld</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Restschuld</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(stats?.restschuldGesamt ?? 0)}
               </p>
             </div>
@@ -947,7 +947,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               {stats.krediteAnzahl} Kredite, mtl. Rate {formatCurrency(stats.monatlicheRateGesamt)}
             </p>
           )}
@@ -960,7 +960,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const stats = finanzierungData; const loading = finanzierungLoading;
     const value = stats?.dscr ?? 0;
     const mainColor = value > 1.2 ? CHART_COLORS.green : value > 1.0 ? CHART_COLORS.yellow : CHART_COLORS.red;
-    const bgColor = value > 1.2 ? "border-green-200 bg-green-50" : value > 1.0 ? "border-yellow-200 bg-yellow-50" : "border-red-200 bg-red-50";
+    const bgColor = value > 1.2 ? "border-green-200 bg-green-50" : value > 1.0 ? "border-yellow-500/25 bg-yellow-500/10" : "border-red-200 bg-red-50";
     const label = value > 1.2 ? "gut" : value > 1.0 ? "grenzwertig" : "kritisch";
     // Gauge: fill proportional to DSCR (0 to 2 as max)
     const fill = Math.min(value / 2, 1);
@@ -969,11 +969,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Rest", value: (1 - fill) * 100, color: CHART_COLORS.gray },
     ];
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${bgColor}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${bgColor}`}>
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-600">DSCR</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">DSCR</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -983,7 +983,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && (
-                <p className="mt-1 text-center text-xs text-gray-500">
+                <p className="mt-1 text-center text-xs text-[var(--text-secondary)]">
                   Schuldendienstdeckungsgrad
                 </p>
               )}
@@ -998,10 +998,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const stats = finanzierungData; const loading = finanzierungLoading;
     const kredite = stats?.krediteDetails ?? [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
           <div className="flex items-start justify-between">
-            <p className="text-sm font-medium text-gray-500">Kredituebersicht</p>
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Kredituebersicht</p>
             <div className="ml-4 rounded-xl bg-violet-100 p-3">
               <svg className="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -1010,13 +1010,13 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           </div>
           <div className="mt-3 flex-1 overflow-auto">
             {loading ? (
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : kredite.length === 0 ? (
-              <p className="text-sm text-gray-400">Keine Kredite vorhanden</p>
+              <p className="text-sm text-[var(--text-muted)]">Keine Kredite vorhanden</p>
             ) : (
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-gray-100 text-left text-gray-400">
+                  <tr className="border-b border-[var(--border)] text-left text-[var(--text-muted)]">
                     <th className="pb-1 font-medium">Kredit</th>
                     {!isSmall && <th className="pb-1 font-medium">Bank</th>}
                     <th className="pb-1 text-right font-medium">Restschuld</th>
@@ -1025,11 +1025,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 </thead>
                 <tbody>
                   {kredite.map((k, idx) => (
-                    <tr key={idx} className="border-b border-gray-50">
-                      <td className="py-1.5 font-medium text-gray-900 truncate max-w-[100px]">{k.bezeichnung}</td>
-                      {!isSmall && <td className="py-1.5 text-gray-500 truncate max-w-[80px]">{k.bank}</td>}
-                      <td className="py-1.5 text-right text-gray-900">{formatCurrency(k.restschuld)}</td>
-                      {!isSmall && <td className="py-1.5 text-right text-gray-500">{formatCurrency(k.rate)}/mtl.</td>}
+                    <tr key={idx} className="border-b border-[var(--border)]">
+                      <td className="py-1.5 font-medium text-[var(--text-primary)] truncate max-w-[100px]">{k.bezeichnung}</td>
+                      {!isSmall && <td className="py-1.5 text-[var(--text-secondary)] truncate max-w-[80px]">{k.bank}</td>}
+                      <td className="py-1.5 text-right text-[var(--text-primary)]">{formatCurrency(k.restschuld)}</td>
+                      {!isSmall && <td className="py-1.5 text-right text-[var(--text-secondary)]">{formatCurrency(k.rate)}/mtl.</td>}
                     </tr>
                   ))}
                 </tbody>
@@ -1053,11 +1053,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Sonstige", value: stats.sonstige, color: CHART_COLORS.grayDark },
     ].filter((d) => d.value > 0) : [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Gesamtkosten</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Gesamtkosten</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -1066,7 +1066,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && stats && (
-                <div className="mt-1 flex flex-wrap justify-center gap-3 text-xs text-gray-500">
+                <div className="mt-1 flex flex-wrap justify-center gap-3 text-xs text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1">
                     <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
                     BK {formatCurrency(stats.bkRelevant)}
@@ -1091,12 +1091,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "kostenProQm") {
     const stats = kostenAnalyseData; const loading = kostenAnalyseLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Kosten pro m{"\u00B2"}</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Kosten pro m{"\u00B2"}</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : `${formatCurrency(stats?.kostenProQm ?? 0)}/m\u00B2`}
               </p>
             </div>
@@ -1107,7 +1107,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               Gesamtflaeche: {stats.gesamtFlaeche?.toFixed(0) ?? 0} m{"\u00B2"}
             </p>
           )}
@@ -1126,13 +1126,13 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       color: pieColors[idx % pieColors.length],
     }));
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Kosten nach Kategorie</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Kosten nach Kategorie</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : kategorien.length === 0 ? (
-            <p className="mt-4 text-sm text-gray-400">Keine Kostendaten vorhanden</p>
+            <p className="mt-4 text-sm text-[var(--text-muted)]">Keine Kostendaten vorhanden</p>
           ) : (
             <>
               <DonutChart
@@ -1149,7 +1149,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                         <span className="inline-block h-2.5 w-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: pieColors[idx % pieColors.length] }} />
                         {k.kategorie}
                       </span>
-                      <span className="font-semibold text-gray-900">{formatCurrency(k.summe)}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{formatCurrency(k.summe)}</span>
                     </div>
                   ))}
                 </div>
@@ -1175,12 +1175,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Kritisch", value: prio?.kritisch ?? 0, color: CHART_COLORS.red },
     ];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Tickets nach Priorität</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Tickets nach Priorität</p>
           <div className="mt-3 flex-1">
             {loading ? (
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <HorizontalBarChart data={bars} size={size} />
             )}
@@ -1193,12 +1193,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "ticketBearbeitungszeit") {
     const stats = ticketAnalyseData; const loading = ticketAnalyseLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Bearbeitungszeit</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Bearbeitungszeit</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : `${stats?.avgBearbeitungsTage?.toFixed(1) ?? 0} Tage`}
               </p>
             </div>
@@ -1209,7 +1209,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               {stats.offen} offen, {stats.abgeschlossen} abgeschlossen
             </p>
           )}
@@ -1228,14 +1228,14 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       color: katColors[idx % katColors.length],
     }));
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Ticket-Kategorien</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Ticket-Kategorien</p>
           <div className="mt-3 flex-1">
             {loading ? (
-              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : kategorien.length === 0 ? (
-              <p className="text-sm text-gray-400">Keine Ticketdaten vorhanden</p>
+              <p className="text-sm text-[var(--text-muted)]">Keine Ticketdaten vorhanden</p>
             ) : (
               <HorizontalBarChart data={bars} size={size} />
             )}
@@ -1258,11 +1258,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { name: "Ohne", value: stats.zaehlerGesamt - stats.zaehlerMitAblesung, color: CHART_COLORS.gray },
     ] : [];
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
-          <p className="text-sm font-medium text-gray-500">Zähler-Vollständigkeit</p>
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Zähler-Vollständigkeit</p>
           {loading ? (
-            <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+            <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
           ) : (
             <>
               <DonutChart
@@ -1272,13 +1272,13 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
                 size={size}
               />
               {!isSmall && stats && (
-                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                <div className="mt-1 flex justify-between text-xs text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1">
                     <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: mainColor }} />
                     {stats.zaehlerMitAblesung} erfasst
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-gray-200" />
+                    <span className="inline-block h-2.5 w-2.5 rounded-full bg-[var(--border)]" />
                     {stats.zaehlerGesamt - stats.zaehlerMitAblesung} offen
                   </span>
                 </div>
@@ -1297,12 +1297,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "kaltmieteProQm") {
     const stats = mieteAnalyseData; const loading = mieteAnalyseLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Kaltmiete pro m{"\u00B2"}</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Kaltmiete pro m{"\u00B2"}</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : `${formatCurrency(stats?.avgKaltmieteProQm ?? 0)}/m\u00B2`}
               </p>
             </div>
@@ -1313,7 +1313,7 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-[var(--text-secondary)]">
               {stats.mietverhaeltnisseAktiv} aktive Mietverhaeltnisse
             </p>
           )}
@@ -1325,12 +1325,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "gesamtMiete") {
     const stats = mieteAnalyseData; const loading = mieteAnalyseLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-500">Gesamtmiete</p>
-              <p className={`mt-2 font-bold tracking-tight text-gray-900 ${isSmall ? "text-xl" : "text-3xl"}`}>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">Gesamtmiete</p>
+              <p className={`mt-2 font-bold tracking-tight text-[var(--text-primary)] ${isSmall ? "text-xl" : "text-3xl"}`}>
                 {loading ? "—" : formatCurrency(stats?.gesamtMonatlicheWarmmiete ?? 0)}
               </p>
             </div>
@@ -1341,14 +1341,14 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             </div>
           </div>
           {!isSmall && stats && (
-            <div className="mt-3 space-y-1 text-sm text-gray-500">
+            <div className="mt-3 space-y-1 text-sm text-[var(--text-secondary)]">
               <div className="flex justify-between">
                 <span>Kaltmiete</span>
-                <span className="font-medium text-gray-700">{formatCurrency(stats.gesamtMonatlicheKaltmiete)}</span>
+                <span className="font-medium text-[var(--text-secondary)]">{formatCurrency(stats.gesamtMonatlicheKaltmiete)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Warmmiete</span>
-                <span className="font-medium text-gray-700">{formatCurrency(stats.gesamtMonatlicheWarmmiete)}</span>
+                <span className="font-medium text-[var(--text-secondary)]">{formatCurrency(stats.gesamtMonatlicheWarmmiete)}</span>
               </div>
             </div>
           )}
@@ -1366,23 +1366,23 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
     const count = stats?.unzugeordneteZahlungen ?? 0;
     const hasIssues = count > 0;
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${hasIssues ? "border-orange-200 bg-orange-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${hasIssues ? "border-orange-500/25 bg-orange-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${hasIssues ? "text-orange-700" : "text-gray-500"}`}>Unzugeordnete Zahlungen</p>
-              <p className={`mt-2 font-bold tracking-tight ${hasIssues ? "text-orange-900" : "text-gray-900"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className={`text-sm font-medium ${hasIssues ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>Unzugeordnete Zahlungen</p>
+              <p className={`mt-2 font-bold tracking-tight ${hasIssues ? "text-orange-300" : "text-[var(--text-primary)]"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : count}
               </p>
             </div>
-            <div className={`ml-4 rounded-xl p-3 ${hasIssues ? "bg-orange-200" : "bg-gray-100"}`}>
-              <svg className={`h-5 w-5 ${hasIssues ? "text-orange-700" : "text-gray-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`ml-4 rounded-xl p-3 ${hasIssues ? "bg-orange-500/20" : "bg-[var(--bg-card-hover)]"}`}>
+              <svg className={`h-5 w-5 ${hasIssues ? "text-orange-400" : "text-[var(--text-secondary)]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           {!isSmall && stats && (
-            <p className={`mt-3 text-sm ${hasIssues ? "text-orange-600" : "text-gray-500"}`}>
+            <p className={`mt-3 text-sm ${hasIssues ? "text-orange-400" : "text-[var(--text-secondary)]"}`}>
               Summe: {formatCurrency(stats.unzugeordneteZahlungenSumme)}
             </p>
           )}
@@ -1405,17 +1405,17 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
       { label: "Mieter ohne Kontakt", value: luecken.mieterOhneKontakt },
     ] : [];
     return (
-      <div className={`h-full rounded-xl border p-4 shadow-sm ${hasIssues ? "border-yellow-200 bg-yellow-50" : "border-gray-200 bg-white"}`}>
+      <div className={`h-full rounded-xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow ${hasIssues ? "border-yellow-500/25 bg-yellow-500/10" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
         <div className="flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium ${hasIssues ? "text-yellow-700" : "text-gray-500"}`}>Stammdaten-Luecken</p>
-              <p className={`mt-2 font-bold tracking-tight ${hasIssues ? "text-yellow-900" : "text-gray-900"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
+              <p className={`text-sm font-medium ${hasIssues ? "text-yellow-400" : "text-[var(--text-secondary)]"}`}>Stammdaten-Luecken</p>
+              <p className={`mt-2 font-bold tracking-tight ${hasIssues ? "text-yellow-300" : "text-[var(--text-primary)]"} ${isSmall ? "text-2xl" : "text-3xl"}`}>
                 {loading ? "—" : total}
               </p>
             </div>
-            <div className={`ml-4 rounded-xl p-3 ${hasIssues ? "bg-yellow-200" : "bg-gray-100"}`}>
-              <svg className={`h-5 w-5 ${hasIssues ? "text-yellow-700" : "text-gray-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`ml-4 rounded-xl p-3 ${hasIssues ? "bg-yellow-200" : "bg-[var(--bg-card-hover)]"}`}>
+              <svg className={`h-5 w-5 ${hasIssues ? "text-yellow-400" : "text-[var(--text-secondary)]"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
@@ -1424,12 +1424,12 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
             <div className="mt-3 space-y-1">
               {items.filter((i) => i.value > 0).map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between text-xs">
-                  <span className={hasIssues ? "text-yellow-700" : "text-gray-500"}>{item.label}</span>
-                  <span className={`font-semibold ${hasIssues ? "text-yellow-900" : "text-gray-900"}`}>{item.value}</span>
+                  <span className={hasIssues ? "text-yellow-400" : "text-[var(--text-secondary)]"}>{item.label}</span>
+                  <span className={`font-semibold ${hasIssues ? "text-yellow-300" : "text-[var(--text-primary)]"}`}>{item.value}</span>
                 </div>
               ))}
               {items.every((i) => i.value === 0) && (
-                <p className="text-xs text-green-600">Alle Stammdaten vollstaendig</p>
+                <p className="text-xs text-green-400">Alle Stammdaten vollstaendig</p>
               )}
             </div>
           )}
@@ -1445,11 +1445,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "sollIstVerlauf") {
     const monate = sollIstMonatlichData; const loading = sollIstMonatlichLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Soll / Ist Verlauf</p>
-            <div className="flex gap-3 text-xs text-gray-500">
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Soll / Ist Verlauf</p>
+            <div className="flex gap-3 text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
                 Soll
@@ -1462,16 +1462,16 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           </div>
           <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
             {loading || !monate ? (
-              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+              <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(v) => formatCurrency(Number(v) || 0)}
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
                   />
                   <Bar dataKey="soll" name="Soll" fill={CHART_COLORS.blue} radius={[3, 3, 0, 0]} barSize={isSmall ? 6 : 12} animationDuration={600} />
                   <Bar dataKey="ist" name="Ist" fill={CHART_COLORS.green} radius={[3, 3, 0, 0]} barSize={isSmall ? 6 : 12} animationDuration={600} />
@@ -1487,11 +1487,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "cashflowVerlauf") {
     const monate = cashflowMonatlichData; const loading = cashflowMonatlichLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Cashflow Verlauf</p>
-            <div className="flex gap-3 text-xs text-gray-500">
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Cashflow Verlauf</p>
+            <div className="flex gap-3 text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-teal-500" />
                 Cashflow
@@ -1508,16 +1508,16 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           </div>
           <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
             {loading || !monate ? (
-              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+              <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(v) => formatCurrency(Number(v) || 0)}
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
                   />
                   <Line type="monotone" dataKey="einnahmen" name="Einnahmen" stroke={CHART_COLORS.green} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} animationDuration={600} />
                   <Line type="monotone" dataKey="ausgaben" name="Ausgaben" stroke={CHART_COLORS.red} strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} animationDuration={600} />
@@ -1534,11 +1534,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "kostenVerlauf") {
     const monate = kostenMonatlichData; const loading = kostenMonatlichLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Kosten Verlauf</p>
-            <div className="flex gap-3 text-xs text-gray-500">
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Kosten Verlauf</p>
+            <div className="flex gap-3 text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-500" />
                 BK
@@ -1555,16 +1555,16 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           </div>
           <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
             {loading || !monate ? (
-              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+              <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(v) => formatCurrency(Number(v) || 0)}
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
                   />
                   <Bar dataKey="bk" name="BK" stackId="a" fill={CHART_COLORS.blue} barSize={isSmall ? 8 : 16} animationDuration={600} />
                   <Bar dataKey="hk" name="HK" stackId="a" fill={CHART_COLORS.orange} barSize={isSmall ? 8 : 16} animationDuration={600} />
@@ -1581,11 +1581,11 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   if (type === "ticketsVerlauf") {
     const monate = ticketsMonatlichData; const loading = ticketsMonatlichLoading;
     return (
-      <div className="h-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">Tickets Verlauf</p>
-            <div className="flex gap-3 text-xs text-gray-500">
+            <p className="text-sm font-medium text-[var(--text-secondary)]">Tickets Verlauf</p>
+            <div className="flex gap-3 text-xs text-[var(--text-secondary)]">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-amber-500" />
                 Neu
@@ -1598,14 +1598,14 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
           </div>
           <div className="mt-2 flex-1" style={{ minHeight: isSmall ? 100 : 160 }}>
             {loading || !monate ? (
-              <p className="mt-4 text-2xl font-bold text-gray-900">—</p>
+              <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">—</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={monate} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
-                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} allowDecimals={false} />
-                  <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="monat" tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "var(--text-muted)" }} axisLine={false} tickLine={false} allowDecimals={false} />
+                  <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
                   <Line type="monotone" dataKey="neu" name="Neue Tickets" stroke={CHART_COLORS.amber} strokeWidth={2.5} dot={{ r: 4, fill: CHART_COLORS.amber }} activeDot={{ r: 6 }} animationDuration={600} />
                   <Line type="monotone" dataKey="abgeschlossen" name="Abgeschlossen" stroke={CHART_COLORS.green} strokeWidth={2} strokeDasharray="5 5" dot={{ r: 3, fill: CHART_COLORS.green }} activeDot={{ r: 5 }} animationDuration={600} />
                 </LineChart>

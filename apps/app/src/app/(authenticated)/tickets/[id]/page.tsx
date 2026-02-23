@@ -14,30 +14,30 @@ const statusOptions = [
 const getStatusColor = (status: string) => {
   switch (status) {
     case "ERFASST":
-      return "bg-gray-100 text-gray-800";
+      return "bg-gray-500/15 text-gray-400";
     case "IN_BEARBEITUNG":
-      return "bg-blue-100 text-blue-800";
+      return "bg-blue-500/15 text-blue-400";
     case "ZUR_PRUEFUNG":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-yellow-500/15 text-yellow-400";
     case "ABGESCHLOSSEN":
-      return "bg-green-100 text-green-800";
+      return "bg-green-500/15 text-green-400";
     default:
-      return "bg-gray-100 text-gray-800";
+      return "bg-gray-500/15 text-gray-400";
   }
 };
 
 const getPrioColor = (prio: string) => {
   switch (prio) {
     case "NIEDRIG":
-      return "bg-gray-100 text-gray-800";
+      return "bg-gray-500/15 text-gray-400";
     case "MITTEL":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-yellow-500/15 text-yellow-400";
     case "HOCH":
-      return "bg-orange-100 text-orange-800";
+      return "bg-orange-500/15 text-orange-400";
     case "KRITISCH":
-      return "bg-red-100 text-red-800";
+      return "bg-red-500/15 text-red-400";
     default:
-      return "bg-gray-100 text-gray-800";
+      return "bg-gray-500/15 text-gray-400";
   }
 };
 
@@ -80,7 +80,7 @@ export default function TicketDetailPage() {
   }
 
   if (!ticket) {
-    return <div className="p-4 text-gray-600">Ticket nicht gefunden.</div>;
+    return <div className="p-4 text-[var(--text-secondary)]">Ticket nicht gefunden.</div>;
   }
 
   const handleStatusChange = (newStatus: string) => {
@@ -124,35 +124,35 @@ export default function TicketDetailPage() {
 
       {/* Title & Description */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{ticket.titel}</h1>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">{ticket.titel}</h1>
         {ticket.beschreibung && (
-          <p className="mt-2 text-gray-600">{ticket.beschreibung}</p>
+          <p className="mt-2 text-[var(--text-secondary)]">{ticket.beschreibung}</p>
         )}
       </div>
 
       {/* Details Grid */}
-      <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm md:grid-cols-4">
         <div>
-          <div className="text-xs font-medium uppercase text-gray-500">Kategorie</div>
-          <div className="mt-1 text-sm text-gray-900">{ticket.kategorie}</div>
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Kategorie</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">{ticket.kategorie}</div>
         </div>
         <div>
-          <div className="text-xs font-medium uppercase text-gray-500">Frist</div>
-          <div className="mt-1 text-sm text-gray-900">
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Frist</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">
             {ticket.frist
               ? new Date(ticket.frist).toLocaleDateString("de-DE")
               : "-"}
           </div>
         </div>
         <div>
-          <div className="text-xs font-medium uppercase text-gray-500">Ersteller</div>
-          <div className="mt-1 text-sm text-gray-900">{ticket.ersteller || "-"}</div>
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Ersteller</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">{ticket.ersteller || "-"}</div>
         </div>
         <div>
-          <div className="text-xs font-medium uppercase text-gray-500">
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">
             Verantwortlicher
           </div>
-          <div className="mt-1 text-sm text-gray-900">
+          <div className="mt-1 text-sm text-[var(--text-primary)]">
             {ticket.verantwortlicher || "-"}
           </div>
         </div>
@@ -160,8 +160,8 @@ export default function TicketDetailPage() {
 
       {/* Zugeordnetes Objekt / Einheit */}
       {(ticket.objektId || ticket.einheitId) && (
-        <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-          <div className="text-xs font-medium uppercase text-gray-500 mb-2">
+        <div className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)] mb-2">
             Zuordnung
           </div>
           <div className="flex gap-4">
@@ -186,15 +186,15 @@ export default function TicketDetailPage() {
       )}
 
       {/* Status aendern */}
-      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="text-xs font-medium uppercase text-gray-500 mb-2">
+      <div className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+        <div className="text-xs font-medium uppercase text-[var(--text-secondary)] mb-2">
           Status aendern
         </div>
         <select
           value={ticket.status}
           onChange={(e) => handleStatusChange(e.target.value)}
           disabled={changeStatusMutation.isPending}
-          className="rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           {statusOptions.map((s) => (
             <option key={s} value={s}>
@@ -203,35 +203,35 @@ export default function TicketDetailPage() {
           ))}
         </select>
         {changeStatusMutation.isPending && (
-          <span className="ml-2 text-sm text-gray-500">Speichern...</span>
+          <span className="ml-2 text-sm text-[var(--text-secondary)]">Speichern...</span>
         )}
       </div>
 
       {/* Kommentare */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Kommentare</h2>
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Kommentare</h2>
 
         {ticket.kommentare && ticket.kommentare.length > 0 ? (
           <div className="space-y-3 mb-4">
             {ticket.kommentare.map((k: any) => (
               <div
                 key={k.id}
-                className="rounded border border-gray-100 bg-gray-50 p-3"
+                className="rounded border border-[var(--border)] bg-[var(--bg-page)] p-3"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-gray-700">
+                  <span className="text-xs font-medium text-[var(--text-secondary)]">
                     {k.verfasser || "Unbekannt"}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-[var(--text-muted)]">
                     {new Date(k.createdAt).toLocaleString("de-DE")}
                   </span>
                 </div>
-                <p className="text-sm text-gray-800">{k.text}</p>
+                <p className="text-sm text-[var(--text-primary)]">{k.text}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500 mb-4">Noch keine Kommentare.</p>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">Noch keine Kommentare.</p>
         )}
 
         {/* Kommentar hinzufuegen */}
@@ -241,7 +241,7 @@ export default function TicketDetailPage() {
             onChange={(e) => setKommentarText(e.target.value)}
             placeholder="Kommentar schreiben..."
             rows={2}
-            className="flex-1 rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+            className="flex-1 rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
           />
           <button
             type="submit"

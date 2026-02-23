@@ -65,7 +65,7 @@ export default function MieterPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-gray-400">Laden...</div>;
+    return <div className="p-8 text-center text-[var(--text-muted)]">Laden...</div>;
   }
 
   return (
@@ -73,8 +73,8 @@ export default function MieterPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mieter</h1>
-          <p className="mt-2 text-gray-600">Verwalten Sie Ihre Mieter und deren Kontaktdaten</p>
+          <h1 className="text-3xl font-bold text-[var(--text-primary)]">Mieter</h1>
+          <p className="mt-2 text-[var(--text-secondary)]">Verwalten Sie Ihre Mieter und deren Kontaktdaten</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -89,37 +89,37 @@ export default function MieterPage() {
 
       {/* Statistics */}
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-medium text-gray-600">Gesamt</div>
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-sm font-medium text-[var(--text-secondary)]">Gesamt</div>
+            <svg className="h-4 w-4 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <div className="mt-2 text-2xl font-bold text-gray-900">{stats?.gesamt || 0}</div>
+          <div className="mt-2 text-2xl font-bold text-[var(--text-primary)]">{stats?.gesamt || 0}</div>
         </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-gray-600">Aktive Mieter</div>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <div className="text-sm font-medium text-[var(--text-secondary)]">Aktive Mieter</div>
           <div className="mt-2 text-2xl font-bold text-green-600">{aktiveMieter?.length || 0}</div>
         </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-gray-600">Frühere Mieter</div>
-          <div className="mt-2 text-2xl font-bold text-gray-600">{fruehereMieter?.length || 0}</div>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <div className="text-sm font-medium text-[var(--text-secondary)]">Frühere Mieter</div>
+          <div className="mt-2 text-2xl font-bold text-[var(--text-secondary)]">{fruehereMieter?.length || 0}</div>
         </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="text-sm font-medium text-gray-600">Geschäftlich</div>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+          <div className="text-sm font-medium text-[var(--text-secondary)]">Geschäftlich</div>
           <div className="mt-2 text-2xl font-bold text-purple-600">{stats?.gewerbe || 0}</div>
         </div>
       </div>
 
       {/* Objekt Filter */}
       {objekte && objekte.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-200 px-6 py-4">
-            <h3 className="text-sm font-semibold text-gray-900">Nach Objekt filtern</h3>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <div className="border-b border-[var(--border)] px-6 py-4">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Nach Objekt filtern</h3>
           </div>
           <div className="p-6">
             <div className="flex flex-wrap gap-2">
@@ -136,7 +136,7 @@ export default function MieterPage() {
                     className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
                       isSelected
                         ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                        : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--border)]"
                     }`}
                   >
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@ export default function MieterPage() {
                       className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
                         isSelected
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-200 text-gray-600"
+                          : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
                       }`}
                     >
                       {mieterCount}
@@ -169,10 +169,10 @@ export default function MieterPage() {
       )}
 
       {/* Filters */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1 max-w-md">
-            <svg className="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-3 h-4 w-4 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -180,17 +180,17 @@ export default function MieterPage() {
               placeholder="Suche nach Name, Firma oder E-Mail..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] py-2 pl-9 pr-4 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
-          <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+          <div className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-1">
             <button
               onClick={() => setStatusFilter("aktiv")}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 statusFilter === "aktiv"
                   ? "bg-green-50 text-green-700"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
               Aktive Mieter
@@ -199,8 +199,8 @@ export default function MieterPage() {
               onClick={() => setStatusFilter("frueher")}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 statusFilter === "frueher"
-                  ? "bg-gray-100 text-gray-700"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
               Frühere Mieter
@@ -210,7 +210,7 @@ export default function MieterPage() {
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 statusFilter === "alle"
                   ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-gray-900"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
               Alle
@@ -228,15 +228,15 @@ export default function MieterPage() {
           return (
             <div
               key={m.id}
-              className="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               onClick={() => router.push(`/mieter/${m.id}`)}
             >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg">{getDisplayName(m)}</h3>
+                    <h3 className="font-semibold text-[var(--text-primary)] text-lg">{getDisplayName(m)}</h3>
                     {m.firma && m.vorname && m.nachname && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-[var(--text-secondary)] mt-1">
                         Ansprechpartner: {m.vorname} {m.nachname}
                       </p>
                     )}
@@ -244,8 +244,8 @@ export default function MieterPage() {
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       isAktiv
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
+                        ? "bg-green-500/15 text-green-400"
+                        : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
                     }`}
                   >
                     {isAktiv ? "Aktiv" : "Früher"}
@@ -254,7 +254,7 @@ export default function MieterPage() {
 
                 <div className="space-y-2 text-sm">
                   {m.email && (
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                       <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -263,7 +263,7 @@ export default function MieterPage() {
                   )}
 
                   {(m.telefonMobil || m.telefon) && (
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                       <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
@@ -272,7 +272,7 @@ export default function MieterPage() {
                   )}
 
                   {mv && mv.einheit && (
-                    <div className="flex items-center gap-2 text-gray-600">
+                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                       <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                       </svg>
@@ -282,10 +282,10 @@ export default function MieterPage() {
                 </div>
 
                 {mv && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="mt-4 pt-4 border-t border-[var(--border)]">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Kaltmiete</span>
-                      <span className="font-semibold text-gray-900">
+                      <span className="text-[var(--text-secondary)]">Kaltmiete</span>
+                      <span className="font-semibold text-[var(--text-primary)]">
                         {parseFloat(mv.kaltmiete.toString()).toFixed(2)} €
                       </span>
                     </div>
@@ -298,12 +298,12 @@ export default function MieterPage() {
       </div>
 
       {filteredMieter?.length === 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-12 text-center">
+          <svg className="mx-auto h-12 w-12 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Keine Mieter gefunden</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="mt-2 text-sm font-medium text-[var(--text-primary)]">Keine Mieter gefunden</h3>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
             Beginnen Sie, indem Sie einen neuen Mieter erstellen.
           </p>
           <button

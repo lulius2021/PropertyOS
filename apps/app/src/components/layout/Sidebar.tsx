@@ -1,96 +1,228 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import {
+  LayoutDashboard,
+  Building2,
+  DoorOpen,
+  Users,
+  FileText,
+  Receipt,
+  Landmark,
+  AlertTriangle,
+  TrendingDown,
+  Banknote,
+  Calculator,
+  Wrench,
+  HardHat,
+  Gauge,
+  CalendarCheck,
+  BarChart3,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-const navigation = [
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Objekte", href: "/objekte" },
-  { name: "Einheiten", href: "/einheiten" },
-  { name: "Mieter", href: "/mieter" },
-  { name: "Verträge", href: "/vertraege" },
-  { name: "Sollstellungen", href: "/sollstellungen" },
-  { name: "Bank", href: "/bank" },
-  { name: "Mahnungen", href: "/mahnungen" },
-  { name: "Tickets", href: "/tickets" },
-  { name: "Dienstleister", href: "/dienstleister" },
-  { name: "Kosten", href: "/kosten" },
-  { name: "Zähler", href: "/zaehler" },
-  { name: "Kredite", href: "/kredite" },
-  { name: "Nebenkostenabr.", href: "/nebenkostenabrechnung" },
-  { name: "Wartungsplan", href: "/wartung" },
+const navGroups = [
+  {
+    label: "VERWALTUNG",
+    items: [
+      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { name: "Objekte", href: "/objekte", icon: Building2 },
+      { name: "Einheiten", href: "/einheiten", icon: DoorOpen },
+      { name: "Mieter", href: "/mieter", icon: Users },
+      { name: "Verträge", href: "/vertraege", icon: FileText },
+    ],
+  },
+  {
+    label: "FINANZEN",
+    items: [
+      { name: "Sollstellungen", href: "/sollstellungen", icon: Receipt },
+      { name: "Bank", href: "/bank", icon: Landmark },
+      { name: "Mahnungen", href: "/mahnungen", icon: AlertTriangle },
+      { name: "Kosten", href: "/kosten", icon: TrendingDown },
+      { name: "Kredite", href: "/kredite", icon: Banknote },
+      { name: "Nebenkostenabr.", href: "/nebenkostenabrechnung", icon: Calculator },
+    ],
+  },
+  {
+    label: "BETRIEB",
+    items: [
+      { name: "Tickets", href: "/tickets", icon: Wrench },
+      { name: "Dienstleister", href: "/dienstleister", icon: HardHat },
+      { name: "Zähler", href: "/zaehler", icon: Gauge },
+      { name: "Wartungsplan", href: "/wartung", icon: CalendarCheck },
+    ],
+  },
+  {
+    label: "ANALYSE",
+    items: [
+      { name: "Reporting", href: "/reporting", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "SYSTEM",
+    items: [
+      { name: "Einstellungen", href: "/einstellungen", icon: Settings },
+    ],
+  },
 ];
 
-const secondaryNavigation = [
-  { name: "Reporting", href: "/reporting" },
-  { name: "Einstellungen", href: "/einstellungen" },
-];
+const STORAGE_KEY = "propgate_sidebar_collapsed";
 
-export function Sidebar() {
+export function Sidebar({ userInitials, userName }: { userInitials?: string; userName?: string }) {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) setCollapsed(stored === "true");
+    } catch {}
+  }, []);
+
+  const toggleCollapsed = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    try { localStorage.setItem(STORAGE_KEY, String(next)); } catch {}
+  };
 
   const isActive = (href: string) => {
-    // Exact match for dashboard
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
-    }
-    // For other routes, check if pathname starts with href
+    if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
-  const getLinkClassName = (href: string) => {
-    if (isActive(href)) {
-      return "block rounded-md bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700";
-    }
-    return "block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50";
-  };
-
   return (
-    <aside className="w-64 bg-white border-r border-gray-200">
-      {/* Logo */}
-      <div className="flex h-16 items-center border-b border-gray-200 px-6">
-        <div className="flex items-center gap-2">
-          <img
-            src="/logos/logo.png"
-            alt="PropGate"
-            className="h-8 w-8 rounded-md"
-          />
-          <span className="text-xl font-bold text-gray-900">PropGate</span>
-        </div>
+    <aside
+      className={`sidebar-glow flex flex-col h-screen flex-shrink-0 bg-[var(--bg-sidebar)] border-r border-[var(--border)] transition-all duration-300 ${
+        collapsed ? "w-[72px]" : "w-[260px]"
+      }`}
+    >
+      {/* Logo + Collapse Toggle */}
+      <div className="flex h-16 items-center justify-between px-4 flex-shrink-0">
+        {!collapsed && (
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.45)]">
+              <Image
+                src="/logo-solid.png"
+                alt="PropGate Logo"
+                width={36}
+                height={36}
+                className="object-cover"
+                priority
+              />
+            </div>
+            <span className="gradient-text text-base font-bold whitespace-nowrap">PropGate</span>
+          </div>
+        )}
+        {collapsed && (
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.45)] mx-auto">
+            <Image
+              src="/logo-solid.png"
+              alt="PropGate Logo"
+              width={36}
+              height={36}
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+        {!collapsed && (
+          <button
+            onClick={toggleCollapsed}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-white/5 hover:text-[var(--text-secondary)] transition-colors"
+            aria-label="Sidebar einklappen"
+          >
+            <ChevronLeft size={16} />
+          </button>
+        )}
       </div>
 
-      {/* Global Search */}
-      <div className="px-4 pt-4">
-        <GlobalSearch />
-      </div>
+      {/* Expand button when collapsed */}
+      {collapsed && (
+        <button
+          onClick={toggleCollapsed}
+          className="mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-white/5 hover:text-[var(--text-secondary)] transition-colors"
+          aria-label="Sidebar ausklappen"
+        >
+          <ChevronRight size={16} />
+        </button>
+      )}
+
+      {/* Global Search — only when expanded */}
+      {!collapsed && (
+        <div className="px-3 pt-3">
+          <GlobalSearch />
+        </div>
+      )}
 
       {/* Navigation */}
-      <nav className="p-4 space-y-2">
-        {/* Primary Navigation */}
-        {navigation.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={getLinkClassName(item.href)}
-          >
-            {item.name}
-          </Link>
+      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            {!collapsed && (
+              <div className="flex items-center gap-2 mb-1 px-2">
+                <span className="text-[9px] font-bold tracking-[0.15em] text-[var(--text-muted)] uppercase">{group.label}</span>
+                <div className="flex-1 h-px bg-[var(--border)]" />
+              </div>
+            )}
+            <ul className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isActive(item.href);
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      title={collapsed ? item.name : undefined}
+                      className={`nav-item flex items-center gap-3 rounded-lg px-2 py-2 text-sm font-medium ${
+                        active
+                          ? "nav-active bg-blue-500/15 text-blue-400"
+                          : "text-[var(--text-secondary)] hover:bg-white/8 hover:text-[var(--text-primary)]"
+                      } ${collapsed ? "justify-center" : ""}`}
+                    >
+                      <Icon size={18} className="nav-icon flex-shrink-0" />
+                      {!collapsed && (
+                        <span className="truncate">{item.name}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ))}
-
-        {/* Secondary Navigation */}
-        <div className="pt-4 border-t mt-4">
-          {secondaryNavigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={getLinkClassName(item.href)}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
       </nav>
+
+      {/* User Footer */}
+      {(userInitials || userName) && (
+        <div className="border-t border-[var(--border)] p-3 flex-shrink-0">
+          {!collapsed ? (
+            <div className="flex items-center gap-2.5 px-1">
+              <div className="p-px rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-sidebar)]">
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{userInitials}</span>
+                </div>
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-[var(--text-primary)] truncate">{userName}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <div className="p-px rounded-full bg-gradient-to-br from-blue-500 to-purple-600">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--bg-sidebar)]">
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">{userInitials}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </aside>
   );
 }

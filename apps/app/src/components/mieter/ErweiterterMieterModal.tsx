@@ -176,16 +176,16 @@ export function ErweiterterMieterModal({ isOpen, onClose, onSuccess, mieterId }:
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
-      <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col">
+      <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-xl bg-[var(--bg-card)] shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="border-b border-gray-200 bg-white px-6 py-4">
+        <div className="border-b border-[var(--border)] bg-[var(--bg-card)] px-6 py-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">
               {isEditMode ? "Mieter bearbeiten" : "Neuen Mieter erstellen"}
             </h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-2 text-[var(--text-muted)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-secondary)]"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -202,7 +202,7 @@ export function ErweiterterMieterModal({ isOpen, onClose, onSuccess, mieterId }:
                 className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   activeTab === tab.id
                     ? "bg-blue-50 text-blue-700 ring-2 ring-blue-500"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
                 }`}
               >
                 <span>{tab.icon}</span>
@@ -220,7 +220,7 @@ export function ErweiterterMieterModal({ isOpen, onClose, onSuccess, mieterId }:
         </form>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
+        <div className="border-t border-[var(--border)] bg-[var(--bg-page)] px-6 py-4">
           {(createMutation.error || updateMutation.error) && (
             <div className="mb-3 rounded-lg bg-red-50 border border-red-200 px-4 py-3">
               <p className="text-sm text-red-800">
@@ -229,7 +229,7 @@ export function ErweiterterMieterModal({ isOpen, onClose, onSuccess, mieterId }:
             </div>
           )}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--text-secondary)]">
               <span className="text-red-500">*</span> = Pflichtfelder
             </p>
             <div className="flex gap-3">
@@ -237,7 +237,7 @@ export function ErweiterterMieterModal({ isOpen, onClose, onSuccess, mieterId }:
                 type="button"
                 onClick={onClose}
                 disabled={createMutation.isPending || updateMutation.isPending}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-page)]"
               >
                 Abbrechen
               </button>
@@ -264,14 +264,14 @@ function StammdatenTab({ formData, setFormData }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Mieter-Typ & ID</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Mieter-Typ & ID</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mieter-Typ</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Mieter-Typ</label>
             <select
               value={formData.typ}
               onChange={(e) => setFormData({ ...formData, typ: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="PRIVAT">Privat</option>
               <option value="GESCHAEFTLICH">Geschäftlich</option>
@@ -279,24 +279,24 @@ function StammdatenTab({ formData, setFormData }: any) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mieter-ID intern</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Mieter-ID intern</label>
             <input
               type="text"
               value={formData.mieterIdIntern}
               onChange={(e) => setFormData({ ...formData, mieterIdIntern: e.target.value })}
               placeholder="z.B. M-001"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Persönliche Daten</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Persönliche Daten</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {formData.typ === "GESCHAEFTLICH" ? (
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Firma <span className="text-red-500">*</span>
               </label>
               <input
@@ -305,17 +305,17 @@ function StammdatenTab({ formData, setFormData }: any) {
                 value={formData.firma}
                 onChange={(e) => setFormData({ ...formData, firma: e.target.value })}
                 placeholder="z.B. Musterfirma GmbH"
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           ) : null}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Anrede</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Anrede</label>
             <select
               value={formData.anrede}
               onChange={(e) => setFormData({ ...formData, anrede: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="Herr">Herr</option>
@@ -325,29 +325,29 @@ function StammdatenTab({ formData, setFormData }: any) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Titel</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Titel</label>
             <input
               type="text"
               value={formData.titel}
               onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
               placeholder="z.B. Dr., Prof."
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vorname</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Vorname</label>
             <input
               type="text"
               value={formData.vorname}
               onChange={(e) => setFormData({ ...formData, vorname: e.target.value })}
               placeholder="Max"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
               Nachname <span className="text-red-500">*</span>
             </label>
             <input
@@ -356,133 +356,133 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.nachname}
               onChange={(e) => setFormData({ ...formData, nachname: e.target.value })}
               placeholder="Mustermann"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Geburtsdatum</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Geburtsdatum</label>
             <input
               type="date"
               value={formData.geburtsdatum}
               onChange={(e) => setFormData({ ...formData, geburtsdatum: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Staatsangehörigkeit</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Staatsangehörigkeit</label>
             <input
               type="text"
               value={formData.staatsangehoerigkeit}
               onChange={(e) => setFormData({ ...formData, staatsangehoerigkeit: e.target.value })}
               placeholder="z.B. Deutsch"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Adresse (Meldeadresse)</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Adresse (Meldeadresse)</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Straße & Hausnummer</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Straße & Hausnummer</label>
             <div className="grid grid-cols-3 gap-2">
               <input
                 type="text"
                 value={formData.strasse}
                 onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
                 placeholder="Straße"
-                className="col-span-2 rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="col-span-2 rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <input
                 type="text"
                 value={formData.hausnummer}
                 onChange={(e) => setFormData({ ...formData, hausnummer: e.target.value })}
                 placeholder="Nr."
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">PLZ</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">PLZ</label>
             <input
               type="text"
               value={formData.plz}
               onChange={(e) => setFormData({ ...formData, plz: e.target.value })}
               placeholder="10115"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ort</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Ort</label>
             <input
               type="text"
               value={formData.ort}
               onChange={(e) => setFormData({ ...formData, ort: e.target.value })}
               placeholder="Berlin"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Land</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Land</label>
             <input
               type="text"
               value={formData.land}
               onChange={(e) => setFormData({ ...formData, land: e.target.value })}
               placeholder="Deutschland"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Kontaktdaten</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Kontaktdaten</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Telefon (Mobil)</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Telefon (Mobil)</label>
             <input
               type="tel"
               value={formData.telefonMobil}
               onChange={(e) => setFormData({ ...formData, telefonMobil: e.target.value })}
               placeholder="+49 170 1234567"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Telefon (Festnetz)</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Telefon (Festnetz)</label>
             <input
               type="tel"
               value={formData.telefonFestnetz}
               onChange={(e) => setFormData({ ...formData, telefonFestnetz: e.target.value })}
               placeholder="+49 30 1234567"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">E-Mail</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">E-Mail</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="max@mustermann.de"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bevorzugter Kanal</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Bevorzugter Kanal</label>
             <select
               value={formData.kommunikationskanal}
               onChange={(e) => setFormData({ ...formData, kommunikationskanal: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="E-Mail">E-Mail</option>
@@ -495,52 +495,52 @@ function StammdatenTab({ formData, setFormData }: any) {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Notfallkontakt</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Notfallkontakt</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Name</label>
             <input
               type="text"
               value={formData.notfallkontaktName}
               onChange={(e) => setFormData({ ...formData, notfallkontaktName: e.target.value })}
               placeholder="Anna Muster"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Beziehung</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Beziehung</label>
             <input
               type="text"
               value={formData.notfallkontaktBeziehung}
               onChange={(e) => setFormData({ ...formData, notfallkontaktBeziehung: e.target.value })}
               placeholder="Ehepartner/Kind/etc."
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Telefon</label>
             <input
               type="tel"
               value={formData.notfallkontaktTelefon}
               onChange={(e) => setFormData({ ...formData, notfallkontaktTelefon: e.target.value })}
               placeholder="+49 170 7654321"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Identität / Legitimation (DSGVO-kritisch)</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Identität / Legitimation (DSGVO-kritisch)</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ausweisart</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Ausweisart</label>
             <select
               value={formData.ausweisart}
               onChange={(e) => setFormData({ ...formData, ausweisart: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="Personalausweis">Personalausweis</option>
@@ -550,13 +550,13 @@ function StammdatenTab({ formData, setFormData }: any) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ausweisnummer</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Ausweisnummer</label>
             <input
               type="text"
               value={formData.ausweisnummer}
               onChange={(e) => setFormData({ ...formData, ausweisnummer: e.target.value })}
               placeholder="T123456789"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -566,19 +566,19 @@ function StammdatenTab({ formData, setFormData }: any) {
               id="bonitaet"
               checked={formData.bonitaetGeprueft}
               onChange={(e) => setFormData({ ...formData, bonitaetGeprueft: e.target.checked })}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-[var(--border)] text-blue-600 focus:ring-blue-500"
             />
-            <label htmlFor="bonitaet" className="text-sm text-gray-700">Bonität geprüft</label>
+            <label htmlFor="bonitaet" className="text-sm text-[var(--text-secondary)]">Bonität geprüft</label>
           </div>
 
           {formData.bonitaetGeprueft && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Prüfungsdatum</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Prüfungsdatum</label>
               <input
                 type="date"
                 value={formData.bonitaetDatum}
                 onChange={(e) => setFormData({ ...formData, bonitaetDatum: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           )}
@@ -592,7 +592,7 @@ function SonstigesTab({ formData, setFormData }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Datenschutz (DSGVO)</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Datenschutz (DSGVO)</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex items-center gap-3">
             <input
@@ -600,19 +600,19 @@ function SonstigesTab({ formData, setFormData }: any) {
               id="dsgvo"
               checked={formData.datenschutzHinweisUebergeben}
               onChange={(e) => setFormData({ ...formData, datenschutzHinweisUebergeben: e.target.checked })}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-[var(--border)] text-blue-600 focus:ring-blue-500"
             />
-            <label htmlFor="dsgvo" className="text-sm text-gray-700">Datenschutzhinweis übergeben</label>
+            <label htmlFor="dsgvo" className="text-sm text-[var(--text-secondary)]">Datenschutzhinweis übergeben</label>
           </div>
 
           {formData.datenschutzHinweisUebergeben && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Datum</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Datum</label>
               <input
                 type="date"
                 value={formData.datenschutzDatum}
                 onChange={(e) => setFormData({ ...formData, datenschutzDatum: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           )}
@@ -620,15 +620,15 @@ function SonstigesTab({ formData, setFormData }: any) {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Notizen</h3>
+        <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Notizen</h3>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Allgemeine Notizen</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Allgemeine Notizen</label>
           <textarea
             value={formData.notizen}
             onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
             rows={8}
             placeholder="Zusätzliche Informationen zum Mieter..."
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
       </div>

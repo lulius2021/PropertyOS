@@ -20,7 +20,7 @@ export default function EinheitDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="text-gray-500">Laden...</div>
+        <div className="text-[var(--text-secondary)]">Laden...</div>
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function EinheitDetailPage() {
     return (
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Einheit nicht gefunden</h2>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)]">Einheit nicht gefunden</h2>
           <button
             onClick={() => router.push("/einheiten")}
             className="mt-4 text-blue-600 hover:text-blue-700"
@@ -58,17 +58,17 @@ export default function EinheitDetailPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "VERMIETET":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/15 text-green-400";
       case "VERFUEGBAR":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/15 text-yellow-400";
       case "KUENDIGUNG":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-500/15 text-orange-400";
       case "SANIERUNG":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/15 text-red-400";
       case "RESERVIERT":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-500/15 text-purple-400";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
   };
 
@@ -96,7 +96,7 @@ export default function EinheitDetailPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => router.push(`/objekte/${einheit.objektId}`)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -105,7 +105,7 @@ export default function EinheitDetailPage() {
         </button>
         <button
           onClick={() => setIsEditModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+          className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] shadow-sm hover:bg-[var(--bg-card-hover)]"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -120,14 +120,14 @@ export default function EinheitDetailPage() {
       </div>
 
       {/* Einheit title */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-6">
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <div className="border-b border-[var(--border)] bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-6">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">
                 Einheit {einheit.einheitNr}
               </h1>
-              <p className="mt-1 text-gray-600">
+              <p className="mt-1 text-[var(--text-secondary)]">
                 {einheit.objekt?.bezeichnung}
               </p>
             </div>
@@ -141,32 +141,32 @@ export default function EinheitDetailPage() {
 
         {/* Stammdaten */}
         <div className="px-6 py-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Stammdaten</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-4">Stammdaten</h2>
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
             <div>
-              <dt className="text-sm text-gray-500">Typ</dt>
-              <dd className="mt-1 text-sm font-medium text-gray-900">{getTypLabel(einheit.typ)}</dd>
+              <dt className="text-sm text-[var(--text-secondary)]">Typ</dt>
+              <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{getTypLabel(einheit.typ)}</dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">Etage</dt>
-              <dd className="mt-1 text-sm font-medium text-gray-900">
+              <dt className="text-sm text-[var(--text-secondary)]">Etage</dt>
+              <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                 {einheit.etage !== null && einheit.etage !== undefined
                   ? einheit.etage === 0 ? "EG" : `${einheit.etage}. OG`
                   : "–"}
               </dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">Fläche</dt>
-              <dd className="mt-1 text-sm font-medium text-gray-900">{einheit.flaeche.toString()} m²</dd>
+              <dt className="text-sm text-[var(--text-secondary)]">Fläche</dt>
+              <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{einheit.flaeche.toString()} m²</dd>
             </div>
             <div>
-              <dt className="text-sm text-gray-500">Zimmer</dt>
-              <dd className="mt-1 text-sm font-medium text-gray-900">{einheit.zimmer ?? "–"}</dd>
+              <dt className="text-sm text-[var(--text-secondary)]">Zimmer</dt>
+              <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{einheit.zimmer ?? "–"}</dd>
             </div>
             {einheit.ausstattung && (
               <div className="col-span-2 sm:col-span-3">
-                <dt className="text-sm text-gray-500">Ausstattung</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900 whitespace-pre-wrap">
+                <dt className="text-sm text-[var(--text-secondary)]">Ausstattung</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)] whitespace-pre-wrap">
                   {einheit.ausstattung}
                 </dd>
               </div>
@@ -176,17 +176,17 @@ export default function EinheitDetailPage() {
       </div>
 
       {/* Aktives Mietverhältnis */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-900">Aktives Mietverhältnis</h2>
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <div className="border-b border-[var(--border)] px-6 py-4">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Aktives Mietverhältnis</h2>
         </div>
 
         {aktiveMV ? (
           <div className="px-6 py-5">
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
               <div>
-                <dt className="text-sm text-gray-500">Mieter</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">Mieter</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {aktiveMV.mieter.firma
                     ? aktiveMV.mieter.firma
                     : `${aktiveMV.mieter.vorname ?? ""} ${aktiveMV.mieter.nachname}`.trim()}
@@ -194,55 +194,55 @@ export default function EinheitDetailPage() {
               </div>
               {aktiveMV.mieter.email && (
                 <div>
-                  <dt className="text-sm text-gray-500">E-Mail</dt>
-                  <dd className="mt-1 text-sm font-medium text-gray-900">{aktiveMV.mieter.email}</dd>
+                  <dt className="text-sm text-[var(--text-secondary)]">E-Mail</dt>
+                  <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{aktiveMV.mieter.email}</dd>
                 </div>
               )}
               {aktiveMV.mieter.telefon && (
                 <div>
-                  <dt className="text-sm text-gray-500">Telefon</dt>
-                  <dd className="mt-1 text-sm font-medium text-gray-900">{aktiveMV.mieter.telefon}</dd>
+                  <dt className="text-sm text-[var(--text-secondary)]">Telefon</dt>
+                  <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{aktiveMV.mieter.telefon}</dd>
                 </div>
               )}
               <div>
-                <dt className="text-sm text-gray-500">Einzugsdatum</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">Einzugsdatum</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {new Date(aktiveMV.einzugsdatum).toLocaleDateString("de-DE")}
                 </dd>
               </div>
             </div>
 
-            <hr className="my-5 border-gray-200" />
+            <hr className="my-5 border-[var(--border)]" />
 
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-4">Mietzahlungen</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-4">Mietzahlungen</h3>
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
               <div>
-                <dt className="text-sm text-gray-500">Kaltmiete</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">Kaltmiete</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {kaltmiete.toFixed(2)} €
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-gray-500">BK-Vorauszahlung</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">BK-Vorauszahlung</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {bk.toFixed(2)} €
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-gray-500">HK-Vorauszahlung</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">HK-Vorauszahlung</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {hk.toFixed(2)} €
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-gray-500">Warmmiete</dt>
-                <dd className="mt-1 text-lg font-bold text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">Warmmiete</dt>
+                <dd className="mt-1 text-lg font-bold text-[var(--text-primary)]">
                   {warmmiete.toFixed(2)} €
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-gray-500">Kaltmiete/m²</dt>
-                <dd className="mt-1 text-sm font-medium text-gray-900">
+                <dt className="text-sm text-[var(--text-secondary)]">Kaltmiete/m²</dt>
+                <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
                   {kaltmieteProQm} €
                 </dd>
               </div>
@@ -250,7 +250,7 @@ export default function EinheitDetailPage() {
           </div>
         ) : (
           <div className="px-6 py-12 text-center">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="mx-auto h-12 w-12 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -258,8 +258,8 @@ export default function EinheitDetailPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">Kein aktives Mietverhältnis</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="mt-2 text-sm font-medium text-[var(--text-primary)]">Kein aktives Mietverhältnis</h3>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">
               Diese Einheit ist derzeit nicht vermietet.
             </p>
             <button
