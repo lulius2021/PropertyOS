@@ -83,12 +83,16 @@ export default function MahnungenPage() {
       setSuccessMsg("");
       setErrorMsg("");
       try {
-        await erstellenMutation.mutateAsync({
+        const result = await erstellenMutation.mutateAsync({
           mietverhaeltnisId,
           mahnstufe,
           dokumentGenerieren: true,
         });
-        setSuccessMsg(`${label} erfolgreich erstellt!`);
+        if ((result as any)?.dokumentFehler) {
+          setSuccessMsg(`${label} erstellt — Dokument konnte nicht generiert werden.`);
+        } else {
+          setSuccessMsg(`${label} erfolgreich erstellt!`);
+        }
       } catch (error) {
         setErrorMsg(`Fehler: ${(error as Error).message}`);
       }
@@ -128,7 +132,7 @@ export default function MahnungenPage() {
       case "STRITTIG":
         return "bg-yellow-500/15 text-yellow-400";
       case "INKASSO":
-        return "bg-gray-900 text-white";
+        return "bg-gray-500/20 text-[var(--text-primary)] border border-[var(--border)]";
       default:
         return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
@@ -168,7 +172,7 @@ export default function MahnungenPage() {
         <div className="mb-6 grid grid-cols-2 gap-4">
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Offene Mahnungen</div>
-            <div className="mt-1 text-2xl font-bold text-orange-600">
+            <div className="mt-1 text-2xl font-bold text-orange-400">
               {stats.offen.anzahl}
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -177,7 +181,7 @@ export default function MahnungenPage() {
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Versendet</div>
-            <div className="mt-1 text-2xl font-bold text-blue-600">
+            <div className="mt-1 text-2xl font-bold text-blue-400">
               {stats.versendet.anzahl}
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -247,6 +251,9 @@ export default function MahnungenPage() {
                     Offener Betrag
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                    Offene Posten
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Tage überfällig
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
@@ -273,8 +280,11 @@ export default function MahnungenPage() {
                     <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {vorschlag.objekt.bezeichnung} - {vorschlag.einheit.einheitNr}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-red-600">
+                    <td className="px-6 py-4 text-right font-medium text-red-400">
                       {vorschlag.offenerBetrag.toFixed(2)} €
+                    </td>
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
+                      {vorschlag.offeneSollstellungen?.map((s: any) => s.titel).join(", ") || "—"}
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex rounded-full bg-red-500/15 px-2 text-xs font-semibold leading-5 text-red-400">
@@ -378,7 +388,7 @@ export default function MahnungenPage() {
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {mahnung.dokumentGeneriert ? (
-                        <span className="text-green-600">Generiert</span>
+                        <span className="text-green-400">Generiert</span>
                       ) : (
                         <span className="text-[var(--text-muted)]">Nicht generiert</span>
                       )}

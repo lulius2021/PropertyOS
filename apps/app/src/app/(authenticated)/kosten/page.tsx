@@ -91,7 +91,7 @@ export default function KostenPage() {
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">Offen</div>
-            <div className="mt-1 text-2xl font-bold text-orange-600">
+            <div className="mt-1 text-2xl font-bold text-orange-400">
               {stats.offen.summe.toFixed(2)} €
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -100,7 +100,7 @@ export default function KostenPage() {
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">Überfällig</div>
-            <div className="mt-1 text-2xl font-bold text-red-600">
+            <div className="mt-1 text-2xl font-bold text-red-400">
               {stats.ueberfaellig.summe.toFixed(2)} €
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -109,13 +109,13 @@ export default function KostenPage() {
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">BK-relevant</div>
-            <div className="mt-1 text-2xl font-bold text-blue-600">
+            <div className="mt-1 text-2xl font-bold text-blue-400">
               {stats.bk.toFixed(2)} €
             </div>
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">HK-relevant</div>
-            <div className="mt-1 text-2xl font-bold text-orange-600">
+            <div className="mt-1 text-2xl font-bold text-orange-400">
               {stats.hk.toFixed(2)} €
             </div>
           </Card>
@@ -288,7 +288,7 @@ export default function KostenPage() {
                   <td className="px-6 py-4 text-right font-medium text-[var(--text-primary)]">
                     {parseFloat(kost.betragBrutto).toFixed(2)} €
                   </td>
-                  <td className="px-6 py-4 text-right font-medium text-orange-600">
+                  <td className="px-6 py-4 text-right font-medium text-orange-400">
                     {kost.restbetrag > 0 ? `${kost.restbetrag.toFixed(2)} €` : "-"}
                   </td>
                   <td className="px-6 py-4">{getZahlungsstatusBadge(kost)}</td>

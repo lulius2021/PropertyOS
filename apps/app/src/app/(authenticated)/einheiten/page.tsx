@@ -12,7 +12,7 @@ type Einheit = {
   typ: "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER";
   flaeche: string;
   zimmer?: number | null;
-  etage?: number | null;
+  lage?: string | null;
   eurProQm?: string | null;
   ausstattung?: string | null;
   status: string;
@@ -133,14 +133,14 @@ export default function EinheitenPage() {
 
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
             <div className="text-sm font-medium text-[var(--text-secondary)]">Verfügbar</div>
-            <div className="mt-2 text-2xl font-bold text-blue-600">
+            <div className="mt-2 text-2xl font-bold text-blue-400">
               {stats.verfuegbar}
             </div>
           </div>
 
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
             <div className="text-sm font-medium text-[var(--text-secondary)]">Vermietet</div>
-            <div className="mt-2 text-2xl font-bold text-green-600">
+            <div className="mt-2 text-2xl font-bold text-green-400">
               {stats.vermietet}
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function EinheitenPage() {
             {selectedObjekte.length > 0 && (
               <button
                 onClick={() => setSelectedObjekte([])}
-                className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                className="mt-3 text-sm text-blue-400 hover:text-blue-300 font-medium"
               >
                 Alle Filter zurücksetzen
               </button>
@@ -264,10 +264,10 @@ export default function EinheitenPage() {
                     <span className="font-medium text-[var(--text-primary)]">{einheit.zimmer}</span>
                   </div>
                 )}
-                {einheit.etage !== null && (
+                {einheit.lage && (
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Etage:</span>
-                    <span className="font-medium text-[var(--text-primary)]">{einheit.etage}</span>
+                    <span className="text-[var(--text-secondary)]">Lage:</span>
+                    <span className="font-medium text-[var(--text-primary)]">{einheit.lage}</span>
                   </div>
                 )}
                 {einheit.eurProQm && (

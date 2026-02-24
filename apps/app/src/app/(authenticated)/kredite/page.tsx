@@ -108,13 +108,13 @@ export default function KreditePage() {
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">Restschuld gesamt</div>
-            <div className="mt-1 text-2xl font-bold text-red-600">
+            <div className="mt-1 text-2xl font-bold text-red-400">
               {stats.gesamtRestschuld} €
             </div>
           </Card>
           <Card className="p-4">
             <div className="text-sm text-[var(--text-secondary)]">Gesamt-Rate (monatlich)</div>
-            <div className="mt-1 text-2xl font-bold text-blue-600">
+            <div className="mt-1 text-2xl font-bold text-blue-400">
               {stats.gesamtRate} €
             </div>
           </Card>
@@ -122,7 +122,7 @@ export default function KreditePage() {
             <div className="text-sm text-[var(--text-secondary)]">
               Zinsbindung endet (12 Mon.)
             </div>
-            <div className="mt-1 text-2xl font-bold text-orange-600">
+            <div className="mt-1 text-2xl font-bold text-orange-400">
               {stats.zinsbindungAuslaufend}
             </div>
           </Card>

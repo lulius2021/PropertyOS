@@ -29,6 +29,11 @@
   --text-secondary: #94a3b8;
   --text-muted:     #475569;
   --accent:         #3b82f6;
+
+  /* Override Tailwind/shadcn base vars so bare text inherits correctly */
+  --background:         #0b0d14;
+  --foreground:         #f1f5f9;
+  --muted-foreground:   #94a3b8;
 }
 
 /* ── Sidebar Nav Item Animations (CSS classes, not Tailwind group-hover) ── */

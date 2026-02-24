@@ -19,20 +19,25 @@ export const ticketsRouter = router({
       z
         .object({
           status: z
-            .enum(["ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN", "BEAUFTRAGT", "TERMIN_VEREINBART", "IN_ARBEIT", "RUECKFRAGE", "ABGERECHNET"])
+            .enum(["AKTUELL", "ERFASST", "IN_BEARBEITUNG", "ZUR_PRUEFUNG", "ABGESCHLOSSEN", "BEAUFTRAGT", "TERMIN_VEREINBART", "IN_ARBEIT", "RUECKFRAGE", "ABGERECHNET"])
             .optional(),
           kategorie: z
-            .enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE", "SANIERUNG"])
+            .enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE", "SANIERUNG", "AUFGABE"])
             .optional(),
           prioritaet: z.enum(["NIEDRIG", "MITTEL", "HOCH", "KRITISCH"]).optional(),
         })
         .optional()
     )
     .query(async ({ ctx, input }) => {
+      // "AKTUELL" is a virtual filter: all tickets not ABGESCHLOSSEN or ABGERECHNET
+      const statusFilter = input?.status === "AKTUELL"
+        ? { notIn: ["ABGESCHLOSSEN", "ABGERECHNET"] as const }
+        : input?.status;
+
       return ctx.db.ticket.findMany({
         where: {
           tenantId: ctx.tenantId,
-          status: input?.status,
+          status: statusFilter as any,
           kategorie: input?.kategorie,
           prioritaet: input?.prioritaet,
         },
@@ -89,6 +94,7 @@ export const ticketsRouter = router({
           "ANFRAGE",
           "BESCHWERDE",
           "SANIERUNG",
+          "AUFGABE",
         ]),
         prioritaet: z.enum(["NIEDRIG", "MITTEL", "HOCH", "KRITISCH"]).default("MITTEL"),
         objektId: z.string().optional(),
@@ -179,6 +185,8 @@ export const ticketsRouter = router({
       z.object({
         ticketId: z.string(),
         text: z.string().min(1),
+        ereigniszeit: z.date().optional(),
+        dienstleisterId: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -188,6 +196,8 @@ export const ticketsRouter = router({
           ticketId: input.ticketId,
           text: input.text,
           verfasser: ctx.userId,
+          ereigniszeit: input.ereigniszeit,
+          dienstleisterId: input.dienstleisterId,
         },
       });
 

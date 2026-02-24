@@ -17,6 +17,7 @@ export function MieterZuObjektHinzufuegenModal({
   objektId,
 }: MieterZuObjektHinzufuegenModalProps) {
   const [activeTab, setActiveTab] = useState<"mieter" | "vertrag">("mieter");
+  const [kautionManuell, setKautionManuell] = useState(false);
   const [formData, setFormData] = useState({
     // Mieter-Daten
     typ: "PRIVAT" as "PRIVAT" | "GESCHAEFTLICH",
@@ -64,10 +65,19 @@ export function MieterZuObjektHinzufuegenModal({
   const createMieterMutation = trpc.mieter.create.useMutation();
   const createVertragMutation = trpc.vertraege.create.useMutation();
 
+  // Kautions-Vorschlag: 3× Kaltmiete
+  useEffect(() => {
+    if (formData.kaltmiete && !kautionManuell) {
+      const vorschlag = (parseFloat(formData.kaltmiete) * 3).toFixed(2);
+      setFormData(prev => ({ ...prev, kaution: vorschlag }));
+    }
+  }, [formData.kaltmiete]);
+
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
       setActiveTab("mieter");
+      setKautionManuell(false);
       setFormData({
         typ: "PRIVAT",
         anrede: "",
@@ -196,7 +206,7 @@ export function MieterZuObjektHinzufuegenModal({
                 onClick={() => setActiveTab("mieter")}
                 className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors ${
                   activeTab === "mieter"
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-blue-400 text-blue-400"
                     : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
                 }`}
               >
@@ -206,7 +216,7 @@ export function MieterZuObjektHinzufuegenModal({
                 onClick={() => setActiveTab("vertrag")}
                 className={`border-b-2 px-1 py-4 text-sm font-medium transition-colors ${
                   activeTab === "vertrag"
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-blue-400 text-blue-400"
                     : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
                 }`}
               >
@@ -260,7 +270,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.firma}
                           onChange={(e) => setFormData({ ...formData, firma: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                           required={formData.typ === "GESCHAEFTLICH"}
                         />
                       </div>
@@ -273,7 +283,7 @@ export function MieterZuObjektHinzufuegenModal({
                       <select
                         value={formData.anrede}
                         onChange={(e) => setFormData({ ...formData, anrede: e.target.value })}
-                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       >
                         <option value="">Bitte wählen</option>
                         <option value="Herr">Herr</option>
@@ -291,7 +301,7 @@ export function MieterZuObjektHinzufuegenModal({
                         value={formData.titel}
                         onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
                         placeholder="z.B. Dr., Prof."
-                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       />
                     </div>
 
@@ -303,7 +313,7 @@ export function MieterZuObjektHinzufuegenModal({
                         type="text"
                         value={formData.vorname}
                         onChange={(e) => setFormData({ ...formData, vorname: e.target.value })}
-                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       />
                     </div>
 
@@ -315,7 +325,7 @@ export function MieterZuObjektHinzufuegenModal({
                         type="text"
                         value={formData.nachname}
                         onChange={(e) => setFormData({ ...formData, nachname: e.target.value })}
-                        className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                        className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         required
                       />
                     </div>
@@ -333,7 +343,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="email"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -345,7 +355,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="tel"
                           value={formData.telefonMobil}
                           onChange={(e) => setFormData({ ...formData, telefonMobil: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -357,7 +367,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="tel"
                           value={formData.telefonFestnetz}
                           onChange={(e) => setFormData({ ...formData, telefonFestnetz: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
                     </div>
@@ -375,7 +385,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.strasse}
                           onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -387,7 +397,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.hausnummer}
                           onChange={(e) => setFormData({ ...formData, hausnummer: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -399,7 +409,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.plz}
                           onChange={(e) => setFormData({ ...formData, plz: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -411,7 +421,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.ort}
                           onChange={(e) => setFormData({ ...formData, ort: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -423,7 +433,7 @@ export function MieterZuObjektHinzufuegenModal({
                           type="text"
                           value={formData.land}
                           onChange={(e) => setFormData({ ...formData, land: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
                     </div>
@@ -438,7 +448,7 @@ export function MieterZuObjektHinzufuegenModal({
                       value={formData.notizen}
                       onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
                       rows={3}
-                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                     />
                   </div>
                 </div>
@@ -454,7 +464,7 @@ export function MieterZuObjektHinzufuegenModal({
                     <select
                       value={formData.einheitId}
                       onChange={(e) => setFormData({ ...formData, einheitId: e.target.value })}
-                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       required
                     >
                       <option value="">Bitte wählen Sie eine Einheit</option>
@@ -466,7 +476,7 @@ export function MieterZuObjektHinzufuegenModal({
                       ))}
                     </select>
                     {verfuegbareEinheiten.length === 0 && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className="mt-1 text-sm text-red-400">
                         Keine verfügbaren Einheiten in diesem Objekt
                       </p>
                     )}
@@ -481,7 +491,7 @@ export function MieterZuObjektHinzufuegenModal({
                       type="date"
                       value={formData.einzugsdatum}
                       onChange={(e) => setFormData({ ...formData, einzugsdatum: e.target.value })}
-                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       required
                     />
                   </div>
@@ -499,7 +509,7 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.kaltmiete}
                           onChange={(e) => setFormData({ ...formData, kaltmiete: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                           required
                         />
                       </div>
@@ -513,7 +523,7 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.bkVorauszahlung}
                           onChange={(e) => setFormData({ ...formData, bkVorauszahlung: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -526,7 +536,7 @@ export function MieterZuObjektHinzufuegenModal({
                           step="0.01"
                           value={formData.hkVorauszahlung}
                           onChange={(e) => setFormData({ ...formData, hkVorauszahlung: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
                       </div>
 
@@ -538,9 +548,13 @@ export function MieterZuObjektHinzufuegenModal({
                           type="number"
                           step="0.01"
                           value={formData.kaution}
-                          onChange={(e) => setFormData({ ...formData, kaution: e.target.value })}
-                          className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                          onChange={(e) => {
+                            setKautionManuell(true);
+                            setFormData({ ...formData, kaution: e.target.value });
+                          }}
+                          className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                         />
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">Vorschlag: 3× Kaltmiete</p>
                       </div>
                     </div>
 
@@ -549,7 +563,7 @@ export function MieterZuObjektHinzufuegenModal({
                       <div className="mt-4 rounded-lg bg-blue-50 p-4">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-[var(--text-secondary)]">Warmmiete gesamt:</span>
-                          <span className="text-lg font-bold text-blue-600">
+                          <span className="text-lg font-bold text-blue-400">
                             {(
                               (parseFloat(formData.kaltmiete) || 0) +
                               (parseFloat(formData.bkVorauszahlung) || 0) +
@@ -570,7 +584,7 @@ export function MieterZuObjektHinzufuegenModal({
                       value={formData.vertragsnotizen}
                       onChange={(e) => setFormData({ ...formData, vertragsnotizen: e.target.value })}
                       rows={3}
-                      className="w-full rounded-md border border-[var(--border)] px-3 py-2"
+                      className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-3 py-2"
                       placeholder="z.B. Besonderheiten, Vereinbarungen, etc."
                     />
                   </div>

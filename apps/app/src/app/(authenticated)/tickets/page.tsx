@@ -3,6 +3,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import { PlanLimitReached } from "@/components/ui/PlanLimitReached";
 const createTicketSchema = z.object({
   titel: z.string().min(1, "Titel erforderlich"),
   beschreibung: z.string().optional(),
-  kategorie: z.enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE", "SANIERUNG"]),
+  kategorie: z.enum(["SCHADENSMELDUNG", "WARTUNG", "ANFRAGE", "BESCHWERDE", "SANIERUNG", "AUFGABE"]),
   prioritaet: z.enum(["NIEDRIG", "MITTEL", "HOCH", "KRITISCH"]),
   frist: z.string().optional(),
 });
@@ -51,14 +52,32 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function TicketsPage() {
   const router = useRouter();
-  const [statusFilter, setStatusFilter] = useState<(typeof ALL_STATUSES)[number] | undefined>();
+  const [statusFilter, setStatusFilter] = useState<string | undefined>("AKTUELL");
+  const [sortBy, setSortBy] = useState<"prioritaet" | "createdAt">("createdAt");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [selectedObjektId, setSelectedObjektId] = useState("");
+  const [selectedEinheitId, setSelectedEinheitId] = useState("");
 
   const utils = trpc.useUtils();
+  const { data: objekte } = trpc.objekte.list.useQuery();
+  const { data: einheiten } = trpc.einheiten.list.useQuery({});
 
-  const { data: tickets, isLoading, error } = trpc.tickets.list.useQuery({
-    status: statusFilter,
+  const { data: ticketsRaw, isLoading, error } = trpc.tickets.list.useQuery({
+    status: statusFilter as any,
   });
+
+  const PRIO_ORDER: Record<string, number> = { KRITISCH: 0, HOCH: 1, MITTEL: 2, NIEDRIG: 3 };
+
+  const tickets = ticketsRaw ? [...ticketsRaw].sort((a, b) => {
+    let cmp = 0;
+    if (sortBy === "prioritaet") {
+      cmp = (PRIO_ORDER[a.prioritaet] ?? 99) - (PRIO_ORDER[b.prioritaet] ?? 99);
+    } else {
+      cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }
+    return sortDir === "asc" ? cmp : -cmp;
+  }) : ticketsRaw;
   const { data: stats } = trpc.tickets.stats.useQuery();
 
   // Form Hook
@@ -79,10 +98,12 @@ export default function TicketsPage() {
       utils.tickets.stats.invalidate();
       setCreateDialogOpen(false);
       form.reset();
-      alert("Ticket erfolgreich erstellt!");
+      setSelectedObjektId("");
+      setSelectedEinheitId("");
+      toast.success("Ticket erstellt");
     },
     onError: (error) => {
-      alert("Fehler: " + error.message);
+      toast.error("Fehler: " + error.message);
     },
   });
 
@@ -92,6 +113,8 @@ export default function TicketsPage() {
       ...data,
       beschreibung: data.beschreibung || "",
       frist: data.frist ? new Date(data.frist) : undefined,
+      objektId: selectedObjektId || undefined,
+      einheitId: selectedEinheitId || undefined,
     });
   };
 
@@ -199,50 +222,77 @@ export default function TicketsPage() {
         <div className="mb-6 grid grid-cols-3 gap-4">
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Erfasst</div>
-            <div className="mt-1 text-2xl font-bold text-blue-600">
+            <div className="mt-1 text-2xl font-bold text-blue-400">
               {stats.erfasst}
             </div>
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">In Bearbeitung</div>
-            <div className="mt-1 text-2xl font-bold text-purple-600">
+            <div className="mt-1 text-2xl font-bold text-purple-400">
               {stats.inBearbeitung}
             </div>
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Kritisch (offen)</div>
-            <div className="mt-1 text-2xl font-bold text-red-600">
+            <div className="mt-1 text-2xl font-bold text-red-400">
               {stats.kritisch}
             </div>
           </div>
         </div>
       )}
 
-      {/* Filter */}
-      <div className="mb-4 flex flex-wrap gap-2">
-        <button
-          onClick={() => setStatusFilter(undefined)}
-          className={`rounded px-3 py-1 text-sm ${
-            !statusFilter
-              ? "bg-blue-600 text-white"
-              : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
-          }`}
-        >
-          Alle
-        </button>
-        {ALL_STATUSES.map((status) => (
+      {/* Filter + Sort */}
+      <div className="mb-4 space-y-2">
+        <div className="flex flex-wrap gap-2">
           <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`rounded px-3 py-1 text-sm ${
-              statusFilter === status
+            onClick={() => setStatusFilter("AKTUELL")}
+            className={`rounded px-3 py-1 text-sm font-medium ${
+              statusFilter === "AKTUELL"
                 ? "bg-blue-600 text-white"
                 : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
             }`}
           >
-            {STATUS_LABELS[status]}
+            Aktuell
           </button>
-        ))}
+          <button
+            onClick={() => setStatusFilter(undefined)}
+            className={`rounded px-3 py-1 text-sm ${
+              statusFilter === undefined
+                ? "bg-blue-600 text-white"
+                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+            }`}
+          >
+            Alle
+          </button>
+          {ALL_STATUSES.map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`rounded px-3 py-1 text-sm ${
+                statusFilter === status
+                  ? "bg-blue-600 text-white"
+                  : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+              }`}
+            >
+              {STATUS_LABELS[status]}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+          <span>Sortierung:</span>
+          <button
+            onClick={() => { setSortBy("createdAt"); setSortDir(s => s === "desc" ? "asc" : "desc"); }}
+            className={`rounded px-2 py-0.5 text-xs ${sortBy === "createdAt" ? "bg-blue-600 text-white" : "bg-[var(--bg-card-hover)]"}`}
+          >
+            Datum {sortBy === "createdAt" ? (sortDir === "desc" ? "↓" : "↑") : ""}
+          </button>
+          <button
+            onClick={() => { setSortBy("prioritaet"); setSortDir(s => s === "asc" ? "desc" : "asc"); }}
+            className={`rounded px-2 py-0.5 text-xs ${sortBy === "prioritaet" ? "bg-blue-600 text-white" : "bg-[var(--bg-card-hover)]"}`}
+          >
+            Priorität {sortBy === "prioritaet" ? (sortDir === "asc" ? "↑" : "↓") : ""}
+          </button>
+        </div>
       </div>
 
       {/* Tabelle */}
@@ -319,7 +369,7 @@ export default function TicketsPage() {
                   <td className="px-6 py-4 text-right text-sm">
                     <Link
                       href={`/tickets/${ticket.id}`}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-400 hover:text-blue-300"
                     >
                       Details
                     </Link>
@@ -352,7 +402,7 @@ export default function TicketsPage() {
                 className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)] focus:border-blue-500 focus:ring-blue-500 placeholder:text-[var(--text-muted)]"
               />
               {form.formState.errors.titel && (
-                <p className="text-sm text-red-600 mt-1">
+                <p className="text-sm text-red-400 mt-1">
                   {form.formState.errors.titel.message}
                 </p>
               )}
@@ -402,6 +452,9 @@ export default function TicketsPage() {
                     <SelectItem value="SANIERUNG" className="text-[var(--text-primary)]">
                       Sanierung
                     </SelectItem>
+                    <SelectItem value="AUFGABE" className="text-[var(--text-primary)]">
+                      Aufgabe
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -447,6 +500,41 @@ export default function TicketsPage() {
                 {...form.register("frist")}
                 className="bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border)] focus:border-blue-500 focus:ring-blue-500"
               />
+            </div>
+
+            {/* Objekt & Einheit */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                  Objekt (Optional)
+                </label>
+                <select
+                  value={selectedObjektId}
+                  onChange={(e) => { setSelectedObjektId(e.target.value); setSelectedEinheitId(""); }}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">Kein Objekt</option>
+                  {objekte?.map((o) => (
+                    <option key={o.id} value={o.id}>{o.bezeichnung}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                  Einheit (Optional)
+                </label>
+                <select
+                  value={selectedEinheitId}
+                  onChange={(e) => setSelectedEinheitId(e.target.value)}
+                  disabled={!selectedObjektId}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  <option value="">Keine Einheit</option>
+                  {einheiten?.filter((e) => e.objektId === selectedObjektId).map((e) => (
+                    <option key={e.id} value={e.id}>{e.einheitNr}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Submit Buttons */}

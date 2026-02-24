@@ -79,6 +79,22 @@ export const wartungRouter = router({
       return updated;
     }),
 
+  undoErledigt: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const a = await ctx.db.wartungsaufgabe.findUniqueOrThrow({ where: { id: input.id, tenantId: ctx.tenantId } });
+      if (!a.letzteAusfuehrung) return a;
+      // Fälligkeit zurücksetzen: naechsteFaelligkeit - intervallMonate
+      const prev = new Date(a.naechsteFaelligkeit);
+      prev.setMonth(prev.getMonth() - a.intervallMonate);
+      const updated = await ctx.db.wartungsaufgabe.update({
+        where: { id: input.id, tenantId: ctx.tenantId },
+        data: { letzteAusfuehrung: null, naechsteFaelligkeit: prev },
+      });
+      await logAudit({ tenantId: ctx.tenantId, userId: ctx.userId, aktion: "WARTUNGSAUFGABE_UNDO", entitaet: "Wartungsaufgabe", entitaetId: input.id });
+      return updated;
+    }),
+
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

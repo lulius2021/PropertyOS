@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { LogoutButton } from "@/components/layout/LogoutButton";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { FeedbackPopup } from "@/components/feedback/FeedbackPopup";
 
 export default async function AuthenticatedLayout({
   children,
@@ -67,6 +68,7 @@ export default async function AuthenticatedLayout({
           <div className="animate-fade-up">{children}</div>
         </main>
       </div>
+      <FeedbackPopup />
     </div>
   );
 }

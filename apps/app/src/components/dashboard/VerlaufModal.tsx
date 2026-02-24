@@ -16,24 +16,24 @@ const TYP_DOT: Record<string, string> = {
   kredit: "bg-violet-500",
   zaehler: "bg-teal-500",
   miete: "bg-indigo-500",
-  objekt: "bg-gray-400",
+  objekt: "bg-[var(--border)] dark:bg-gray-500",
 };
 
 const STATUS_STYLE: Record<string, string> = {
-  UNKLAR: "text-orange-600",
-  ZUGEORDNET: "text-green-600",
-  TEILWEISE_ZUGEORDNET: "text-yellow-600",
+  UNKLAR: "text-orange-400",
+  ZUGEORDNET: "text-green-400",
+  TEILWEISE_ZUGEORDNET: "text-yellow-400",
   IGNORIERT: "text-[var(--text-muted)]",
-  SPLITTET: "text-blue-600",
+  SPLITTET: "text-blue-400",
   ERFASST: "text-[var(--text-secondary)]",
-  IN_BEARBEITUNG: "text-blue-600",
-  ZUR_PRUEFUNG: "text-yellow-600",
-  ABGESCHLOSSEN: "text-green-600",
+  IN_BEARBEITUNG: "text-blue-400",
+  ZUR_PRUEFUNG: "text-yellow-400",
+  ABGESCHLOSSEN: "text-green-400",
   VERFUEGBAR: "text-[var(--text-secondary)]",
-  VERMIETET: "text-green-600",
-  KUENDIGUNG: "text-orange-600",
-  SANIERUNG: "text-yellow-600",
-  RESERVIERT: "text-blue-600",
+  VERMIETET: "text-green-400",
+  KUENDIGUNG: "text-orange-400",
+  SANIERUNG: "text-yellow-400",
+  RESERVIERT: "text-blue-400",
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -127,7 +127,7 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-sm font-bold text-[var(--text-primary)]">{snap.wertText}</span>
                             {delta !== null && (
-                              <span className={`text-xs font-semibold flex-shrink-0 ${delta > 0 ? "text-green-600" : delta < 0 ? "text-red-500" : "text-[var(--text-muted)]"}`}>
+                              <span className={`text-xs font-semibold flex-shrink-0 ${delta > 0 ? "text-green-400" : delta < 0 ? "text-red-500" : "text-[var(--text-muted)]"}`}>
                                 {delta > 0 ? "+" : ""}{delta.toLocaleString("de-DE", { maximumFractionDigits: 1 })}
                               </span>
                             )}
@@ -167,7 +167,7 @@ export function VerlaufModal({ widgetTyp, widgetName, onClose }: VerlaufModalPro
             <div className="space-y-0">
               {data.eintraege.map((eintrag, idx) => {
                 const { datum, uhrzeit } = formatDatum(eintrag.datum);
-                const dotColor = TYP_DOT[eintrag.typ] ?? "bg-gray-400";
+                const dotColor = TYP_DOT[eintrag.typ] ?? "bg-[var(--border)] dark:bg-gray-500";
                 const statusLabel = eintrag.status ? STATUS_LABEL[eintrag.status] : null;
                 const statusColor = eintrag.status ? STATUS_STYLE[eintrag.status] : null;
                 const isLast = idx === data.eintraege.length - 1;

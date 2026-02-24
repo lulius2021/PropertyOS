@@ -59,6 +59,8 @@ model Tenant {
   dienstleister           Dienstleister[]
   nebenkostenabrechnungen Nebenkostenabrechnung[]
   wartungsaufgaben        Wartungsaufgabe[]
+  feedback                Feedback[]
+  mieterNotizen           MieterNotiz[]
 
   @@map("tenants")
 }
@@ -86,9 +88,11 @@ model User {
   totpEnabled   Boolean  @default(false)
   recoveryCodes String?  @db.Text
 
-  tenant    Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  auditLogs AuditLog[]
-  settings  UserSettings?
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditLogs     AuditLog[]
+  settings      UserSettings?
+  feedback      Feedback[]
+  mieterNotizen MieterNotiz[]
 
   @@unique([tenantId, email])
   @@map("users")
@@ -210,11 +214,12 @@ model Objekt {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  tenant                  Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  einheiten               Einheit[]
-  dokumente               Dokument[]
-  zaehler                 Zaehler[]
-  nebenkostenabrechnungen Nebenkostenabrechnung[]
+  tenant                       Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  einheiten                    Einheit[]
+  dokumente                    Dokument[]
+  zaehler                      Zaehler[]
+  nebenkostenabrechnungen      Nebenkostenabrechnung[]
+  dienstleisterZustaendigkeiten DienstleisterObjekt[]
 
   @@index([tenantId])
   @@map("objekte")
@@ -245,7 +250,7 @@ model Einheit {
   typ         EinheitTyp
   flaeche     Decimal       @db.Decimal(10, 2)
   zimmer      Int?
-  etage       Int?
+  lage        String?       // Freitext wie "1. OG links", "EG rechts", "DG Mitte"
   ausstattung String?       @db.Text
   status      EinheitStatus @default(VERFUEGBAR)
   eurProQm    Decimal?      @db.Decimal(10, 2)
@@ -363,6 +368,7 @@ model Mieter {
   tenant            Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   mietverhaeltnisse Mietverhaeltnis[]
   dokumente         Dokument[]
+  mieterNotizen     MieterNotiz[]
 
   @@index([tenantId])
   @@map("mieter")
@@ -824,6 +830,7 @@ enum TicketKategorie {
   ANFRAGE
   BESCHWERDE
   SANIERUNG
+  AUFGABE
 }
 
 enum TicketPrioritaet {
@@ -846,14 +853,17 @@ enum TicketStatus {
 }
 
 model TicketKommentar {
-  id        String   @id @default(cuid())
-  tenantId  String
-  ticketId  String
-  text      String   @db.Text
-  verfasser String? // User ID
-  createdAt DateTime @default(now())
+  id              String    @id @default(cuid())
+  tenantId        String
+  ticketId        String
+  text            String    @db.Text
+  verfasser       String?   // User ID
+  ereigniszeit    DateTime? // Wann ist es passiert (manuell wählbar)
+  dienstleisterId String?   // Optionale Referenz zu Dienstleister
+  createdAt       DateTime  @default(now())
 
-  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticket        Ticket         @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  dienstleister Dienstleister? @relation("KommentarDienstleister", fields: [dienstleisterId], references: [id])
 
   @@index([tenantId, ticketId])
   @@map("ticket_kommentare")
@@ -871,8 +881,10 @@ model Dienstleister {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  tickets Ticket[]
+  tenant            Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tickets           Ticket[]
+  ticketKommentare  TicketKommentar[]     @relation("KommentarDienstleister")
+  objektZustaendigkeiten DienstleisterObjekt[]
 
   @@index([tenantId])
   @@map("dienstleister")
@@ -1204,4 +1216,57 @@ model Wartungsaufgabe {
 
   @@index([tenantId, naechsteFaelligkeit])
   @@map("wartungsaufgaben")
+}
+
+// ============================================
+// O) MIETER NOTIZEN
+// ============================================
+model MieterNotiz {
+  id        String   @id @default(cuid())
+  tenantId  String
+  mieterId  String
+  userId    String
+  inhalt    String   @db.Text
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  mieter Mieter @relation(fields: [mieterId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([mieterId, createdAt])
+  @@map("mieter_notizen")
+}
+
+// ============================================
+// P) DIENSTLEISTER-OBJEKTE (Zuständigkeit)
+// ============================================
+model DienstleisterObjekt {
+  dienstleisterId String
+  objektId        String
+  createdAt       DateTime @default(now())
+
+  dienstleister Dienstleister @relation(fields: [dienstleisterId], references: [id], onDelete: Cascade)
+  objekt        Objekt        @relation(fields: [objektId], references: [id], onDelete: Cascade)
+
+  @@id([dienstleisterId, objektId])
+  @@map("dienstleister_objekte")
+}
+
+// ============================================
+// N) FEEDBACK
+// ============================================
+model Feedback {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  bewertung Int?     // 1–5 Sterne (optional)
+  kategorie String   @default("ALLGEMEIN") // ALLGEMEIN | FEATURE | BUG | LOB
+  nachricht String   @db.Text
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, createdAt])
+  @@map("feedback")
 }

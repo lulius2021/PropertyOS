@@ -86,4 +86,35 @@ export const dienstleisterRouter = router({
       });
       return true;
     }),
+
+  // H2: Objekt-Zuständigkeiten
+  addObjektZustaendigkeit: protectedProcedure
+    .input(z.object({ dienstleisterId: z.string(), objektId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Verify dienstleister belongs to tenant
+      const d = await ctx.db.dienstleister.findFirst({ where: { id: input.dienstleisterId, tenantId: ctx.tenantId } });
+      if (!d) throw new Error("Nicht gefunden");
+      return ctx.db.dienstleisterObjekt.upsert({
+        where: { dienstleisterId_objektId: { dienstleisterId: input.dienstleisterId, objektId: input.objektId } },
+        create: { dienstleisterId: input.dienstleisterId, objektId: input.objektId },
+        update: {},
+      });
+    }),
+
+  removeObjektZustaendigkeit: protectedProcedure
+    .input(z.object({ dienstleisterId: z.string(), objektId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.dienstleisterObjekt.delete({
+        where: { dienstleisterId_objektId: { dienstleisterId: input.dienstleisterId, objektId: input.objektId } },
+      });
+    }),
+
+  listByObjekt: protectedProcedure
+    .input(z.object({ objektId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.dienstleisterObjekt.findMany({
+        where: { objektId: input.objektId },
+        include: { dienstleister: true },
+      });
+    }),
 });

@@ -3,6 +3,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const getTypColor = (typ: string) => {
   switch (typ) {
@@ -47,7 +48,7 @@ export default function ZaehlerDetailPage() {
       setDatum(new Date().toISOString().split("T")[0]);
     },
     onError: (err) => {
-      alert("Fehler: " + err.message);
+      toast.error("Fehler: " + err.message);
     },
   });
 
@@ -56,7 +57,7 @@ export default function ZaehlerDetailPage() {
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">Fehler: {error.message}</div>;
+    return <div className="p-4 text-red-400">Fehler: {error.message}</div>;
   }
 
   if (!zaehler) {
@@ -81,9 +82,9 @@ export default function ZaehlerDetailPage() {
       <div className="mb-6 flex items-center gap-4">
         <button
           onClick={() => router.push("/zaehler")}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-blue-400 hover:text-blue-300"
         >
-          &larr; Zurueck zu Zaehler
+          ← Zurück zu Zähler
         </button>
         <span
           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold leading-5 ${getTypColor(zaehler.typ)}`}
@@ -95,7 +96,7 @@ export default function ZaehlerDetailPage() {
       {/* Title */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-[var(--text-primary)]">
-          Zaehler {zaehler.zaehlernummer}
+          Zähler {zaehler.zaehlernummer}
         </h1>
       </div>
 
@@ -108,7 +109,7 @@ export default function ZaehlerDetailPage() {
           {zaehler.objekt && (
             <button
               onClick={() => router.push(`/objekte/${zaehler.objekt!.id}`)}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               Objekt: {zaehler.objekt.bezeichnung} &rarr;
             </button>
@@ -116,7 +117,7 @@ export default function ZaehlerDetailPage() {
           {zaehler.einheit && (
             <button
               onClick={() => router.push(`/einheiten/${zaehler.einheit!.id}`)}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               Einheit: {zaehler.einheit.einheitNr} &rarr;
             </button>
@@ -183,7 +184,7 @@ export default function ZaehlerDetailPage() {
       {/* Neuen Zaehlerstand erfassen */}
       <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
         <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
-          Neuen Zaehlerstand erfassen
+          Neuen Zählerstand erfassen
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -247,7 +248,7 @@ export default function ZaehlerDetailPage() {
             disabled={erfasseStandMutation.isPending || !stand || !datum}
             className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {erfasseStandMutation.isPending ? "Speichern..." : "Zaehlerstand erfassen"}
+            {erfasseStandMutation.isPending ? "Speichern..." : "Zählerstand erfassen"}
           </button>
         </form>
       </div>

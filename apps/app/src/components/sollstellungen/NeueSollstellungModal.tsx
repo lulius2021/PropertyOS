@@ -85,13 +85,12 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
             <select
               value={formData.mietverhaeltnisId}
               onChange={(e) => setFormData({ ...formData, mietverhaeltnisId: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Ohne Zuordnung</option>
               {aktiveMV.map((mv: any) => (
                 <option key={mv.id} value={mv.id}>
-                  {mv.mieter.nachname}{mv.mieter.vorname ? `, ${mv.mieter.vorname}` : ""}
-                  {mv.mieter.firma ? ` (${mv.mieter.firma})` : ""} — {mv.einheit.objekt?.bezeichnung} / {mv.einheit.einheitNr}
+                  {mv.vertragsnummer ?? mv.id.slice(0, 6)} — {mv.mieter.nachname}{mv.mieter.vorname ? `, ${mv.mieter.vorname}` : ""}{mv.mieter.firma ? ` (${mv.mieter.firma})` : ""} — {mv.einheit.objekt?.bezeichnung} / {mv.einheit.einheitNr}
                 </option>
               ))}
             </select>
@@ -106,7 +105,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               required
               value={formData.typ}
               onChange={(e) => setFormData({ ...formData, typ: e.target.value as typeof formData.typ })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               {TYP_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -127,7 +126,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               value={formData.titel}
               onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
               placeholder="z.B. Warmmiete Februar 2026"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -144,7 +143,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               value={formData.betragGesamt}
               onChange={(e) => setFormData({ ...formData, betragGesamt: e.target.value })}
               placeholder="z.B. 850.00"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -158,7 +157,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               required
               value={formData.faelligkeitsdatum}
               onChange={(e) => setFormData({ ...formData, faelligkeitsdatum: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] px-4 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 

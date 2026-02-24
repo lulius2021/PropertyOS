@@ -6,6 +6,8 @@ import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import { TwoFactorDisable } from "@/components/auth/TwoFactorDisable";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { validatePassword } from "@/lib/password-policy";
+import { FeedbackModal } from "@/components/feedback/FeedbackModal";
+import { MessageSquare } from "lucide-react";
 
 function SecurityTab() {
   const utils = trpc.useUtils();
@@ -324,9 +326,9 @@ function AutoMahnungTab() {
           </div>
           <button
             onClick={() => setForm(f => ({ ...f, autoMahnungAktiv: !f.autoMahnungAktiv }))}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungAktiv ? "bg-blue-600" : "bg-gray-300"}`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungAktiv ? "bg-blue-600" : "bg-[var(--border)] dark:bg-gray-600"}`}
           >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.autoMahnungAktiv ? "translate-x-6" : "translate-x-1"}`} />
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-gray-200 transition-transform ${form.autoMahnungAktiv ? "translate-x-6" : "translate-x-1"}`} />
           </button>
         </div>
 
@@ -350,9 +352,9 @@ function AutoMahnungTab() {
           </div>
           <button
             onClick={() => setForm(f => ({ ...f, autoMahnungEmailAktiv: !f.autoMahnungEmailAktiv }))}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungEmailAktiv ? "bg-blue-600" : "bg-gray-300"}`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${form.autoMahnungEmailAktiv ? "bg-blue-600" : "bg-[var(--border)] dark:bg-gray-600"}`}
           >
-            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${form.autoMahnungEmailAktiv ? "translate-x-6" : "translate-x-1"}`} />
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-gray-200 transition-transform ${form.autoMahnungEmailAktiv ? "translate-x-6" : "translate-x-1"}`} />
           </button>
         </div>
 
@@ -368,9 +370,56 @@ function AutoMahnungTab() {
   );
 }
 
+function FeedbackTab() {
+  const [showModal, setShowModal] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSuccess = () => {
+    setSubmitted(true);
+    localStorage.setItem("pg_feedback_done", "true");
+  };
+
+  return (
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+      <div className="flex items-start gap-4 mb-6">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+          <MessageSquare className="h-6 w-6 text-blue-600" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+            Helfen Sie uns, PropGate zu verbessern
+          </h2>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            Ihr Feedback ist wertvoll — teilen Sie uns mit, was gut funktioniert und was verbessert werden kann. Jeder Beitrag wird gelesen.
+          </p>
+        </div>
+      </div>
+
+      {submitted && (
+        <div className="mb-4 rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-700">
+          Vielen Dank für Ihr Feedback! Wir schätzen Ihre Rückmeldung sehr.
+        </div>
+      )}
+
+      <button
+        onClick={() => setShowModal(true)}
+        className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+      >
+        Feedback senden
+      </button>
+
+      <FeedbackModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSuccess={handleSuccess}
+      />
+    </div>
+  );
+}
+
 export default function EinstellungenPage() {
   const [activeTab, setActiveTab] = useState<
-    "parameter" | "benutzer" | "audit" | "sicherheit" | "demo" | "automahnung"
+    "parameter" | "benutzer" | "audit" | "sicherheit" | "demo" | "automahnung" | "feedback"
   >("parameter");
 
   return (
@@ -389,7 +438,7 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("parameter")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "parameter"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -399,7 +448,7 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("benutzer")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "benutzer"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -409,7 +458,7 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("sicherheit")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "sicherheit"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -419,7 +468,7 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("audit")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "audit"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -429,7 +478,7 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("automahnung")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "automahnung"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
@@ -439,11 +488,22 @@ export default function EinstellungenPage() {
             onClick={() => setActiveTab("demo")}
             className={`border-b-2 py-2 px-1 text-sm font-medium ${
               activeTab === "demo"
-                ? "border-blue-600 text-blue-600"
+                ? "border-blue-600 text-blue-400"
                 : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
             }`}
           >
             Demo-Daten
+          </button>
+          <button
+            onClick={() => setActiveTab("feedback")}
+            className={`flex items-center gap-1.5 border-b-2 py-2 px-1 text-sm font-medium ${
+              activeTab === "feedback"
+                ? "border-blue-600 text-blue-400"
+                : "border-transparent text-[var(--text-secondary)] hover:border-[var(--border)] hover:text-[var(--text-secondary)]"
+            }`}
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Feedback
           </button>
         </nav>
       </div>
@@ -652,6 +712,9 @@ export default function EinstellungenPage() {
 
       {/* Demo-Daten Tab */}
       {activeTab === "demo" && <DemoDataTab />}
+
+      {/* Feedback Tab */}
+      {activeTab === "feedback" && <FeedbackTab />}
     </div>
   );
 }

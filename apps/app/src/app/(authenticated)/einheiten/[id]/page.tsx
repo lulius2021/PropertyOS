@@ -32,7 +32,7 @@ export default function EinheitDetailPage() {
           <h2 className="text-xl font-semibold text-[var(--text-primary)]">Einheit nicht gefunden</h2>
           <button
             onClick={() => router.push("/einheiten")}
-            className="mt-4 text-blue-600 hover:text-blue-700"
+            className="mt-4 text-blue-400 hover:text-blue-300"
           >
             Zurück zur Übersicht
           </button>
@@ -148,11 +148,9 @@ export default function EinheitDetailPage() {
               <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">{getTypLabel(einheit.typ)}</dd>
             </div>
             <div>
-              <dt className="text-sm text-[var(--text-secondary)]">Etage</dt>
+              <dt className="text-sm text-[var(--text-secondary)]">Lage</dt>
               <dd className="mt-1 text-sm font-medium text-[var(--text-primary)]">
-                {einheit.etage !== null && einheit.etage !== undefined
-                  ? einheit.etage === 0 ? "EG" : `${einheit.etage}. OG`
-                  : "–"}
+                {(einheit as any).lage ?? "–"}
               </dd>
             </div>
             <div>
@@ -286,7 +284,7 @@ export default function EinheitDetailPage() {
                 typ: einheit.typ as "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER",
                 flaeche: einheit.flaeche.toString(),
                 zimmer: einheit.zimmer,
-                etage: einheit.etage,
+                lage: (einheit as any).lage ?? null,
                 eurProQm: einheit.eurProQm?.toString() ?? null,
                 ausstattung: einheit.ausstattung,
               }

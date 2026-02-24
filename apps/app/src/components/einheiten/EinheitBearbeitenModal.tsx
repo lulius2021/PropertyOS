@@ -9,7 +9,7 @@ interface Einheit {
   typ: "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER";
   flaeche: string;
   zimmer?: number | null;
-  etage?: number | null;
+  lage?: string | null;
   eurProQm?: string | null;
   ausstattung?: string | null;
 }
@@ -32,7 +32,7 @@ export function EinheitBearbeitenModal({
     typ: "WOHNUNG" as "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER",
     flaeche: "",
     zimmer: "",
-    etage: "",
+    lage: "",
     eurProQm: "",
     ausstattung: "",
   });
@@ -44,7 +44,7 @@ export function EinheitBearbeitenModal({
         typ: einheit.typ,
         flaeche: einheit.flaeche,
         zimmer: einheit.zimmer?.toString() ?? "",
-        etage: einheit.etage?.toString() ?? "",
+        lage: einheit.lage ?? "",
         eurProQm: einheit.eurProQm ?? "",
         ausstattung: einheit.ausstattung ?? "",
       });
@@ -71,7 +71,7 @@ export function EinheitBearbeitenModal({
       typ: formData.typ,
       flaeche: parseFloat(formData.flaeche),
       zimmer: formData.zimmer ? parseInt(formData.zimmer) : null,
-      etage: formData.etage !== "" ? parseInt(formData.etage) : null,
+      lage: formData.lage || null,
       eurProQm: formData.eurProQm ? parseFloat(formData.eurProQm) : null,
       ausstattung: formData.ausstattung || null,
     });
@@ -111,7 +111,7 @@ export function EinheitBearbeitenModal({
                 required
                 value={formData.einheitNr}
                 onChange={(e) => setFormData({ ...formData, einheitNr: e.target.value })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -124,7 +124,7 @@ export function EinheitBearbeitenModal({
                 required
                 value={formData.typ}
                 onChange={(e) => setFormData({ ...formData, typ: e.target.value as typeof formData.typ })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="WOHNUNG">Wohnung</option>
                 <option value="GEWERBE">Gewerbe</option>
@@ -147,7 +147,8 @@ export function EinheitBearbeitenModal({
                 step="0.01"
                 value={formData.flaeche}
                 onChange={(e) => setFormData({ ...formData, flaeche: e.target.value })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                onFocus={(e) => e.target.select()}
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -162,25 +163,25 @@ export function EinheitBearbeitenModal({
                 step="1"
                 value={formData.zimmer}
                 onChange={(e) => setFormData({ ...formData, zimmer: e.target.value })}
+                onFocus={(e) => e.target.select()}
                 placeholder="optional"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {/* Etage */}
+            {/* Lage */}
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                Etage
+                Lage
               </label>
               <input
-                type="number"
-                step="1"
-                value={formData.etage}
-                onChange={(e) => setFormData({ ...formData, etage: e.target.value })}
-                placeholder="0 = EG"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                type="text"
+                value={formData.lage}
+                onChange={(e) => setFormData({ ...formData, lage: e.target.value })}
+                placeholder="z.B. 1. OG links, EG rechts"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -195,8 +196,9 @@ export function EinheitBearbeitenModal({
                 step="0.01"
                 value={formData.eurProQm}
                 onChange={(e) => setFormData({ ...formData, eurProQm: e.target.value })}
+                onFocus={(e) => e.target.select()}
                 placeholder="optional"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>

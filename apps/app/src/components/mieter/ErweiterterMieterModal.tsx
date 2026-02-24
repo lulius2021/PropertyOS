@@ -271,7 +271,7 @@ function StammdatenTab({ formData, setFormData }: any) {
             <select
               value={formData.typ}
               onChange={(e) => setFormData({ ...formData, typ: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="PRIVAT">Privat</option>
               <option value="GESCHAEFTLICH">Geschäftlich</option>
@@ -285,7 +285,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.mieterIdIntern}
               onChange={(e) => setFormData({ ...formData, mieterIdIntern: e.target.value })}
               placeholder="z.B. M-001"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -305,7 +305,7 @@ function StammdatenTab({ formData, setFormData }: any) {
                 value={formData.firma}
                 onChange={(e) => setFormData({ ...formData, firma: e.target.value })}
                 placeholder="z.B. Musterfirma GmbH"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           ) : null}
@@ -315,7 +315,7 @@ function StammdatenTab({ formData, setFormData }: any) {
             <select
               value={formData.anrede}
               onChange={(e) => setFormData({ ...formData, anrede: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="Herr">Herr</option>
@@ -331,7 +331,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.titel}
               onChange={(e) => setFormData({ ...formData, titel: e.target.value })}
               placeholder="z.B. Dr., Prof."
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -342,7 +342,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.vorname}
               onChange={(e) => setFormData({ ...formData, vorname: e.target.value })}
               placeholder="Max"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -356,7 +356,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.nachname}
               onChange={(e) => setFormData({ ...formData, nachname: e.target.value })}
               placeholder="Mustermann"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -366,7 +366,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               type="date"
               value={formData.geburtsdatum}
               onChange={(e) => setFormData({ ...formData, geburtsdatum: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -377,7 +377,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.staatsangehoerigkeit}
               onChange={(e) => setFormData({ ...formData, staatsangehoerigkeit: e.target.value })}
               placeholder="z.B. Deutsch"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -394,14 +394,14 @@ function StammdatenTab({ formData, setFormData }: any) {
                 value={formData.strasse}
                 onChange={(e) => setFormData({ ...formData, strasse: e.target.value })}
                 placeholder="Straße"
-                className="col-span-2 rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="col-span-2 rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               <input
                 type="text"
                 value={formData.hausnummer}
                 onChange={(e) => setFormData({ ...formData, hausnummer: e.target.value })}
                 placeholder="Nr."
-                className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -413,7 +413,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.plz}
               onChange={(e) => setFormData({ ...formData, plz: e.target.value })}
               placeholder="10115"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -424,7 +424,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.ort}
               onChange={(e) => setFormData({ ...formData, ort: e.target.value })}
               placeholder="Berlin"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -435,7 +435,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.land}
               onChange={(e) => setFormData({ ...formData, land: e.target.value })}
               placeholder="Deutschland"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -451,7 +451,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.telefonMobil}
               onChange={(e) => setFormData({ ...formData, telefonMobil: e.target.value })}
               placeholder="+49 170 1234567"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -462,7 +462,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.telefonFestnetz}
               onChange={(e) => setFormData({ ...formData, telefonFestnetz: e.target.value })}
               placeholder="+49 30 1234567"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -473,7 +473,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="max@mustermann.de"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -482,7 +482,7 @@ function StammdatenTab({ formData, setFormData }: any) {
             <select
               value={formData.kommunikationskanal}
               onChange={(e) => setFormData({ ...formData, kommunikationskanal: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="E-Mail">E-Mail</option>
@@ -504,7 +504,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.notfallkontaktName}
               onChange={(e) => setFormData({ ...formData, notfallkontaktName: e.target.value })}
               placeholder="Anna Muster"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -515,7 +515,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.notfallkontaktBeziehung}
               onChange={(e) => setFormData({ ...formData, notfallkontaktBeziehung: e.target.value })}
               placeholder="Ehepartner/Kind/etc."
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -526,7 +526,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.notfallkontaktTelefon}
               onChange={(e) => setFormData({ ...formData, notfallkontaktTelefon: e.target.value })}
               placeholder="+49 170 7654321"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -540,7 +540,7 @@ function StammdatenTab({ formData, setFormData }: any) {
             <select
               value={formData.ausweisart}
               onChange={(e) => setFormData({ ...formData, ausweisart: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Bitte wählen</option>
               <option value="Personalausweis">Personalausweis</option>
@@ -556,7 +556,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               value={formData.ausweisnummer}
               onChange={(e) => setFormData({ ...formData, ausweisnummer: e.target.value })}
               placeholder="T123456789"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -566,7 +566,7 @@ function StammdatenTab({ formData, setFormData }: any) {
               id="bonitaet"
               checked={formData.bonitaetGeprueft}
               onChange={(e) => setFormData({ ...formData, bonitaetGeprueft: e.target.checked })}
-              className="h-4 w-4 rounded border-[var(--border)] text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-[var(--border)] text-blue-400 focus:ring-blue-500"
             />
             <label htmlFor="bonitaet" className="text-sm text-[var(--text-secondary)]">Bonität geprüft</label>
           </div>
@@ -578,7 +578,7 @@ function StammdatenTab({ formData, setFormData }: any) {
                 type="date"
                 value={formData.bonitaetDatum}
                 onChange={(e) => setFormData({ ...formData, bonitaetDatum: e.target.value })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           )}
@@ -600,7 +600,7 @@ function SonstigesTab({ formData, setFormData }: any) {
               id="dsgvo"
               checked={formData.datenschutzHinweisUebergeben}
               onChange={(e) => setFormData({ ...formData, datenschutzHinweisUebergeben: e.target.checked })}
-              className="h-4 w-4 rounded border-[var(--border)] text-blue-600 focus:ring-blue-500"
+              className="h-4 w-4 rounded border-[var(--border)] text-blue-400 focus:ring-blue-500"
             />
             <label htmlFor="dsgvo" className="text-sm text-[var(--text-secondary)]">Datenschutzhinweis übergeben</label>
           </div>
@@ -612,7 +612,7 @@ function SonstigesTab({ formData, setFormData }: any) {
                 type="date"
                 value={formData.datenschutzDatum}
                 onChange={(e) => setFormData({ ...formData, datenschutzDatum: e.target.value })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
           )}
@@ -628,7 +628,7 @@ function SonstigesTab({ formData, setFormData }: any) {
             onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
             rows={8}
             placeholder="Zusätzliche Informationen zum Mieter..."
-            className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
       </div>

@@ -129,7 +129,7 @@ export default function ObjektePage() {
                   <td className="whitespace-nowrap px-6 py-4 text-sm">
                     <button
                       onClick={() => router.push(`/objekte/${objekt.id}`)}
-                      className="text-blue-600 hover:text-blue-700"
+                      className="text-blue-400 hover:text-blue-300"
                     >
                       Details
                     </button>

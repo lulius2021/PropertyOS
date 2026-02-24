@@ -80,7 +80,7 @@ export default function NebenkostenabrechnungPage() {
                     {nka._count?.positionen || 0} Positionen, {nka._count?.mieterpositionen || 0} Mieter
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/nebenkostenabrechnung/${nka.id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                    <Link href={`/nebenkostenabrechnung/${nka.id}`} className="text-sm font-medium text-blue-400 hover:text-blue-300">
                       Details
                     </Link>
                   </td>

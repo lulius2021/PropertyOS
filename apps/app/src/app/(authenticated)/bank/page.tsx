@@ -230,7 +230,7 @@ export default function BankPage() {
                         >
                           Ignorieren
                         </button>
-                        <button className="text-blue-600 hover:text-blue-900">
+                        <button className="text-blue-400 hover:text-blue-300">
                           Zuordnen
                         </button>
                       </div>

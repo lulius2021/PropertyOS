@@ -23,7 +23,7 @@ export function NeueEinheitModal({
     typ: "WOHNUNG" as "WOHNUNG" | "GEWERBE" | "STELLPLATZ" | "LAGER",
     flaeche: "",
     zimmer: "",
-    etage: "",
+    lage: "",
     eurProQm: "",
     ausstattung: "",
   });
@@ -41,7 +41,7 @@ export function NeueEinheitModal({
         typ: "WOHNUNG",
         flaeche: "",
         zimmer: "",
-        etage: "",
+        lage: "",
         eurProQm: "",
         ausstattung: "",
       });
@@ -58,13 +58,15 @@ export function NeueEinheitModal({
       typ: formData.typ,
       flaeche: parseFloat(formData.flaeche),
       zimmer: formData.zimmer ? parseInt(formData.zimmer) : undefined,
-      etage: formData.etage !== "" ? parseInt(formData.etage) : undefined,
+      lage: formData.lage || undefined,
       eurProQm: formData.eurProQm ? parseFloat(formData.eurProQm) : undefined,
       ausstattung: formData.ausstattung || undefined,
     });
   };
 
   if (!isOpen) return null;
+
+  const inputCls = "w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-20 backdrop-blur-sm p-4">
@@ -85,25 +87,31 @@ export function NeueEinheitModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Objekt */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-              Objekt <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={formData.objektId}
-              onChange={(e) => setFormData({ ...formData, objektId: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="">Objekt wählen...</option>
-              {objekte?.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.bezeichnung}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Objekt — nur anzeigen wenn kein defaultObjektId */}
+          {defaultObjektId ? (
+            <div className="rounded-lg bg-[var(--bg-page)] border border-[var(--border)] px-4 py-2 text-sm text-[var(--text-secondary)]">
+              Objekt: {objekte?.find((o) => o.id === defaultObjektId)?.bezeichnung ?? "Wird geladen..."}
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                Objekt <span className="text-red-500">*</span>
+              </label>
+              <select
+                required
+                value={formData.objektId}
+                onChange={(e) => setFormData({ ...formData, objektId: e.target.value })}
+                className={inputCls}
+              >
+                <option value="">Objekt wählen...</option>
+                {objekte?.map((o) => (
+                  <option key={o.id} value={o.id}>
+                    {o.bezeichnung}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             {/* Einheit-Nr */}
@@ -117,7 +125,7 @@ export function NeueEinheitModal({
                 value={formData.einheitNr}
                 onChange={(e) => setFormData({ ...formData, einheitNr: e.target.value })}
                 placeholder="z.B. W01 oder 1.OG links"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
 
@@ -130,7 +138,7 @@ export function NeueEinheitModal({
                 required
                 value={formData.typ}
                 onChange={(e) => setFormData({ ...formData, typ: e.target.value as typeof formData.typ })}
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className={inputCls}
               >
                 <option value="WOHNUNG">Wohnung</option>
                 <option value="GEWERBE">Gewerbe</option>
@@ -153,8 +161,9 @@ export function NeueEinheitModal({
                 step="0.01"
                 value={formData.flaeche}
                 onChange={(e) => setFormData({ ...formData, flaeche: e.target.value })}
+                onFocus={(e) => e.target.select()}
                 placeholder="z.B. 68.50"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
 
@@ -169,25 +178,25 @@ export function NeueEinheitModal({
                 step="1"
                 value={formData.zimmer}
                 onChange={(e) => setFormData({ ...formData, zimmer: e.target.value })}
+                onFocus={(e) => e.target.select()}
                 placeholder="z.B. 3"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {/* Etage */}
+            {/* Lage */}
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                Etage
+                Lage
               </label>
               <input
-                type="number"
-                step="1"
-                value={formData.etage}
-                onChange={(e) => setFormData({ ...formData, etage: e.target.value })}
-                placeholder="z.B. 2 (0 = EG)"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                type="text"
+                value={formData.lage}
+                onChange={(e) => setFormData({ ...formData, lage: e.target.value })}
+                placeholder="z.B. 1. OG links, EG rechts"
+                className={inputCls}
               />
             </div>
 
@@ -202,8 +211,9 @@ export function NeueEinheitModal({
                 step="0.01"
                 value={formData.eurProQm}
                 onChange={(e) => setFormData({ ...formData, eurProQm: e.target.value })}
+                onFocus={(e) => e.target.select()}
                 placeholder="z.B. 12.50"
-                className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className={inputCls}
               />
             </div>
           </div>
@@ -218,7 +228,7 @@ export function NeueEinheitModal({
               onChange={(e) => setFormData({ ...formData, ausstattung: e.target.value })}
               rows={3}
               placeholder="z.B. Einbauküche, Balkon, Kellerabteil..."
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
           </div>
 

@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc/client";
 import { ObjektImage } from "@/components/objekte/ObjektImage";
 import { ErweiterterObjektModal } from "@/components/objekte/ErweiterterObjektModal";
 import { NeueEinheitModal } from "@/components/einheiten/NeueEinheitModal";
+import { toast } from "sonner";
 
 export default function ObjektDetailPage() {
   const params = useParams();
@@ -14,8 +15,20 @@ export default function ObjektDetailPage() {
   const objektId = params.id as string;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEinheitModalOpen, setIsEinheitModalOpen] = useState(false);
+  const [addDienstleisterOpen, setAddDienstleisterOpen] = useState(false);
 
   const { data: objekt, isLoading } = trpc.objekte.getById.useQuery({ id: objektId });
+  const { data: zustaendigeDL, refetch: refetchDL } = trpc.dienstleister.listByObjekt.useQuery({ objektId });
+  const { data: alleDL } = trpc.dienstleister.list.useQuery();
+
+  const addZustaendigkeit = trpc.dienstleister.addObjektZustaendigkeit.useMutation({
+    onSuccess: () => { refetchDL(); setAddDienstleisterOpen(false); toast.success("Dienstleister zugeordnet"); },
+    onError: (err) => toast.error(err.message),
+  });
+  const removeZustaendigkeit = trpc.dienstleister.removeObjektZustaendigkeit.useMutation({
+    onSuccess: () => { refetchDL(); toast.success("Zuordnung entfernt"); },
+    onError: (err) => toast.error(err.message),
+  });
 
   if (isLoading) {
     return (
@@ -32,7 +45,7 @@ export default function ObjektDetailPage() {
           <h2 className="text-xl font-semibold text-[var(--text-primary)]">Objekt nicht gefunden</h2>
           <button
             onClick={() => router.push("/objekte")}
-            className="mt-4 text-blue-600 hover:text-blue-700"
+            className="mt-4 text-blue-400 hover:text-blue-300"
           >
             Zurück zur Übersicht
           </button>
@@ -207,6 +220,9 @@ export default function ObjektDetailPage() {
                     Zimmer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                    Lage
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
@@ -243,6 +259,9 @@ export default function ObjektDetailPage() {
                       <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
                         {einheit.zimmer ?? "–"}
                       </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--text-secondary)]">
+                        {(einheit as any).lage ?? "–"}
+                      </td>
                       <td className="whitespace-nowrap px-6 py-4">
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(einheit.status)}`}
@@ -260,6 +279,67 @@ export default function ObjektDetailPage() {
             </table>
           </div>
         )}
+      </div>
+
+      {/* Zuständige Dienstleister (H2) */}
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <div className="border-b border-[var(--border)] px-6 py-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Zuständige Dienstleister</h2>
+          <button
+            onClick={() => setAddDienstleisterOpen(!addDienstleisterOpen)}
+            className="rounded-md bg-[var(--bg-page)] border border-[var(--border)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+          >
+            + Zuordnen
+          </button>
+        </div>
+
+        {addDienstleisterOpen && (
+          <div className="border-b border-[var(--border)] px-6 py-4 bg-[var(--bg-page)]">
+            <p className="text-sm text-[var(--text-secondary)] mb-2">Dienstleister auswählen:</p>
+            <div className="flex flex-wrap gap-2">
+              {alleDL?.filter((d) => !zustaendigeDL?.some((z) => z.dienstleisterId === d.id)).map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => addZustaendigkeit.mutate({ dienstleisterId: d.id, objektId })}
+                  className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+                >
+                  {d.name} {d.kategorie ? `(${d.kategorie})` : ""}
+                </button>
+              ))}
+              {alleDL?.length === zustaendigeDL?.length && (
+                <span className="text-sm text-[var(--text-muted)]">Alle Dienstleister bereits zugeordnet.</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="p-6">
+          {zustaendigeDL && zustaendigeDL.length > 0 ? (
+            <div className="space-y-2">
+              {zustaendigeDL.map((z) => (
+                <div key={z.dienstleisterId} className="flex items-center justify-between rounded-lg border border-[var(--border)] px-4 py-2">
+                  <div>
+                    <span className="text-sm font-medium text-[var(--text-primary)]">{z.dienstleister.name}</span>
+                    {z.dienstleister.kategorie && (
+                      <span className="ml-2 text-xs text-[var(--text-secondary)]">{z.dienstleister.kategorie}</span>
+                    )}
+                    {z.dienstleister.telefon && (
+                      <span className="ml-3 text-xs text-[var(--text-muted)]">{z.dienstleister.telefon}</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => removeZustaendigkeit.mutate({ dienstleisterId: z.dienstleisterId, objektId })}
+                    className="text-xs text-red-400 hover:text-red-300"
+                  >
+                    Entfernen
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--text-muted)] text-center py-4">Noch keine Dienstleister zugeordnet.</p>
+          )}
+        </div>
       </div>
 
       {/* Bearbeiten-Modal */}

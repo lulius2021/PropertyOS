@@ -58,7 +58,7 @@ export default function NKADetailPage() {
           )}
           {nka.status === "ENTWURF" && (
             <button onClick={() => confirm("Löschen?") && deleteMutation.mutate({ id })}
-              className="rounded border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+              className="rounded border border-red-300 px-4 py-2 text-sm text-red-400 hover:bg-red-50">
               Löschen
             </button>
           )}
@@ -155,7 +155,7 @@ export default function NKADetailPage() {
                       <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{mp.mietverhaeltnis?.einheit?.einheitNr}</td>
                       <td className="px-6 py-4 text-right text-sm">{parseFloat(mp.vorauszahlungGesamt.toString()).toFixed(2)} €</td>
                       <td className="px-6 py-4 text-right text-sm">{parseFloat(mp.istKostenGesamt.toString()).toFixed(2)} €</td>
-                      <td className={`px-6 py-4 text-right font-semibold ${diff < 0 ? "text-green-600" : diff > 0 ? "text-red-600" : "text-[var(--text-primary)]"}`}>
+                      <td className={`px-6 py-4 text-right font-semibold ${diff < 0 ? "text-green-400" : diff > 0 ? "text-red-400" : "text-[var(--text-primary)]"}`}>
                         {diff > 0 ? "+" : ""}{diff.toFixed(2)} €
                         <div className="text-xs font-normal text-[var(--text-secondary)]">{diff < 0 ? "Guthaben" : diff > 0 ? "Nachforderung" : "Ausgeglichen"}</div>
                       </td>

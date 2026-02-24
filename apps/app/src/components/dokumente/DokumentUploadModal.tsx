@@ -151,7 +151,7 @@ export function DokumentUploadModal({ open, onClose, onSuccess }: Props) {
                   </svg>
                   <p className="text-sm text-[var(--text-secondary)]">
                     Datei hierher ziehen oder{" "}
-                    <span className="text-blue-600">auswählen</span>
+                    <span className="text-blue-400">auswählen</span>
                   </p>
                   <p className="mt-1 text-xs text-[var(--text-muted)]">PDF, Bilder, max. 10 MB</p>
                 </div>

@@ -206,4 +206,31 @@ export const mieterRouter = router({
       gewerbe,
     };
   }),
+
+  addNotiz: protectedProcedure
+    .input(z.object({
+      mieterId: z.string(),
+      inhalt: z.string().min(1),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.mieterNotiz.create({
+        data: {
+          tenantId: ctx.tenantId,
+          mieterId: input.mieterId,
+          userId: ctx.userId,
+          inhalt: input.inhalt,
+        },
+        include: { user: { select: { name: true, email: true } } },
+      });
+    }),
+
+  listNotizen: protectedProcedure
+    .input(z.object({ mieterId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.mieterNotiz.findMany({
+        where: { tenantId: ctx.tenantId, mieterId: input.mieterId },
+        include: { user: { select: { name: true, email: true } } },
+        orderBy: { createdAt: "desc" },
+      });
+    }),
 });

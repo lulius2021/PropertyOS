@@ -3,7 +3,7 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 
-const KATEGORIEN = ["ELEKTRIKER", "SANITAER", "HEIZUNG", "AUFZUG", "SCHREINER", "MALER", "DACH", "GARTEN", "SONSTIGES"];
+const KATEGORIEN = ["ELEKTRIKER", "SANITAER", "HEIZUNG", "AUFZUG", "SCHREINER", "MALER", "DACH", "GARTEN", "HAUSREINIGUNG", "HAUSMEISTER", "SONSTIGES"];
 
 export default function DienstleisterPage() {
   const [showForm, setShowForm] = useState(false);
@@ -73,12 +73,12 @@ export default function DienstleisterPage() {
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Name *</label>
               <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Kategorie</label>
               <select value={form.kategorie} onChange={(e) => setForm({ ...form, kategorie: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Keine</option>
                 {KATEGORIEN.map((k) => <option key={k} value={k}>{k}</option>)}
               </select>
@@ -86,17 +86,17 @@ export default function DienstleisterPage() {
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Telefon</label>
               <input value={form.telefon} onChange={(e) => setForm({ ...form, telefon: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">E-Mail</label>
               <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Notiz</label>
               <textarea value={form.notiz} onChange={(e) => setForm({ ...form, notiz: e.target.value })} rows={2}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
           </div>
           <div className="mt-4 flex gap-2">
@@ -136,12 +136,12 @@ export default function DienstleisterPage() {
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{d.kategorie || "—"}</td>
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {d.telefon && <div>{d.telefon}</div>}
-                    {d.email && <div className="text-blue-600">{d.email}</div>}
+                    {d.email && <div className="text-blue-400">{d.email}</div>}
                   </td>
                   <td className="px-6 py-4 text-right text-sm text-[var(--text-secondary)]">{d._count?.tickets || 0}</td>
                   <td className="px-6 py-4 text-right">
-                    <button onClick={() => handleEdit(d)} className="mr-2 text-sm text-blue-600 hover:text-blue-800">Bearbeiten</button>
-                    <button onClick={() => handleDelete(d.id)} className="text-sm text-red-600 hover:text-red-800">Löschen</button>
+                    <button onClick={() => handleEdit(d)} className="mr-2 text-sm text-blue-400 hover:text-blue-300">Bearbeiten</button>
+                    <button onClick={() => handleDelete(d.id)} className="text-sm text-red-400 hover:text-red-300">Löschen</button>
                   </td>
                 </tr>
               ))}

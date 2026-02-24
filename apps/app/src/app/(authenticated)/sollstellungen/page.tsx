@@ -3,17 +3,34 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 import NeueSollstellungModal from "@/components/sollstellungen/NeueSollstellungModal";
+import { toast } from "sonner";
 
 export default function SollstellungenPage() {
   const [statusFilter, setStatusFilter] = useState<
     "OFFEN" | "TEILWEISE_BEZAHLT" | "BEZAHLT" | "STORNIERT" | undefined
   >();
   const [showModal, setShowModal] = useState(false);
+  const [bezahltDialog, setBezahltDialog] = useState<{
+    id: string;
+    titel: string;
+    zahlungsart: "UEBERWEISUNG" | "BARGELD" | "LASTSCHRIFT";
+    zahlungsdatum: string;
+  } | null>(null);
 
   const utils = trpc.useUtils();
   const { data: sollstellungen, isLoading } =
     trpc.sollstellungen.list.useQuery({ status: statusFilter });
   const { data: stats } = trpc.sollstellungen.stats.useQuery();
+
+  const manualBezahltMutation = trpc.sollstellungen.manualBezahlt.useMutation({
+    onSuccess: () => {
+      setBezahltDialog(null);
+      utils.sollstellungen.list.invalidate();
+      utils.sollstellungen.stats.invalidate();
+      toast.success("Als bezahlt markiert");
+    },
+    onError: (err) => toast.error("Fehler: " + err.message),
+  });
 
   if (isLoading) {
     return <div>Laden...</div>;
@@ -41,7 +58,7 @@ export default function SollstellungenPage() {
         <div className="mb-6 grid grid-cols-3 gap-4">
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Offen</div>
-            <div className="mt-1 text-2xl font-bold text-red-600">
+            <div className="mt-1 text-2xl font-bold text-red-400">
               {stats.offen.summe.toFixed(2)} €
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -50,7 +67,7 @@ export default function SollstellungenPage() {
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Teilweise bezahlt</div>
-            <div className="mt-1 text-2xl font-bold text-orange-600">
+            <div className="mt-1 text-2xl font-bold text-orange-400">
               {(stats.teilweiseBezahlt.summe - stats.teilweiseBezahlt.gedeckt).toFixed(2)} €
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -59,7 +76,7 @@ export default function SollstellungenPage() {
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
             <div className="text-sm text-[var(--text-secondary)]">Bezahlt (Monat)</div>
-            <div className="mt-1 text-2xl font-bold text-green-600">
+            <div className="mt-1 text-2xl font-bold text-green-400">
               {stats.bezahlt.summe.toFixed(2)} €
             </div>
             <div className="text-xs text-[var(--text-secondary)]">
@@ -150,6 +167,9 @@ export default function SollstellungenPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Status
                 </th>
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                  Aktion
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
@@ -179,7 +199,7 @@ export default function SollstellungenPage() {
                   <td className="px-6 py-4 text-right text-sm text-[var(--text-primary)]">
                     {soll.betragGesamt} €
                   </td>
-                  <td className="px-6 py-4 text-right text-sm text-green-600">
+                  <td className="px-6 py-4 text-right text-sm text-green-400">
                     {soll.gedecktGesamt} €
                   </td>
                   <td className="px-6 py-4">
@@ -197,6 +217,21 @@ export default function SollstellungenPage() {
                       {soll.status}
                     </span>
                   </td>
+                  <td className="px-6 py-4 text-right">
+                    {(soll.status === "OFFEN" || soll.status === "TEILWEISE_BEZAHLT") && (
+                      <button
+                        onClick={() => setBezahltDialog({
+                          id: soll.id,
+                          titel: soll.titel,
+                          zahlungsart: "UEBERWEISUNG",
+                          zahlungsdatum: new Date().toISOString().split("T")[0],
+                        })}
+                        className="text-xs text-green-400 hover:text-green-300 font-medium"
+                      >
+                        Als bezahlt
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -213,6 +248,58 @@ export default function SollstellungenPage() {
           void utils.sollstellungen.stats.invalidate();
         }}
       />
+
+      {/* Als bezahlt Dialog */}
+      {bezahltDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-xl bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl p-6">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Als bezahlt markieren</h3>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">{bezahltDialog.titel}</p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Zahlungsart</label>
+                <select
+                  value={bezahltDialog.zahlungsart}
+                  onChange={(e) => setBezahltDialog({ ...bezahltDialog, zahlungsart: e.target.value as any })}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm"
+                >
+                  <option value="UEBERWEISUNG">Überweisung</option>
+                  <option value="BARGELD">Bargeld</option>
+                  <option value="LASTSCHRIFT">Lastschrift</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Zahlungsdatum</label>
+                <input
+                  type="date"
+                  value={bezahltDialog.zahlungsdatum}
+                  onChange={(e) => setBezahltDialog({ ...bezahltDialog, zahlungsdatum: e.target.value })}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-5">
+              <button
+                onClick={() => setBezahltDialog(null)}
+                className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm text-[var(--text-secondary)]"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => manualBezahltMutation.mutate({
+                  id: bezahltDialog.id,
+                  zahlungsart: bezahltDialog.zahlungsart,
+                  zahlungsdatum: new Date(bezahltDialog.zahlungsdatum),
+                })}
+                disabled={manualBezahltMutation.isPending}
+                className="flex-1 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+              >
+                {manualBezahltMutation.isPending ? "..." : "Bestätigen"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

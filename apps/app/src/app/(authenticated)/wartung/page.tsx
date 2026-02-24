@@ -27,6 +27,7 @@ export default function WartungPage() {
 
   const createMutation = trpc.wartung.create.useMutation({ onSuccess: () => { refetch(); setShowForm(false); setSuccessMsg("Aufgabe erstellt"); } });
   const erledigtMutation = trpc.wartung.erledigt.useMutation({ onSuccess: () => { refetch(); setSuccessMsg("Aufgabe als erledigt markiert"); } });
+  const undoErledigt = trpc.wartung.undoErledigt.useMutation({ onSuccess: () => { refetch(); setSuccessMsg("Erledigt rückgängig gemacht"); } });
   const deleteMutation = trpc.wartung.delete.useMutation({ onSuccess: () => refetch() });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,11 +63,11 @@ export default function WartungPage() {
       <div className="mb-6 grid grid-cols-2 gap-4">
         <div className={`rounded-lg border p-4 ${faellig7?.length ? "border-red-200 bg-red-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
           <div className="text-sm font-medium text-[var(--text-secondary)]">Fällig in 7 Tagen</div>
-          <div className={`mt-1 text-2xl font-bold ${faellig7?.length ? "text-red-600" : "text-[var(--text-primary)]"}`}>{faellig7?.length || 0}</div>
+          <div className={`mt-1 text-2xl font-bold ${faellig7?.length ? "text-red-400" : "text-[var(--text-primary)]"}`}>{faellig7?.length || 0}</div>
         </div>
         <div className={`rounded-lg border p-4 ${(faellig30?.length || 0) > (faellig7?.length || 0) ? "border-orange-200 bg-orange-50" : "border-[var(--border)] bg-[var(--bg-card)]"}`}>
           <div className="text-sm font-medium text-[var(--text-secondary)]">Fällig in 30 Tagen</div>
-          <div className={`mt-1 text-2xl font-bold ${(faellig30?.length || 0) > (faellig7?.length || 0) ? "text-orange-600" : "text-[var(--text-primary)]"}`}>{faellig30?.length || 0}</div>
+          <div className={`mt-1 text-2xl font-bold ${(faellig30?.length || 0) > (faellig7?.length || 0) ? "text-orange-400" : "text-[var(--text-primary)]"}`}>{faellig30?.length || 0}</div>
         </div>
       </div>
 
@@ -78,12 +79,12 @@ export default function WartungPage() {
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Bezeichnung *</label>
               <input required value={form.bezeichnung} onChange={(e) => setForm({ ...form, bezeichnung: e.target.value })}
                 placeholder="z.B. Heizungswartung"
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Kategorie *</label>
               <select required value={form.kategorie} onChange={(e) => setForm({ ...form, kategorie: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm">
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]">
                 <option value="">Auswählen...</option>
                 {KATEGORIEN.map((k) => <option key={k} value={k}>{k}</option>)}
               </select>
@@ -91,17 +92,17 @@ export default function WartungPage() {
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Intervall (Monate)</label>
               <input type="number" min={1} value={form.intervallMonate} onChange={(e) => setForm({ ...form, intervallMonate: parseInt(e.target.value) })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Nächste Fälligkeit</label>
               <input type="date" value={form.naechsteFaelligkeit} onChange={(e) => setForm({ ...form, naechsteFaelligkeit: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[var(--text-secondary)]">Verantwortlicher</label>
               <input value={form.verantwortlicher} onChange={(e) => setForm({ ...form, verantwortlicher: e.target.value })}
-                className="mt-1 block w-full rounded border border-[var(--border)] px-3 py-2 text-sm" />
+                className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)]" />
             </div>
           </div>
           <div className="mt-4 flex gap-2">
@@ -146,11 +147,20 @@ export default function WartungPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">alle {a.intervallMonate} Monate</td>
-                    <td className="px-6 py-4 text-right">
-                      <button onClick={() => erledigtMutation.mutate({ id: a.id })} disabled={erledigtMutation.isPending}
-                        className="mr-2 text-sm text-green-600 hover:text-green-800">Erledigt</button>
+                    <td className="px-6 py-4 text-right flex items-center justify-end gap-3">
+                      {a.letzteAusfuehrung ? (
+                        <button onClick={() => undoErledigt.mutate({ id: a.id })} disabled={undoErledigt.isPending}
+                          className="text-sm text-yellow-400 hover:text-yellow-300 disabled:opacity-50">
+                          ↩ Rückgängig
+                        </button>
+                      ) : (
+                        <button onClick={() => erledigtMutation.mutate({ id: a.id })} disabled={erledigtMutation.isPending}
+                          className="text-sm text-green-400 hover:text-green-300 disabled:opacity-50">
+                          Erledigt
+                        </button>
+                      )}
                       <button onClick={() => confirm("Löschen?") && deleteMutation.mutate({ id: a.id })}
-                        className="text-sm text-red-600 hover:text-red-800">Löschen</button>
+                        className="text-sm text-red-400 hover:text-red-300">Löschen</button>
                     </td>
                   </tr>
                 );

@@ -350,6 +350,7 @@ export async function ermittleMahnvorschlaege(tenantId: string) {
       tageUeberfaellig,
       empfohleneStufe,
       letzteMahnung,
+      offeneSollstellungen: mv.sollstellungen,
     });
   }
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { trpc } from "@/lib/trpc/client";
 import { ErweiterterMieterModal } from "@/components/mieter/ErweiterterMieterModal";
+import { toast } from "sonner";
 
 export default function MieterDetailPage() {
   const params = useParams();
@@ -11,8 +12,19 @@ export default function MieterDetailPage() {
   const utils = trpc.useUtils();
   const mieterId = params.id as string;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notizText, setNotizText] = useState("");
 
   const { data: mieter, isLoading } = trpc.mieter.getById.useQuery({ id: mieterId });
+  const { data: notizen, refetch: refetchNotizen } = trpc.mieter.listNotizen.useQuery({ mieterId });
+
+  const addNotizMutation = trpc.mieter.addNotiz.useMutation({
+    onSuccess: () => {
+      setNotizText("");
+      refetchNotizen();
+      toast.success("Notiz gespeichert");
+    },
+    onError: (err) => toast.error("Fehler: " + err.message),
+  });
 
   if (isLoading) {
     return (
@@ -29,7 +41,7 @@ export default function MieterDetailPage() {
           <h2 className="text-xl font-semibold text-[var(--text-primary)]">Mieter nicht gefunden</h2>
           <button
             onClick={() => router.push("/mieter")}
-            className="mt-4 text-blue-600 hover:text-blue-700"
+            className="mt-4 text-blue-400 hover:text-blue-300"
           >
             Zurück zur Übersicht
           </button>
@@ -209,7 +221,7 @@ export default function MieterDetailPage() {
                   </div>
                   <div>
                     <span className="text-[var(--text-secondary)]">Warmmiete</span>
-                    <div className="font-semibold text-blue-600">
+                    <div className="font-semibold text-blue-400">
                       {(parseFloat(mv.kaltmiete) + parseFloat(mv.bkVorauszahlung) + parseFloat(mv.hkVorauszahlung)).toFixed(2)} €
                     </div>
                   </div>
@@ -263,13 +275,65 @@ export default function MieterDetailPage() {
         </div>
       )}
 
-      {/* Notizen */}
+      {/* Notizen (statisches Freitext-Feld) */}
       {mieter.notizen && (
         <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm p-6">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Notizen</h3>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Stammnotiz</h3>
           <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">{mieter.notizen}</p>
         </div>
       )}
+
+      {/* Notizen-Timeline */}
+      <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+        <div className="border-b border-[var(--border)] px-6 py-4">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Kommentare & Verlauf</h2>
+        </div>
+        <div className="p-6 space-y-4">
+          {/* Neue Notiz */}
+          <div className="flex gap-3">
+            <textarea
+              value={notizText}
+              onChange={(e) => setNotizText(e.target.value)}
+              placeholder="Notiz hinzufügen..."
+              rows={3}
+              className="flex-1 rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+            <button
+              onClick={() => notizText.trim() && addNotizMutation.mutate({ mieterId, inhalt: notizText.trim() })}
+              disabled={!notizText.trim() || addNotizMutation.isPending}
+              className="self-start rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {addNotizMutation.isPending ? "..." : "Speichern"}
+            </button>
+          </div>
+
+          {/* Timeline */}
+          {notizen && notizen.length > 0 ? (
+            <div className="space-y-3">
+              {notizen.map((n: any) => (
+                <div key={n.id} className="flex gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-xs font-semibold text-blue-400">
+                    {(n.user?.name || n.user?.email || "?")[0]?.toUpperCase()}
+                  </div>
+                  <div className="flex-1 rounded-lg bg-[var(--bg-page)] border border-[var(--border)] px-4 py-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-[var(--text-secondary)]">
+                        {n.user?.name || n.user?.email || "Unbekannt"}
+                      </span>
+                      <span className="text-xs text-[var(--text-muted)]">
+                        {new Date(n.createdAt).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-[var(--text-primary)] whitespace-pre-wrap">{n.inhalt}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--text-muted)] text-center py-4">Noch keine Kommentare.</p>
+          )}
+        </div>
+      </div>
 
       {/* Modal */}
       <ErweiterterMieterModal

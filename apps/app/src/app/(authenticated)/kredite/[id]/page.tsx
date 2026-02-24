@@ -109,7 +109,7 @@ export default function KreditDetailPage() {
         </Card>
         <Card className="p-4">
           <div className="text-sm text-[var(--text-secondary)]">Aktuelle Restschuld</div>
-          <div className="mt-1 text-2xl font-bold text-red-600">
+          <div className="mt-1 text-2xl font-bold text-red-400">
             {parseFloat(kredit.restschuld).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -119,7 +119,7 @@ export default function KreditDetailPage() {
         </Card>
         <Card className="p-4">
           <div className="text-sm text-[var(--text-secondary)]">Monatliche Rate</div>
-          <div className="mt-1 text-2xl font-bold text-blue-600">
+          <div className="mt-1 text-2xl font-bold text-blue-400">
             {parseFloat(kredit.rate).toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -254,7 +254,7 @@ export default function KreditDetailPage() {
             <div className="mb-4 grid grid-cols-3 gap-4">
               <div className="rounded-lg bg-[var(--bg-page)] p-3">
                 <div className="text-sm text-[var(--text-secondary)]">Gesamtzinsen</div>
-                <div className="text-lg font-bold text-orange-600">
+                <div className="text-lg font-bold text-orange-400">
                   {tilgungsplanData.gesamtkosten.gesamtzinsen.toLocaleString(
                     "de-DE",
                     {
@@ -267,7 +267,7 @@ export default function KreditDetailPage() {
               </div>
               <div className="rounded-lg bg-[var(--bg-page)] p-3">
                 <div className="text-sm text-[var(--text-secondary)]">Gesamttilgung</div>
-                <div className="text-lg font-bold text-blue-600">
+                <div className="text-lg font-bold text-blue-400">
                   {tilgungsplanData.gesamtkosten.gesamttilgung.toLocaleString(
                     "de-DE",
                     {
@@ -347,13 +347,13 @@ export default function KreditDetailPage() {
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-orange-600">
+                      <td className="px-6 py-4 text-right text-sm text-orange-400">
                         {eintrag.zinsen.toLocaleString("de-DE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-blue-600">
+                      <td className="px-6 py-4 text-right text-sm text-blue-400">
                         {eintrag.tilgung.toLocaleString("de-DE", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,

@@ -307,7 +307,7 @@ export function CustomizableDashboard({ data, isLoading }: CustomizableDashboard
       {isEditing && (
         <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 px-4 py-3">
           <div className="flex items-center gap-3">
-            <svg className="h-5 w-5 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 flex-shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-sm text-blue-400">

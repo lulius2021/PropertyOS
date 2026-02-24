@@ -155,10 +155,11 @@ export const mahnungenRouter = router({
         } catch (error) {
           // Dokument-Generierung fehlgeschlagen, aber Mahnung wurde erstellt
           console.error("Dokument-Generierung fehlgeschlagen:", error);
+          return { mahnung, dokument: null, dokumentFehler: true };
         }
       }
 
-      return { mahnung, dokument };
+      return { mahnung, dokument, dokumentFehler: false };
     }),
 
   /**

@@ -88,7 +88,7 @@ export default function MieterPage() {
       </div>
 
       {/* Statistics */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="text-sm font-medium text-[var(--text-secondary)]">Gesamt</div>
@@ -101,17 +101,7 @@ export default function MieterPage() {
 
         <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
           <div className="text-sm font-medium text-[var(--text-secondary)]">Aktive Mieter</div>
-          <div className="mt-2 text-2xl font-bold text-green-600">{aktiveMieter?.length || 0}</div>
-        </div>
-
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
-          <div className="text-sm font-medium text-[var(--text-secondary)]">Frühere Mieter</div>
-          <div className="mt-2 text-2xl font-bold text-[var(--text-secondary)]">{fruehereMieter?.length || 0}</div>
-        </div>
-
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
-          <div className="text-sm font-medium text-[var(--text-secondary)]">Geschäftlich</div>
-          <div className="mt-2 text-2xl font-bold text-purple-600">{stats?.gewerbe || 0}</div>
+          <div className="mt-2 text-2xl font-bold text-green-400">{aktiveMieter?.length || 0}</div>
         </div>
       </div>
 
@@ -159,7 +149,7 @@ export default function MieterPage() {
             {selectedObjekte.length > 0 && (
               <button
                 onClick={() => setSelectedObjekte([])}
-                className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                className="mt-3 text-sm text-blue-400 hover:text-blue-300 font-medium"
               >
                 Alle Filter zurücksetzen
               </button>

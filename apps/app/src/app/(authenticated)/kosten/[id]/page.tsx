@@ -126,7 +126,7 @@ export default function KostenDetailPage() {
         </Card>
         <Card className="p-4">
           <div className="text-sm text-[var(--text-secondary)]">Gezahlt</div>
-          <div className="mt-1 text-2xl font-bold text-blue-600">
+          <div className="mt-1 text-2xl font-bold text-blue-400">
             {kosten.summeZahlungen.toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -136,7 +136,7 @@ export default function KostenDetailPage() {
         </Card>
         <Card className="p-4">
           <div className="text-sm text-[var(--text-secondary)]">Restbetrag</div>
-          <div className="mt-1 text-2xl font-bold text-orange-600">
+          <div className="mt-1 text-2xl font-bold text-orange-400">
             {kosten.restbetrag.toLocaleString("de-DE", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,

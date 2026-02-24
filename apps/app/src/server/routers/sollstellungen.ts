@@ -226,6 +226,56 @@ export const sollstellungenRouter = router({
     }),
 
   /**
+   * Sollstellung bearbeiten (nur wenn OFFEN)
+   */
+  update: protectedProcedure
+    .input(z.object({
+      id: z.string(),
+      titel: z.string().min(1).optional(),
+      betragGesamt: z.number().positive().optional(),
+      faelligkeitsdatum: z.date().optional(),
+      notiz: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      const soll = await ctx.db.sollstellung.findFirst({ where: { id, tenantId: ctx.tenantId } });
+      if (!soll) throw new Error("Nicht gefunden");
+      if (soll.status !== "OFFEN") throw new Error("Nur offene Sollstellungen können bearbeitet werden");
+      return ctx.db.sollstellung.update({ where: { id }, data });
+    }),
+
+  /**
+   * Manuell als bezahlt markieren
+   */
+  manualBezahlt: protectedProcedure
+    .input(z.object({
+      id: z.string(),
+      zahlungsart: z.enum(["UEBERWEISUNG", "BARGELD", "LASTSCHRIFT"]),
+      zahlungsdatum: z.date(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const soll = await ctx.db.sollstellung.findFirst({ where: { id: input.id, tenantId: ctx.tenantId } });
+      if (!soll) throw new Error("Nicht gefunden");
+      const updated = await ctx.db.sollstellung.update({
+        where: { id: input.id },
+        data: {
+          status: "BEZAHLT",
+          gedecktGesamt: soll.betragGesamt,
+          notiz: `Manuell als bezahlt markiert (${input.zahlungsart}, ${input.zahlungsdatum.toLocaleDateString("de-DE")})`,
+        },
+      });
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "SOLLSTELLUNG_MANUELL_BEZAHLT",
+        entitaet: "Sollstellung",
+        entitaetId: input.id,
+        neuWert: { status: "BEZAHLT", zahlungsart: input.zahlungsart },
+      });
+      return updated;
+    }),
+
+  /**
    * Statistiken für Dashboard
    */
   stats: protectedProcedure.query(async ({ ctx }) => {

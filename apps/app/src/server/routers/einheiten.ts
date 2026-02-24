@@ -96,7 +96,7 @@ export const einheitenRouter = router({
         typ: z.enum(["WOHNUNG", "GEWERBE", "STELLPLATZ", "LAGER"]),
         flaeche: z.number().positive(),
         zimmer: z.number().int().positive().optional(),
-        etage: z.number().int().optional(),
+        lage: z.string().optional(),
         ausstattung: z.string().optional(),
         eurProQm: z.number().optional(),
       })
@@ -141,7 +141,7 @@ export const einheitenRouter = router({
         typ: z.enum(["WOHNUNG", "GEWERBE", "STELLPLATZ", "LAGER"]).optional(),
         flaeche: z.number().positive().optional(),
         zimmer: z.number().int().positive().optional().nullable(),
-        etage: z.number().int().optional().nullable(),
+        lage: z.string().optional().nullable(),
         ausstattung: z.string().optional().nullable(),
         eurProQm: z.number().optional().nullable(),
       })
