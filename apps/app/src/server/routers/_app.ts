@@ -22,6 +22,7 @@ import { nebenkostenabrechnungRouter } from "./nebenkostenabrechnung";
 import { wartungRouter } from "./wartung";
 import { sucheRouter } from "./suche";
 import { feedbackRouter } from "./feedback";
+import { billingRouter } from "./billing";
 
 export const appRouter = router({
   objekte: objekteRouter,
@@ -47,6 +48,7 @@ export const appRouter = router({
   wartung: wartungRouter,
   suche: sucheRouter,
   feedback: feedbackRouter,
+  billing: billingRouter,
 });
 
 export type AppRouter = typeof appRouter;

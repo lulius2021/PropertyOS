@@ -20,6 +20,19 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Stripe Billing
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  subscriptionStatus   String?  // active | trialing | past_due | canceled
+  billingInterval      String?  // monthly | annual
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime?
+
+  // Referral
+  referralCode         String?  @unique // PG-XXXXXX (generiert bei Registrierung)
+  referredBy           String?  // referral code des Werbers
+  referralUsed         Boolean  @default(false) // ob Referral-Kredit bereits vergeben
+
   // Auto-Mahnung Konfiguration
   autoMahnungAktiv               Boolean @default(false)
   autoMahnungTageNachFaelligkeit Int     @default(7)
@@ -37,6 +50,7 @@ model Tenant {
   ausgleichsReihenfolge String @default("AELTESTE_ZUERST") // "AELTESTE_ZUERST" | "NEUESTE_ZUERST"
 
   users                   User[]
+  referralCredits         ReferralCredit[]
   objekte                 Objekt[]
   einheiten               Einheit[]
   mieter                  Mieter[]
@@ -1250,6 +1264,34 @@ model DienstleisterObjekt {
 
   @@id([dienstleisterId, objektId])
   @@map("dienstleister_objekte")
+}
+
+// ============================================
+// Q) STRIPE / REFERRAL
+// ============================================
+
+model ReferralCredit {
+  id               String    @id @default(cuid())
+  tenantId         String    // Empfehlender (bekommt den Kredit)
+  referredTenantId String    // Geworbener
+  amount           Float     // Gutschrift in EUR
+  status           String    @default("pending") // pending | applied | cancelled
+  createdAt        DateTime  @default(now())
+  appliedAt        DateTime?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("referral_credits")
+}
+
+model UsedPaymentMethod {
+  id                String   @id @default(cuid())
+  paymentMethodHash String   @unique  // sha256(Stripe fingerprint)
+  emailHash         String             // sha256(email lowercase)
+  createdAt         DateTime @default(now())
+
+  @@map("used_payment_methods")
 }
 
 // ============================================

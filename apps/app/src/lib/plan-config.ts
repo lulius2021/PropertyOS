@@ -12,12 +12,16 @@ export type PlanFeature =
   | "multiUser"
   | "api";
 
-export type PlanName = "starter" | "professional" | "enterprise";
+export type PlanName = "starter" | "plus" | "pro" | "unlimited";
 
 export interface PlanLimits {
   maxObjekte: number;
   features: PlanFeature[];
   label: string;
+  priceMonthly: number; // EUR
+  priceAnnual: number;  // EUR per month (annual billing)
+  stripePriceIdMonthly: string;
+  stripePriceIdAnnual: string;
 }
 
 export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
@@ -25,16 +29,37 @@ export const PLAN_LIMITS: Record<PlanName, PlanLimits> = {
     maxObjekte: 5,
     features: ["basis"],
     label: "Starter",
+    priceMonthly: 9.99,
+    priceAnnual: 8.99,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_STARTER_MONTHLY ?? "",
+    stripePriceIdAnnual: process.env.STRIPE_PRICE_STARTER_ANNUAL ?? "",
   },
-  professional: {
-    maxObjekte: Infinity,
+  plus: {
+    maxObjekte: 20,
     features: ["basis", "tickets", "bankImport", "dokumente", "export"],
-    label: "Professional",
+    label: "Plus",
+    priceMonthly: 29.99,
+    priceAnnual: 26.99,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_PLUS_MONTHLY ?? "",
+    stripePriceIdAnnual: process.env.STRIPE_PRICE_PLUS_ANNUAL ?? "",
   },
-  enterprise: {
+  pro: {
+    maxObjekte: 60,
+    features: ["basis", "tickets", "bankImport", "dokumente", "export"],
+    label: "Pro",
+    priceMonthly: 79.99,
+    priceAnnual: 71.99,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY ?? "",
+    stripePriceIdAnnual: process.env.STRIPE_PRICE_PRO_ANNUAL ?? "",
+  },
+  unlimited: {
     maxObjekte: Infinity,
     features: ["basis", "tickets", "bankImport", "dokumente", "export", "multiUser", "api"],
-    label: "Enterprise",
+    label: "Unlimited",
+    priceMonthly: 149.0,
+    priceAnnual: 134.1,
+    stripePriceIdMonthly: process.env.STRIPE_PRICE_UNLIMITED_MONTHLY ?? "",
+    stripePriceIdAnnual: process.env.STRIPE_PRICE_UNLIMITED_ANNUAL ?? "",
   },
 };
 
@@ -62,9 +87,11 @@ export function getMaxObjekte(plan: string): number {
 export function getUpgradePlan(currentPlan: string): PlanName | null {
   switch (currentPlan) {
     case "starter":
-      return "professional";
-    case "professional":
-      return "enterprise";
+      return "plus";
+    case "plus":
+      return "pro";
+    case "pro":
+      return "unlimited";
     default:
       return null;
   }
@@ -82,3 +109,15 @@ export const FEATURE_LABELS: Record<PlanFeature, string> = {
   multiUser: "Multi-User",
   api: "API-Zugriff",
 };
+
+/**
+ * Berechnet den monatlichen Äquivalentpreis für den Referral-Kredit
+ */
+export function getReferralCreditAmount(plan: PlanName, interval: "monthly" | "annual"): number {
+  const limits = PLAN_LIMITS[plan];
+  if (!limits) return 0;
+  if (interval === "annual") {
+    return limits.priceAnnual * 2;
+  }
+  return limits.priceMonthly;
+}

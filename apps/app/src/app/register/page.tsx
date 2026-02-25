@@ -1,15 +1,27 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { validatePassword } from "@/lib/password-policy";
 import {
   AuthCard, AuthInput, AuthButton, AuthError,
   MailIcon, LockIcon, EyeIcon, UserIcon, ShieldIcon,
 } from "@/components/auth/AuthCard";
+import { trpc } from "@/lib/trpc/client";
+
+const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  : null;
 
 const PhoneIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -25,37 +37,28 @@ const BuildingIcon = () => (
   </svg>
 );
 
+const GiftIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 12 20 22 4 22 4 12"/>
+    <rect x="2" y="7" width="20" height="5"/>
+    <line x1="12" y1="22" x2="12" y2="7"/>
+    <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+    <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
 // ── Plan data ────────────────────────────────────────────────────
 const PAID_PLANS = [
-  {
-    id: "starter",
-    label: "Starter",
-    priceMonthly: "9,99",
-    priceAnnual: "8,99",
-    limit: "bis 5 Objekte",
-  },
-  {
-    id: "plus",
-    label: "Plus",
-    priceMonthly: "29,99",
-    priceAnnual: "26,99",
-    limit: "bis 20 Objekte",
-  },
-  {
-    id: "pro",
-    label: "Pro",
-    priceMonthly: "79,99",
-    priceAnnual: "71,99",
-    limit: "bis 60 Objekte",
-    badge: "Empfohlen",
-  },
-  {
-    id: "unlimited",
-    label: "Unlimited",
-    priceMonthly: "149,00",
-    priceAnnual: "134,10",
-    limit: "Unbegrenzt",
-  },
+  { id: "starter", label: "Starter", priceMonthly: "9,99", priceAnnual: "8,99", limit: "bis 5 Objekte" },
+  { id: "plus",    label: "Plus",    priceMonthly: "29,99", priceAnnual: "26,99", limit: "bis 20 Objekte" },
+  { id: "pro",     label: "Pro",     priceMonthly: "79,99", priceAnnual: "71,99", limit: "bis 60 Objekte", badge: "Empfohlen" },
+  { id: "unlimited", label: "Unlimited", priceMonthly: "149,00", priceAnnual: "134,10", limit: "Unbegrenzt" },
 ] as const;
 
 type PlanId = "trial" | (typeof PAID_PLANS)[number]["id"];
@@ -63,6 +66,73 @@ type Billing = "monthly" | "annual";
 
 function formatPhone(raw: string) {
   return raw.replace(/[^\d\s+\-()]/g, "");
+}
+
+// ── PaymentStep component (shown after registration for paid plans) ──
+function PaymentStep({
+  clientSecret,
+  email,
+  password,
+  onSuccess,
+  onError,
+}: {
+  clientSecret: string;
+  email: string;
+  password: string;
+  onSuccess: () => void;
+  onError: (msg: string) => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    if (!stripe || !elements) return;
+    setLoading(true);
+    try {
+      // Try confirmPayment first, fall back to confirmSetup
+      // Versuche confirmPayment, falls fehlschlägt confirmSetup (für Trials)
+      let result = await stripe.confirmPayment({
+        elements,
+        confirmParams: { return_url: `${window.location.origin}/dashboard` },
+        redirect: "if_required",
+      });
+
+      if (result.error?.code === "payment_intent_unexpected_state" || result.error?.type === "invalid_request_error") {
+        const setupResult = await stripe.confirmSetup({
+          elements,
+          confirmParams: { return_url: `${window.location.origin}/dashboard` },
+          redirect: "if_required",
+        });
+        if (setupResult.error) {
+          onError(setupResult.error.message ?? "Zahlung fehlgeschlagen");
+          return;
+        }
+      } else if (result.error) {
+        onError(result.error.message ?? "Zahlung fehlgeschlagen");
+        return;
+      }
+
+      // Auto-Login nach erfolgreicher Zahlung
+      await signIn("credentials", { email, password, redirect: false });
+      onSuccess();
+    } catch {
+      onError("Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-[var(--auth-input-border)] p-4">
+        <PaymentElement />
+      </div>
+      <AuthButton loading={loading} onClick={handleConfirm}>
+        {loading ? "Zahlung wird verarbeitet…" : "Jetzt kostenpflichtig abonnieren"}
+      </AuthButton>
+    </div>
+  );
 }
 
 function RegisterForm() {
@@ -74,14 +144,42 @@ function RegisterForm() {
     urlPlan === "trial" || PAID_PLANS.some((p) => p.id === urlPlan) ? (urlPlan ?? "trial") : "trial"
   );
   const [billing, setBilling] = useState<Billing>("monthly");
-
   const [form, setForm] = useState({ name: "", company: "", phone: "", email: "", password: "" });
+  const [referralCode, setReferralCode] = useState("");
+  const [referralValid, setReferralValid] = useState<boolean | null>(null);
+  const [referralChecking, setReferralChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
+  // Payment step state
+  const [step, setStep] = useState<"info" | "payment">("info");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
   const set = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [field]: field === "phone" ? formatPhone(e.target.value) : e.target.value }));
+
+  const validateReferral = trpc.billing.validateReferralCode.useQuery(
+    { code: referralCode.trim().toUpperCase() },
+    { enabled: false }
+  );
+
+  const handleReferralBlur = async () => {
+    const code = referralCode.trim().toUpperCase();
+    if (!code) { setReferralValid(null); return; }
+    setReferralChecking(true);
+    try {
+      const result = await validateReferral.refetch();
+      setReferralValid(result.data?.valid ?? false);
+    } catch {
+      setReferralValid(false);
+    } finally {
+      setReferralChecking(false);
+    }
+  };
+
+  const isTrial = selectedPlan === "trial";
+  const isPaid = !isTrial;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +187,7 @@ function RegisterForm() {
     const validation = validatePassword(form.password);
     if (!validation.valid) { setError(validation.errors[0]); return; }
     setLoading(true);
+
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -100,14 +199,27 @@ function RegisterForm() {
           email: form.email,
           password: form.password,
           plan: selectedPlan,
-          billing: selectedPlan === "trial" ? null : billing,
+          billing: isTrial ? null : billing,
+          referralCode: referralCode.trim().toUpperCase() || null,
         }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Registrierung fehlgeschlagen"); return; }
-      const result = await signIn("credentials", { email: form.email, password: form.password, redirect: false });
-      if (result?.ok) { router.push("/dashboard"); router.refresh(); }
-      else { router.push("/login?registered=true"); }
+
+      if (isPaid && data.clientSecret && stripePromise) {
+        // Paid plan with Stripe: show payment step
+        setClientSecret(data.clientSecret);
+        setStep("payment");
+      } else {
+        // Trial or Stripe not configured: direct sign in
+        const result = await signIn("credentials", {
+          email: form.email,
+          password: form.password,
+          redirect: false,
+        });
+        if (result?.ok) { router.push("/dashboard"); router.refresh(); }
+        else { router.push("/login?registered=true"); }
+      }
     } catch {
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
     } finally {
@@ -115,8 +227,48 @@ function RegisterForm() {
     }
   };
 
-  const isTrial = selectedPlan === "trial";
+  // ── Payment step ─────────────────────────────────────────────
+  if (step === "payment" && clientSecret && stripePromise) {
+    return (
+      <AuthCard wide>
+        <div className="mb-6 text-center">
+          <h1 className="text-[2rem] font-bold tracking-tight text-[var(--auth-heading)]">Zahlungsmethode</h1>
+          <p className="mt-1.5 text-[0.9rem] leading-relaxed text-[var(--auth-text-sub)]">
+            Ihre Daten sind sicher verschlüsselt.
+          </p>
+        </div>
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+        <Elements
+          stripe={stripePromise}
+          options={{
+            clientSecret,
+            appearance: { theme: "night", variables: { colorPrimary: "#0066ff" } },
+          }}
+        >
+          <PaymentStep
+            clientSecret={clientSecret}
+            email={form.email}
+            password={form.password}
+            onSuccess={() => { router.push("/dashboard"); router.refresh(); }}
+            onError={(msg) => setError(msg)}
+          />
+        </Elements>
+        <button
+          type="button"
+          onClick={() => { setStep("info"); setClientSecret(null); }}
+          className="mt-3 w-full text-center text-sm text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)] transition"
+        >
+          ← Zurück
+        </button>
+      </AuthCard>
+    );
+  }
 
+  // ── Info step (main form) ────────────────────────────────────
   return (
     <AuthCard wide>
       {/* Header */}
@@ -129,8 +281,7 @@ function RegisterForm() {
 
       {/* ── Plan selector ─────────────────────────────────────── */}
       <div className="mb-5 space-y-3">
-
-        {/* Free Trial — full-width banner */}
+        {/* Free Trial */}
         <button
           type="button"
           onClick={() => setSelectedPlan("trial")}
@@ -197,9 +348,7 @@ function RegisterForm() {
             onClick={() => setBilling("monthly")}
             className={[
               "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
-              billing === "monthly"
-                ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm"
-                : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
+              billing === "monthly" ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm" : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
             ].join(" ")}
           >
             Monatlich
@@ -209,9 +358,7 @@ function RegisterForm() {
             onClick={() => setBilling("annual")}
             className={[
               "flex-1 rounded-full py-1.5 text-xs font-semibold transition-all duration-150",
-              billing === "annual"
-                ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm"
-                : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
+              billing === "annual" ? "bg-[var(--auth-card)] text-[var(--auth-heading)] shadow-sm" : "text-[var(--auth-text-muted)] hover:text-[var(--auth-heading)]",
             ].join(" ")}
           >
             Jährlich
@@ -336,12 +483,48 @@ function RegisterForm() {
           <PasswordStrengthMeter password={form.password} />
         </div>
 
+        {/* Referral-Code Feld */}
+        <div className="relative">
+          <AuthInput
+            icon={<GiftIcon />}
+            type="text"
+            value={referralCode}
+            onChange={(e) => {
+              setReferralCode(e.target.value.toUpperCase());
+              setReferralValid(null);
+            }}
+            onBlur={handleReferralBlur}
+            placeholder="Referral-Code (optional, z.B. PG-7X9K2R)"
+            autoComplete="off"
+            trailing={
+              referralChecking ? (
+                <svg className="h-4 w-4 animate-spin text-[var(--auth-text-muted)]" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+              ) : referralValid === true ? (
+                <span className="text-green-400"><CheckIcon /></span>
+              ) : referralValid === false && referralCode ? (
+                <span className="text-red-400 text-xs">Ungültig</span>
+              ) : null
+            }
+          />
+          {referralValid === true && (
+            <p className="mt-1 flex items-center gap-1 text-[0.72rem] font-medium text-green-400">
+              <CheckIcon />
+              Code gültig — 1 Monat gratis!
+            </p>
+          )}
+        </div>
+
         <div className="pt-1">
           <AuthButton loading={loading}>
             {loading
               ? "Account wird erstellt…"
               : isTrial
               ? "30 Tage gratis starten"
+              : isPaid && stripePromise
+              ? `Weiter zur Zahlung`
               : `Jetzt ${billing === "annual" ? "jährlich" : "monatlich"} starten`}
           </AuthButton>
         </div>
@@ -360,7 +543,6 @@ function RegisterForm() {
           Anmelden
         </Link>
       </p>
-
     </AuthCard>
   );
 }
