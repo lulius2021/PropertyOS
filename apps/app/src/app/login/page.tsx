@@ -131,11 +131,6 @@ function LoginForm() {
         </Link>
       </p>
 
-      {process.env.NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS === "true" && (
-        <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-center">
-          <p className="text-xs text-[#4a5568]">Demo: <span className="font-mono text-[#6b7a99]">admin@demo.de / demo1234</span></p>
-        </div>
-      )}
     </AuthCard>
   );
 }
