@@ -19,27 +19,34 @@ export default function MahnungenPage() {
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { data: mahnungen, isLoading, refetch } = trpc.mahnungen.list.useQuery();
+  const utils = trpc.useUtils();
+  const { data: mahnungen, isLoading } = trpc.mahnungen.list.useQuery();
   const { data: vorschlaege, isLoading: vorschlaegeLoading } =
     trpc.mahnungen.vorschlaege.useQuery();
   const { data: stats } = trpc.mahnungen.stats.useQuery();
 
+  const invalidateAll = () => {
+    utils.mahnungen.list.invalidate();
+    utils.mahnungen.vorschlaege.invalidate();
+    utils.mahnungen.stats.invalidate();
+  };
+
   const erstellenMutation = trpc.mahnungen.erstellen.useMutation({
     onSuccess: () => {
-      refetch();
+      invalidateAll();
     },
   });
 
   const updateStatusMutation = trpc.mahnungen.updateStatus.useMutation({
     onSuccess: () => {
-      refetch();
+      invalidateAll();
       setOpenDropdownId(null);
     },
   });
 
   const sperrenMutation = trpc.mahnungen.sperren.useMutation({
     onSuccess: () => {
-      refetch();
+      invalidateAll();
     },
   });
 
@@ -101,7 +108,10 @@ export default function MahnungenPage() {
 
   const handleStatusChange = async (mahnungId: string, newStatus: string) => {
     try {
-      await updateStatusMutation.mutateAsync({ id: mahnungId, status: newStatus as "STRITTIG" | "INKASSO" });
+      await updateStatusMutation.mutateAsync({
+        id: mahnungId,
+        status: newStatus as "OFFEN" | "VERSENDET" | "BEZAHLT" | "STORNIERT" | "STRITTIG" | "INKASSO",
+      });
       setSuccessMsg(`Status auf ${newStatus} geändert.`);
     } catch (error) {
       setErrorMsg(`Fehler: ${(error as Error).message}`);
@@ -342,7 +352,13 @@ export default function MahnungenPage() {
               <thead className="bg-[var(--bg-page)]">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                    Mieter / Objekt
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Mahnstufe
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                    Offene Posten
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                     Datum
@@ -367,8 +383,23 @@ export default function MahnungenPage() {
               <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-card)]">
                 {mahnungen?.map((mahnung: any) => (
                   <tr key={mahnung.id} className="hover:bg-[var(--bg-card-hover)]">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-[var(--text-primary)]">
+                        {mahnung.mietverhaeltnis?.mieter?.nachname || "—"}
+                        {mahnung.mietverhaeltnis?.mieter?.vorname ? `, ${mahnung.mietverhaeltnis.mieter.vorname}` : ""}
+                      </div>
+                      <div className="text-xs text-[var(--text-secondary)]">
+                        {mahnung.mietverhaeltnis?.einheit?.objekt?.bezeichnung || ""}{" "}
+                        {mahnung.mietverhaeltnis?.einheit?.einheitNr ? `/ ${mahnung.mietverhaeltnis.einheit.einheitNr}` : ""}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 font-medium text-[var(--text-primary)]">
                       {MAHNSTUFE_LABELS[mahnung.mahnstufe] ?? mahnung.mahnstufe}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
+                      {mahnung.offeneSollstellungen && mahnung.offeneSollstellungen.length > 0
+                        ? mahnung.offeneSollstellungen.map((s: any) => s.titel).join(", ")
+                        : "—"}
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                       {new Date(mahnung.mahnDatum).toLocaleDateString("de-DE")}

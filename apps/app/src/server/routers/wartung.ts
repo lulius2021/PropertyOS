@@ -6,11 +6,48 @@ export const wartungRouter = router({
   list: protectedProcedure
     .input(z.object({ objektId: z.string().optional(), einheitId: z.string().optional() }).optional())
     .query(async ({ ctx, input }) => {
-      return ctx.db.wartungsaufgabe.findMany({
+      const aufgaben = await ctx.db.wartungsaufgabe.findMany({
         where: { tenantId: ctx.tenantId, objektId: input?.objektId, einheitId: input?.einheitId },
         orderBy: { naechsteFaelligkeit: "asc" },
       });
+
+      // Enrich with Objekt/Einheit names (no Prisma relation on Wartungsaufgabe)
+      const objektIds = [...new Set(aufgaben.map((a) => a.objektId).filter(Boolean))] as string[];
+      const einheitIds = [...new Set(aufgaben.map((a) => a.einheitId).filter(Boolean))] as string[];
+
+      const [objekte, einheiten] = await Promise.all([
+        objektIds.length > 0
+          ? ctx.db.objekt.findMany({ where: { id: { in: objektIds } }, select: { id: true, bezeichnung: true } })
+          : [],
+        einheitIds.length > 0
+          ? ctx.db.einheit.findMany({ where: { id: { in: einheitIds } }, select: { id: true, einheitNr: true, lage: true } })
+          : [],
+      ]);
+
+      const objektMap = Object.fromEntries(objekte.map((o) => [o.id, o.bezeichnung]));
+      const einheitMap = Object.fromEntries(einheiten.map((e) => [e.id, `${e.einheitNr}${e.lage ? ` (${e.lage})` : ""}`]));
+
+      return aufgaben.map((a) => ({
+        ...a,
+        objektName: a.objektId ? objektMap[a.objektId] ?? null : null,
+        einheitName: a.einheitId ? einheitMap[a.einheitId] ?? null : null,
+      }));
     }),
+
+  // Helper: list Objekte + Einheiten for dropdowns in the create form
+  objekteUndEinheiten: protectedProcedure.query(async ({ ctx }) => {
+    const objekte = await ctx.db.objekt.findMany({
+      where: { tenantId: ctx.tenantId },
+      select: { id: true, bezeichnung: true },
+      orderBy: { bezeichnung: "asc" },
+    });
+    const einheiten = await ctx.db.einheit.findMany({
+      where: { tenantId: ctx.tenantId },
+      select: { id: true, objektId: true, einheitNr: true, lage: true },
+      orderBy: { einheitNr: "asc" },
+    });
+    return { objekte, einheiten };
+  }),
 
   listFaelligIn: protectedProcedure
     .input(z.object({ tage: z.number().default(30) }))

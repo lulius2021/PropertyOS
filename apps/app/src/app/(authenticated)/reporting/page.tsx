@@ -16,8 +16,33 @@ import {
 } from "recharts";
 import * as XLSX from "xlsx";
 
+type Zeitraum = "3m" | "6m" | "12m" | "alle";
+
+const zeitraumOptions: { value: Zeitraum; label: string }[] = [
+  { value: "3m", label: "3 Monate" },
+  { value: "6m", label: "6 Monate" },
+  { value: "12m", label: "12 Monate" },
+  { value: "alle", label: "Alle" },
+];
+
+const tooltipContentStyle = {
+  backgroundColor: "var(--bg-card)",
+  border: "1px solid var(--border)",
+  borderRadius: "8px",
+};
+const tooltipLabelStyle = { color: "var(--text-primary)" };
+const tooltipItemStyle = { color: "var(--text-secondary)" };
+
+const axisTickStyle = { fill: "#9ca3af", fontSize: 12 };
+const gridStroke = "rgba(255,255,255,0.1)";
+
+const legendFormatter = (value: string) => (
+  <span style={{ color: "#9ca3af" }}>{value}</span>
+);
+
 export default function ReportingPage() {
   const [exporting, setExporting] = useState(false);
+  const [zeitraum, setZeitraum] = useState<Zeitraum>("12m");
 
   const { data: monatsuebersicht } = trpc.reporting.monatsuebersicht.useQuery();
   const { data: statusquoten } = trpc.reporting.statusquoten.useQuery();
@@ -99,37 +124,67 @@ export default function ReportingPage() {
       </div>
 
       {/* Soll/Ist Monatsübersicht */}
-      <div className="mb-8 rounded-lg border bg-[var(--bg-card)] p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
-          Soll/Ist Übersicht (Letzte 12 Monate)
-        </h2>
-        {monatsuebersicht && monatsuebersicht.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monatsuebersicht}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="monat" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="soll"
-                stroke="#3b82f6"
-                name="Soll (€)"
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="ist"
-                stroke="#10b981"
-                name="Ist (€)"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
-        )}
+      <div className="mb-8 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+            Soll/Ist Übersicht
+          </h2>
+          <div className="flex gap-1">
+            {zeitraumOptions.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setZeitraum(opt.value)}
+                className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+                  zeitraum === opt.value
+                    ? "bg-blue-600 text-white"
+                    : "bg-[var(--bg-page)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {(() => {
+          const sliceCount =
+            zeitraum === "3m" ? 3 : zeitraum === "6m" ? 6 : zeitraum === "12m" ? 12 : undefined;
+          const chartData =
+            monatsuebersicht && sliceCount
+              ? monatsuebersicht.slice(-sliceCount)
+              : monatsuebersicht;
+
+          return chartData && chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="monat" tick={axisTickStyle} />
+                <YAxis tick={axisTickStyle} />
+                <Tooltip
+                  contentStyle={tooltipContentStyle}
+                  labelStyle={tooltipLabelStyle}
+                  itemStyle={tooltipItemStyle}
+                />
+                <Legend formatter={legendFormatter} />
+                <Line
+                  type="monotone"
+                  dataKey="soll"
+                  stroke="#3b82f6"
+                  name="Soll (€)"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="ist"
+                  stroke="#10b981"
+                  name="Ist (€)"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-[var(--text-secondary)]">Keine Daten verfügbar</p>
+          );
+        })()}
       </div>
 
       {/* Statusquoten */}
@@ -141,11 +196,15 @@ export default function ReportingPage() {
           {statusquoten?.einheiten && statusquoten.einheiten.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={statusquoten.einheiten}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="status" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="anzahl" fill="#3b82f6" name="Anzahl" />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="status" tick={axisTickStyle} />
+                <YAxis tick={axisTickStyle} />
+                <Tooltip
+                  contentStyle={tooltipContentStyle}
+                  labelStyle={tooltipLabelStyle}
+                  itemStyle={tooltipItemStyle}
+                />
+                <Bar dataKey="anzahl" fill="#3b82f6" name="Anzahl" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -160,11 +219,15 @@ export default function ReportingPage() {
           {statusquoten?.tickets && statusquoten.tickets.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={statusquoten.tickets}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="status" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="anzahl" fill="#f59e0b" name="Anzahl" />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="status" tick={axisTickStyle} />
+                <YAxis tick={axisTickStyle} />
+                <Tooltip
+                  contentStyle={tooltipContentStyle}
+                  labelStyle={tooltipLabelStyle}
+                  itemStyle={tooltipItemStyle}
+                />
+                <Bar dataKey="anzahl" fill="#f59e0b" name="Anzahl" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (

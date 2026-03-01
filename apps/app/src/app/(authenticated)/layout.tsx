@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { LogoutButton } from "@/components/layout/LogoutButton";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -20,6 +21,21 @@ export default async function AuthenticatedLayout({
   const user = session.user as any;
   if (user?.needsTwoFactor && !user?.twoFactorVerified) {
     redirect("/verify-2fa");
+  }
+
+  // Trial expiry check: redirect to /upgrade if trial ended and no active subscription
+  if (user?.tenantId) {
+    const tenant = await db.tenant.findUnique({
+      where: { id: user.tenantId },
+      select: { trialEndsAt: true, stripeSubscriptionId: true, subscriptionStatus: true },
+    });
+    const trialExpired =
+      tenant?.trialEndsAt &&
+      tenant.trialEndsAt < new Date() &&
+      !tenant.stripeSubscriptionId;
+    if (trialExpired) {
+      redirect("/upgrade");
+    }
   }
 
   const initials = (session.user?.name || session.user?.email || "U")

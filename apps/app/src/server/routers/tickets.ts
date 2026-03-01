@@ -68,6 +68,7 @@ export const ticketsRouter = router({
         include: {
           kommentare: {
             orderBy: { createdAt: "asc" },
+            include: { dienstleister: true },
           },
           dokumente: {
             orderBy: { hochgeladenAm: "desc" },

@@ -16,8 +16,8 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
     einheitId: defaultEinheitId ?? "",
     einzugsdatum: "",
     kaltmiete: "",
-    bkVorauszahlung: "0",
-    hkVorauszahlung: "0",
+    bkVorauszahlung: "",
+    hkVorauszahlung: "",
     kaution: "",
     notizen: "",
   });
@@ -37,8 +37,8 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
         einheitId: "",
         einzugsdatum: "",
         kaltmiete: "",
-        bkVorauszahlung: "0",
-        hkVorauszahlung: "0",
+        bkVorauszahlung: "",
+        hkVorauszahlung: "",
         kaution: "",
         notizen: "",
       });
@@ -64,8 +64,8 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
       einheitId: formData.einheitId,
       einzugsdatum: new Date(formData.einzugsdatum),
       kaltmiete: parseFloat(formData.kaltmiete),
-      bkVorauszahlung: parseFloat(formData.bkVorauszahlung),
-      hkVorauszahlung: parseFloat(formData.hkVorauszahlung),
+      bkVorauszahlung: parseFloat(formData.bkVorauszahlung) || 0,
+      hkVorauszahlung: parseFloat(formData.hkVorauszahlung) || 0,
       kaution: formData.kaution ? parseFloat(formData.kaution) : undefined,
       notizen: formData.notizen || undefined,
     });
@@ -101,7 +101,7 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
               required
               value={formData.mieterId}
               onChange={(e) => setFormData({ ...formData, mieterId: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="">Mieter wählen...</option>
               {mieter?.map((m) => (
@@ -118,29 +118,42 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
           </div>
 
           {/* Einheit */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-              Einheit <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={formData.einheitId}
-              onChange={(e) => setFormData({ ...formData, einheitId: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="">Einheit wählen...</option>
-              {verfuegbareEinheiten?.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.objekt?.bezeichnung} — Einheit {e.einheitNr} ({e.flaeche} m²)
-                </option>
-              ))}
-            </select>
-            {verfuegbareEinheiten?.length === 0 && (
-              <p className="mt-1 text-xs text-amber-600">
-                Keine verfügbaren Einheiten. Alle Einheiten sind belegt oder nicht vorhanden.
-              </p>
-            )}
-          </div>
+          {defaultEinheitId ? (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                Einheit
+              </label>
+              <div className="rounded-lg bg-[var(--bg-page)] border border-[var(--border)] px-4 py-2 text-sm text-[var(--text-secondary)]">
+                Einheit: {einheiten?.find((e) => e.id === defaultEinheitId)?.einheitNr ?? "Wird geladen..."}
+                {einheiten?.find((e) => e.id === defaultEinheitId)?.objekt?.bezeichnung &&
+                  ` (${einheiten.find((e) => e.id === defaultEinheitId)?.objekt?.bezeichnung})`}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                Einheit <span className="text-red-500">*</span>
+              </label>
+              <select
+                required
+                value={formData.einheitId}
+                onChange={(e) => setFormData({ ...formData, einheitId: e.target.value })}
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">Einheit wählen...</option>
+                {verfuegbareEinheiten?.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.objekt?.bezeichnung} — Einheit {e.einheitNr} ({e.flaeche} m²)
+                  </option>
+                ))}
+              </select>
+              {verfuegbareEinheiten?.length === 0 && (
+                <p className="mt-1 text-xs text-amber-600">
+                  Keine verfügbaren Einheiten. Alle Einheiten sind belegt oder nicht vorhanden.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Einzugsdatum */}
           <div>
@@ -152,7 +165,7 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
               required
               value={formData.einzugsdatum}
               onChange={(e) => setFormData({ ...formData, einzugsdatum: e.target.value })}
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -171,8 +184,9 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
                   step="0.01"
                   value={formData.kaltmiete}
                   onChange={(e) => setFormData({ ...formData, kaltmiete: e.target.value })}
+                  onFocus={(e) => e.target.select()}
                   placeholder="800.00"
-                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -181,13 +195,13 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
                 </label>
                 <input
                   type="number"
-                  required
                   min="0"
                   step="0.01"
                   value={formData.bkVorauszahlung}
                   onChange={(e) => setFormData({ ...formData, bkVorauszahlung: e.target.value })}
+                  onFocus={(e) => e.target.select()}
                   placeholder="150.00"
-                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -196,13 +210,13 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
                 </label>
                 <input
                   type="number"
-                  required
                   min="0"
                   step="0.01"
                   value={formData.hkVorauszahlung}
                   onChange={(e) => setFormData({ ...formData, hkVorauszahlung: e.target.value })}
+                  onFocus={(e) => e.target.select()}
                   placeholder="80.00"
-                  className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -232,9 +246,19 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
               step="0.01"
               value={formData.kaution}
               onChange={(e) => setFormData({ ...formData, kaution: e.target.value })}
+              onFocus={(e) => e.target.select()}
               placeholder="z.B. 2400.00 (= 3 × Kaltmiete)"
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
+            {formData.kaltmiete && !formData.kaution && (
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, kaution: (parseFloat(formData.kaltmiete) * 3).toFixed(2) })}
+                className="mt-1 text-xs text-blue-400 hover:text-blue-300"
+              >
+                Vorschlag übernehmen: {(parseFloat(formData.kaltmiete) * 3).toFixed(2)} € (3 × Kaltmiete)
+              </button>
+            )}
           </div>
 
           {/* Notizen */}
@@ -247,19 +271,19 @@ export function NeuerVertragModal({ isOpen, onClose, onSuccess, defaultEinheitId
               onChange={(e) => setFormData({ ...formData, notizen: e.target.value })}
               rows={3}
               placeholder="Besondere Vereinbarungen, Hinweise..."
-              className="w-full rounded-lg border border-[var(--border)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
-          <div className="rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
-            <p className="text-xs text-blue-700">
-              Das Mietverhältnis wird als <strong>Entwurf</strong> angelegt. Die Einheit wird automatisch auf "Vermietet" gesetzt.
+          <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 px-4 py-3">
+            <p className="text-xs text-blue-400">
+              Das Mietverhältnis wird angelegt. Liegt das Einzugsdatum in der Zukunft, wird die Einheit auf &bdquo;reserviert&ldquo; gesetzt. Ab dem Einzugsdatum gilt sie als &bdquo;vermietet&ldquo;.
             </p>
           </div>
 
           {createMutation.error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
-              <p className="text-sm text-red-800">
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-sm text-red-400">
                 Fehler: {createMutation.error.message}
               </p>
             </div>

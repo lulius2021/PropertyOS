@@ -29,6 +29,8 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
     onSuccess: () => {
       setSuccess(true);
       utils.mahnungen.list.invalidate();
+      utils.mahnungen.vorschlaege.invalidate();
+      utils.mahnungen.stats.invalidate();
       utils.reporting.dashboardKPIs.invalidate();
       setTimeout(() => {
         setSuccess(false);
@@ -70,13 +72,13 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
         </div>
 
         {success ? (
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-center text-sm font-medium text-green-700">
+          <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4 text-center text-sm font-medium text-green-400">
             Mahnung erfolgreich erstellt!
           </div>
         ) : (
           <div className="space-y-4">
             {error && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
                 {error}
               </div>
             )}
@@ -89,7 +91,7 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
                 <select
                   value={selectedId}
                   onChange={(e) => setSelectedId(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">-- Mietverhältnis wählen --</option>
                   {vorschlaege?.map((v: any) => (
@@ -106,7 +108,7 @@ export function MahnungErstellenModal({ open, onClose, onSuccess, prefillMietver
               <select
                 value={mahnstufe}
                 onChange={(e) => setMahnstufe(e.target.value)}
-                className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
               >
                 {Object.entries(MAHNSTUFE_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>{label}</option>

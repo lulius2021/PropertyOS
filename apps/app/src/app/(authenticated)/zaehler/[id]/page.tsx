@@ -41,6 +41,7 @@ export default function ZaehlerDetailPage() {
 
   const erfasseStandMutation = trpc.zaehler.erfasseStand.useMutation({
     onSuccess: () => {
+      toast.success("Zählerstand erfolgreich erfasst");
       utils.zaehler.getById.invalidate({ id });
       setStand("");
       setNotiz("");
@@ -48,7 +49,7 @@ export default function ZaehlerDetailPage() {
       setDatum(new Date().toISOString().split("T")[0]);
     },
     onError: (err) => {
-      toast.error("Fehler: " + err.message);
+      toast.error("Fehler beim Erfassen: " + err.message);
     },
   });
 
@@ -66,11 +67,19 @@ export default function ZaehlerDetailPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!stand || !datum) return;
+    if (!stand || !datum) {
+      toast.error("Bitte Datum und Stand ausfüllen");
+      return;
+    }
+    const standNum = parseFloat(stand);
+    if (isNaN(standNum) || standNum < 0) {
+      toast.error("Stand muss eine positive Zahl sein");
+      return;
+    }
     erfasseStandMutation.mutate({
       zaehlerId: zaehler.id,
       datum: new Date(datum),
-      stand: parseFloat(stand),
+      stand: standNum,
       ablesesTyp,
       notiz: notiz || undefined,
     });

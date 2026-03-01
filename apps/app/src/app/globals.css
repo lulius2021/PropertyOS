@@ -36,6 +36,55 @@
   --muted-foreground:   #94a3b8;
 }
 
+/* ── Global Dark Mode form element overrides ─────────────── */
+.dark select,
+.dark option {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.dark select option {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* Fix hardcoded light-mode alert boxes in dark mode */
+.dark .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.dark .bg-green-50 {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.dark .border-blue-100 {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.dark .border-red-200 {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.dark .border-green-200 {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.dark .text-blue-700 {
+  color: #93c5fd;
+}
+.dark .text-red-800 {
+  color: #fca5a5;
+}
+.dark .text-green-700 {
+  color: #86efac;
+}
+.dark .text-amber-600 {
+  color: #fbbf24;
+}
+
 /* ── Sidebar Nav Item Animations (CSS classes, not Tailwind group-hover) ── */
 .nav-item {
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),

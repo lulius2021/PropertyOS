@@ -185,8 +185,16 @@ export default function SollstellungenPage() {
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
-                    {soll.mietverhaeltnis?.mieter.nachname || "-"}
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-[var(--text-primary)]">
+                      {soll.mietverhaeltnis?.mieter.nachname || "-"}
+                      {soll.mietverhaeltnis?.mieter.vorname ? `, ${soll.mietverhaeltnis.mieter.vorname}` : ""}
+                    </div>
+                    {soll.mietverhaeltnis?.einheit && (
+                      <div className="text-xs text-[var(--text-secondary)]">
+                        {soll.mietverhaeltnis.einheit.objekt?.bezeichnung} / {soll.mietverhaeltnis.einheit.einheitNr}
+                      </div>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {soll.typ}

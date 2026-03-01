@@ -29,6 +29,27 @@ const STATUS_LABELS: Record<string, string> = {
   ABGERECHNET: "Abgerechnet",
 };
 
+const KATEGORIE_LABELS: Record<string, string> = {
+  SCHADENSMELDUNG: "Schadensmeldung",
+  WARTUNG: "Wartung",
+  ANFRAGE: "Anfrage",
+  BESCHWERDE: "Beschwerde",
+  SANIERUNG: "Sanierung",
+  AUFGABE: "Aufgabe",
+  SANITAER: "Sanitär",
+  ELEKTRIK: "Elektrik",
+  HEIZUNG: "Heizung",
+  FENSTER_TUEREN: "Fenster/Türen",
+  DACH: "Dach",
+  FASSADE: "Fassade",
+  AUFZUG: "Aufzug",
+  SONSTIGES: "Sonstiges",
+  SCHIMMEL: "Schimmel",
+  WASSERSCHADEN: "Wasserschaden",
+  EINBRUCH: "Einbruch",
+  LAERM: "Lärm",
+};
+
 const getStatusColor = (status: string) => {
   switch (status) {
     case "ERFASST":
@@ -38,6 +59,16 @@ const getStatusColor = (status: string) => {
     case "ZUR_PRUEFUNG":
       return "bg-yellow-500/15 text-yellow-400";
     case "ABGESCHLOSSEN":
+      return "bg-green-500/15 text-green-400";
+    case "BEAUFTRAGT":
+      return "bg-purple-500/15 text-purple-400";
+    case "TERMIN_VEREINBART":
+      return "bg-indigo-500/15 text-indigo-400";
+    case "IN_ARBEIT":
+      return "bg-blue-500/15 text-blue-400";
+    case "RUECKFRAGE":
+      return "bg-orange-500/15 text-orange-400";
+    case "ABGERECHNET":
       return "bg-green-500/15 text-green-400";
     default:
       return "bg-gray-500/15 text-gray-400";
@@ -136,12 +167,12 @@ export default function TicketDetailPage() {
           ← Zurück zu Tickets
         </button>
         <span
-          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold leading-5 ${getStatusColor(ticket.status)}`}
+          className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold leading-5 ${getStatusColor(ticket.status)}`}
         >
-          {ticket.status}
+          {STATUS_LABELS[ticket.status] || ticket.status}
         </span>
         <span
-          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold leading-5 ${getPrioColor(ticket.prioritaet)}`}
+          className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold leading-5 ${getPrioColor(ticket.prioritaet)}`}
         >
           {ticket.prioritaet}
         </span>
@@ -159,7 +190,7 @@ export default function TicketDetailPage() {
       <div className="mb-6 grid grid-cols-2 gap-4 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm md:grid-cols-4">
         <div>
           <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Kategorie</div>
-          <div className="mt-1 text-sm text-[var(--text-primary)]">{ticket.kategorie}</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">{KATEGORIE_LABELS[ticket.kategorie] || ticket.kategorie}</div>
         </div>
         <div>
           <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Frist</div>
@@ -179,6 +210,34 @@ export default function TicketDetailPage() {
           </div>
           <div className="mt-1 text-sm text-[var(--text-primary)]">
             {ticket.verantwortlicher || "-"}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Erstellt am</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">
+            {new Date(ticket.createdAt).toLocaleDateString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}{" "}
+            {new Date(ticket.createdAt).toLocaleTimeString("de-DE", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)]">Zuletzt geändert</div>
+          <div className="mt-1 text-sm text-[var(--text-primary)]">
+            {new Date(ticket.updatedAt).toLocaleDateString("de-DE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}{" "}
+            {new Date(ticket.updatedAt).toLocaleTimeString("de-DE", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </div>
         </div>
       </div>
@@ -210,25 +269,59 @@ export default function TicketDetailPage() {
         </div>
       )}
 
-      {/* Status aendern */}
+      {/* Zugewiesener Dienstleister */}
+      {ticket.dienstleister && (
+        <div className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
+          <div className="text-xs font-medium uppercase text-[var(--text-secondary)] mb-2">
+            Beauftragter Dienstleister
+          </div>
+          <div className="flex items-start gap-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/15 text-blue-400 text-sm font-bold">
+              {ticket.dienstleister.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1">
+              <div className="font-medium text-[var(--text-primary)]">{ticket.dienstleister.name}</div>
+              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--text-secondary)]">
+                {ticket.dienstleister.telefon && (
+                  <span>Tel: {ticket.dienstleister.telefon}</span>
+                )}
+                {ticket.dienstleister.email && (
+                  <span>E-Mail: {ticket.dienstleister.email}</span>
+                )}
+                {ticket.dienstleister.kategorie && (
+                  <span className="inline-flex rounded-full bg-[var(--bg-card-hover)] px-2 py-0.5 text-xs">
+                    {ticket.dienstleister.kategorie}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Status ändern */}
       <div className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-sm">
-        <div className="text-xs font-medium uppercase text-[var(--text-secondary)] mb-2">
+        <div className="text-xs font-medium uppercase text-[var(--text-secondary)] mb-3">
           Status ändern
         </div>
-        <select
-          value={ticket.status}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          disabled={changeStatusMutation.isPending}
-          className="rounded border border-[var(--border)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        >
+        <div className="flex flex-wrap gap-2">
           {statusOptions.map((s) => (
-            <option key={s} value={s}>
+            <button
+              key={s}
+              onClick={() => handleStatusChange(s)}
+              disabled={changeStatusMutation.isPending}
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 ${
+                ticket.status === s
+                  ? `${getStatusColor(s)} ring-2 ring-blue-500 ring-offset-1 ring-offset-[var(--bg-card)]`
+                  : "bg-[var(--bg-page)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] border border-[var(--border)]"
+              }`}
+            >
               {STATUS_LABELS[s] ?? s}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
         {changeStatusMutation.isPending && (
-          <span className="ml-2 text-sm text-[var(--text-secondary)]">Speichern...</span>
+          <div className="mt-2 text-sm text-[var(--text-secondary)]">Status wird gespeichert...</div>
         )}
       </div>
 

@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
 
     // Für Trial-Plan: Direkt erstellen ohne Stripe
     if (!isPaidPlan(resolvedPlan)) {
+      const trialDays = referrerTenant ? 60 : 30;
       const user = await db.user.create({
         data: {
           name,
@@ -80,6 +81,7 @@ export async function POST(req: NextRequest) {
             create: {
               name: company?.trim() || `${name}'s Workspace`,
               plan: "starter", // Trial startet als Starter
+              trialEndsAt: new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000),
               referralCode: newReferralCode,
               referredBy: referrerTenant?.referralCode ?? null,
             },

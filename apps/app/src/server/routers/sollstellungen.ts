@@ -246,6 +246,8 @@ export const sollstellungenRouter = router({
 
   /**
    * Manuell als bezahlt markieren
+   * Creates a Zahlung + ZahlungZuordnung for proper audit trail,
+   * then updates the Sollstellung status.
    */
   manualBezahlt: protectedProcedure
     .input(z.object({
@@ -254,8 +256,39 @@ export const sollstellungenRouter = router({
       zahlungsdatum: z.date(),
     }))
     .mutation(async ({ ctx, input }) => {
-      const soll = await ctx.db.sollstellung.findFirst({ where: { id: input.id, tenantId: ctx.tenantId } });
+      const soll = await ctx.db.sollstellung.findFirst({
+        where: { id: input.id, tenantId: ctx.tenantId },
+      });
       if (!soll) throw new Error("Nicht gefunden");
+      if (soll.status === "BEZAHLT") throw new Error("Bereits bezahlt");
+      if (soll.status === "STORNIERT") throw new Error("Stornierte Sollstellung kann nicht bezahlt werden");
+
+      const restBetrag = soll.betragGesamt.minus(soll.gedecktGesamt);
+
+      // 1. Create Zahlung record
+      const zahlung = await ctx.db.zahlung.create({
+        data: {
+          tenantId: ctx.tenantId,
+          datum: input.zahlungsdatum,
+          betrag: restBetrag,
+          verwendungszweck: `Manuelle Zahlung: ${soll.titel} (${input.zahlungsart})`,
+          status: "ZUGEORDNET",
+          zugeordnetAm: new Date(),
+        },
+      });
+
+      // 2. Create ZahlungZuordnung linking Zahlung → Sollstellung
+      await ctx.db.zahlungZuordnung.create({
+        data: {
+          tenantId: ctx.tenantId,
+          zahlungId: zahlung.id,
+          sollstellungId: soll.id,
+          betrag: restBetrag,
+          zugeordnetVon: ctx.userId,
+        },
+      });
+
+      // 3. Update Sollstellung
       const updated = await ctx.db.sollstellung.update({
         where: { id: input.id },
         data: {
@@ -264,13 +297,18 @@ export const sollstellungenRouter = router({
           notiz: `Manuell als bezahlt markiert (${input.zahlungsart}, ${input.zahlungsdatum.toLocaleDateString("de-DE")})`,
         },
       });
+
       await logAudit({
         tenantId: ctx.tenantId,
         userId: ctx.userId,
         aktion: "SOLLSTELLUNG_MANUELL_BEZAHLT",
         entitaet: "Sollstellung",
         entitaetId: input.id,
-        neuWert: { status: "BEZAHLT", zahlungsart: input.zahlungsart },
+        neuWert: {
+          status: "BEZAHLT",
+          zahlungsart: input.zahlungsart,
+          zahlungId: zahlung.id,
+        },
       });
       return updated;
     }),

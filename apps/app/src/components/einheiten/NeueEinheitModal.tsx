@@ -24,7 +24,6 @@ export function NeueEinheitModal({
     flaeche: "",
     zimmer: "",
     lage: "",
-    eurProQm: "",
     ausstattung: "",
   });
 
@@ -42,7 +41,6 @@ export function NeueEinheitModal({
         flaeche: "",
         zimmer: "",
         lage: "",
-        eurProQm: "",
         ausstattung: "",
       });
       onSuccess();
@@ -59,7 +57,6 @@ export function NeueEinheitModal({
       flaeche: parseFloat(formData.flaeche),
       zimmer: formData.zimmer ? parseInt(formData.zimmer) : undefined,
       lage: formData.lage || undefined,
-      eurProQm: formData.eurProQm ? parseFloat(formData.eurProQm) : undefined,
       ausstattung: formData.ausstattung || undefined,
     });
   };
@@ -185,37 +182,18 @@ export function NeueEinheitModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {/* Lage */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                Lage
-              </label>
-              <input
-                type="text"
-                value={formData.lage}
-                onChange={(e) => setFormData({ ...formData, lage: e.target.value })}
-                placeholder="z.B. 1. OG links, EG rechts"
-                className={inputCls}
-              />
-            </div>
-
-            {/* €/m² */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                Kaltmiete €/m²
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.eurProQm}
-                onChange={(e) => setFormData({ ...formData, eurProQm: e.target.value })}
-                onFocus={(e) => e.target.select()}
-                placeholder="z.B. 12.50"
-                className={inputCls}
-              />
-            </div>
+          {/* Lage */}
+          <div>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+              Lage / Etage
+            </label>
+            <input
+              type="text"
+              value={formData.lage}
+              onChange={(e) => setFormData({ ...formData, lage: e.target.value })}
+              placeholder="z.B. 1. OG links, EG rechts"
+              className={inputCls}
+            />
           </div>
 
           {/* Ausstattung */}
@@ -233,8 +211,8 @@ export function NeueEinheitModal({
           </div>
 
           {createMutation.error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
-              <p className="text-sm text-red-800">
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-sm text-red-400">
                 Fehler: {createMutation.error.message}
               </p>
             </div>

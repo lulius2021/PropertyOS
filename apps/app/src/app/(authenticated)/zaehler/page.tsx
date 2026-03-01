@@ -34,6 +34,9 @@ export default function ZaehlerPage() {
       setFormEinheitId("");
       toast.success("Zähler erstellt");
     },
+    onError: (err) => {
+      toast.error("Fehler: " + err.message);
+    },
   });
 
   if (isLoading) {
@@ -81,10 +84,16 @@ export default function ZaehlerPage() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (!formObjektId && !formEinheitId) {
+                toast.error("Bitte ein Objekt oder eine Einheit auswählen");
+                return;
+              }
+              // Backend erwartet entweder objektId ODER einheitId, nie beide.
+              // Wenn eine Einheit gewählt ist, wird nur einheitId gesendet.
               createZaehlerMutation.mutate({
                 zaehlernummer: formZaehlernummer,
                 typ: formTyp,
-                objektId: formObjektId || undefined,
+                objektId: formEinheitId ? undefined : formObjektId || undefined,
                 einheitId: formEinheitId || undefined,
               });
             }}
@@ -123,7 +132,7 @@ export default function ZaehlerPage() {
 
               <div>
                 <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                  Objekt (optional)
+                  Objekt <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formObjektId}
@@ -133,7 +142,7 @@ export default function ZaehlerPage() {
                   }}
                   className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <option value="">Kein Objekt</option>
+                  <option value="">Objekt auswählen...</option>
                   {objekte?.map((o: any) => (
                     <option key={o.id} value={o.id}>{o.bezeichnung}</option>
                   ))}
@@ -143,14 +152,14 @@ export default function ZaehlerPage() {
               {formObjektId && (
                 <div>
                   <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
-                    Einheit (optional)
+                    Einheit (optional, präzisiert Zuordnung)
                   </label>
                   <select
                     value={formEinheitId}
                     onChange={(e) => setFormEinheitId(e.target.value)}
                     className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-page)] text-[var(--text-primary)] px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
-                    <option value="">Keine Einheit</option>
+                    <option value="">Dem Objekt zuordnen (nicht einer Einheit)</option>
                     {einheiten?.filter((e: any) => e.objektId === formObjektId).map((e: any) => (
                       <option key={e.id} value={e.id}>
                         Einheit {e.einheitNr}{e.bezeichnung ? ` – ${e.bezeichnung}` : ""}

@@ -18,6 +18,17 @@
     "turbo": "^2.3.0",
     "typescript": "^5.7.2"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "puppeteer",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=18.0.0",

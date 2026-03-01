@@ -69,10 +69,17 @@ export const vertraegeRouter = router({
         },
       });
 
-      // Update Einheit status to VERMIETET
+      // Determine Einheit status based on move-in date
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const einzug = new Date(input.einzugsdatum);
+      einzug.setHours(0, 0, 0, 0);
+
+      const einheitStatus = einzug <= today ? "VERMIETET" : "RESERVIERT";
+
       await ctx.db.einheit.update({
         where: { id: input.einheitId },
-        data: { status: "VERMIETET" },
+        data: { status: einheitStatus },
       });
 
       await logAudit({
@@ -85,6 +92,61 @@ export const vertraegeRouter = router({
       });
 
       return mietverhaeltnis;
+    }),
+
+  kuendigung: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        auszugsdatum: z.date(),
+        kuendigungsgrund: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // 1. Find the Mietverhaeltnis
+      const mietverhaeltnis = await ctx.db.mietverhaeltnis.findFirst({
+        where: {
+          id: input.id,
+          tenantId: ctx.tenantId,
+        },
+      });
+
+      // 2. Validate it exists and belongs to tenant
+      if (!mietverhaeltnis) {
+        throw new Error("Mietverhältnis nicht gefunden");
+      }
+
+      // 3. Update Mietverhaeltnis: set auszugsdatum, vertragStatus = "GEKUENDIGT"
+      const updated = await ctx.db.mietverhaeltnis.update({
+        where: { id: input.id },
+        data: {
+          auszugsdatum: input.auszugsdatum,
+          vertragStatus: "GEKUENDIGT" as any, // Added to VertragStatus enum in schema.prisma - run prisma generate
+          notizen: input.kuendigungsgrund
+            ? `${mietverhaeltnis.notizen ? mietverhaeltnis.notizen + "\n" : ""}Kündigungsgrund: ${input.kuendigungsgrund}`
+            : mietverhaeltnis.notizen,
+        },
+      });
+
+      // 4. Update Einheit status to "KUENDIGUNG"
+      await ctx.db.einheit.update({
+        where: { id: mietverhaeltnis.einheitId },
+        data: { status: "KUENDIGUNG" },
+      });
+
+      // 5. Log audit
+      await logAudit({
+        tenantId: ctx.tenantId,
+        userId: ctx.userId,
+        aktion: "MIETVERHAELTNIS_GEKUENDIGT",
+        entitaet: "Mietverhaeltnis",
+        entitaetId: updated.id,
+        altWert: mietverhaeltnis,
+        neuWert: updated,
+      });
+
+      // 6. Return updated Mietverhaeltnis
+      return updated;
     }),
 
   stats: protectedProcedure.query(async ({ ctx }) => {

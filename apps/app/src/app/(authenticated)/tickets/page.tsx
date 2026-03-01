@@ -50,6 +50,27 @@ const STATUS_LABELS: Record<string, string> = {
   ABGERECHNET: "Abgerechnet",
 };
 
+const KATEGORIE_LABELS: Record<string, string> = {
+  SCHADENSMELDUNG: "Schadensmeldung",
+  WARTUNG: "Wartung",
+  ANFRAGE: "Anfrage",
+  BESCHWERDE: "Beschwerde",
+  SANIERUNG: "Sanierung",
+  AUFGABE: "Aufgabe",
+  SANITAER: "Sanitär",
+  ELEKTRIK: "Elektrik",
+  HEIZUNG: "Heizung",
+  FENSTER_TUEREN: "Fenster/Türen",
+  DACH: "Dach",
+  FASSADE: "Fassade",
+  AUFZUG: "Aufzug",
+  SONSTIGES: "Sonstiges",
+  SCHIMMEL: "Schimmel",
+  WASSERSCHADEN: "Wasserschaden",
+  EINBRUCH: "Einbruch",
+  LAERM: "Lärm",
+};
+
 export default function TicketsPage() {
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<string | undefined>("AKTUELL");
@@ -241,43 +262,57 @@ export default function TicketsPage() {
         </div>
       )}
 
-      {/* Filter + Sort */}
+      {/* Filter Tabs + Sort */}
       <div className="mb-4 space-y-2">
-        <div className="flex flex-wrap gap-2">
+        {/* Main Tabs: Aktuell / Abgeschlossen / Alle */}
+        <div className="flex gap-1 rounded-lg bg-[var(--bg-page)] p-1 w-fit">
           <button
             onClick={() => setStatusFilter("AKTUELL")}
-            className={`rounded px-3 py-1 text-sm font-medium ${
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
               statusFilter === "AKTUELL"
-                ? "bg-blue-600 text-white"
-                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             Aktuell
           </button>
           <button
+            onClick={() => setStatusFilter("ABGESCHLOSSEN")}
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
+              statusFilter === "ABGESCHLOSSEN"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            Abgeschlossen
+          </button>
+          <button
             onClick={() => setStatusFilter(undefined)}
-            className={`rounded px-3 py-1 text-sm ${
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
               statusFilter === undefined
-                ? "bg-blue-600 text-white"
-                : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             }`}
           >
             Alle
           </button>
-          {ALL_STATUSES.map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`rounded px-3 py-1 text-sm ${
-                statusFilter === status
-                  ? "bg-blue-600 text-white"
-                  : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
-              }`}
-            >
-              {STATUS_LABELS[status]}
-            </button>
-          ))}
         </div>
+
+        {/* Secondary: individual status filters (shown when "Alle" is active) */}
+        {statusFilter === undefined && (
+          <div className="flex flex-wrap gap-1.5">
+            {ALL_STATUSES.map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className="rounded px-2.5 py-1 text-xs bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                {STATUS_LABELS[status]}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           <span>Sortierung:</span>
           <button
@@ -329,6 +364,9 @@ export default function TicketsPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Erstellt
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
+                  Zuordnung
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--text-secondary)]">
                   Aktionen
                 </th>
@@ -346,7 +384,7 @@ export default function TicketsPage() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
-                    {ticket.kategorie}
+                    {KATEGORIE_LABELS[ticket.kategorie] || ticket.kategorie}
                   </td>
                   <td className="px-6 py-4">
                     <span
@@ -365,6 +403,24 @@ export default function TicketsPage() {
                   </td>
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {new Date(ticket.createdAt).toLocaleDateString("de-DE")}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
+                    {ticket.objektId || ticket.einheitId ? (
+                      <div className="flex flex-col gap-0.5">
+                        {ticket.objektId && (
+                          <span className="text-[var(--text-primary)]">
+                            {objekte?.find((o) => o.id === ticket.objektId)?.bezeichnung || "Objekt"}
+                          </span>
+                        )}
+                        {ticket.einheitId && (
+                          <span className="text-xs text-[var(--text-secondary)]">
+                            {einheiten?.find((e) => e.id === ticket.einheitId)?.einheitNr || "Einheit"}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">-</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-right text-sm">
                     <Link

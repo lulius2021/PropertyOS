@@ -3,7 +3,63 @@
 import { trpc } from "@/lib/trpc/client";
 import { useState } from "react";
 
-const KATEGORIEN = ["ELEKTRIKER", "SANITAER", "HEIZUNG", "AUFZUG", "SCHREINER", "MALER", "DACH", "GARTEN", "HAUSREINIGUNG", "HAUSMEISTER", "SONSTIGES"];
+const KATEGORIEN = [
+  "ARCHITEKT",
+  "AUFZUG",
+  "BRANDSCHUTZ",
+  "DACH",
+  "ELEKTRIKER",
+  "GARTEN",
+  "GUTACHTER",
+  "HAUSMEISTER",
+  "HAUSREINIGUNG",
+  "HEIZUNG",
+  "IT_TELEKOM",
+  "KLIMA_LUEFTUNG",
+  "MAKLER",
+  "MALER",
+  "RECHTSANWALT",
+  "REINIGUNG",
+  "SANITAER",
+  "SCHAEDLINGSBEKAEMPFUNG",
+  "SCHLUESSELDIENST",
+  "SCHREINER",
+  "SONSTIGES",
+  "STEUERBERATER",
+  "UMZUG",
+  "VERSICHERUNG",
+];
+
+const KATEGORIE_LABELS: Record<string, string> = {
+  ARCHITEKT: "Architekt",
+  AUFZUG: "Aufzug",
+  BRANDSCHUTZ: "Brandschutz",
+  DACH: "Dach",
+  ELEKTRIKER: "Elektriker",
+  GARTEN: "Garten",
+  GUTACHTER: "Gutachter",
+  HAUSMEISTER: "Hausmeister",
+  HAUSREINIGUNG: "Hausreinigung",
+  HEIZUNG: "Heizung",
+  IT_TELEKOM: "IT / Telekom",
+  KLIMA_LUEFTUNG: "Klima / Lüftung",
+  MAKLER: "Makler",
+  MALER: "Maler",
+  RECHTSANWALT: "Rechtsanwalt",
+  REINIGUNG: "Reinigung",
+  SANITAER: "Sanitär",
+  SCHAEDLINGSBEKAEMPFUNG: "Schädlingsbekämpfung",
+  SCHLUESSELDIENST: "Schlüsseldienst",
+  SCHREINER: "Schreiner",
+  SONSTIGES: "Sonstiges",
+  STEUERBERATER: "Steuerberater",
+  UMZUG: "Umzug",
+  VERSICHERUNG: "Versicherung",
+};
+
+function getKategorieLabel(kategorie: string): string {
+  return KATEGORIE_LABELS[kategorie] || kategorie;
+}
 
 export default function DienstleisterPage() {
   const [showForm, setShowForm] = useState(false);
@@ -63,8 +119,8 @@ export default function DienstleisterPage() {
         </button>
       </div>
 
-      {successMsg && <div className="mb-4 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{successMsg}</div>}
-      {errorMsg && <div className="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{errorMsg}</div>}
+      {successMsg && <div className="mb-4 rounded border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">{successMsg}</div>}
+      {errorMsg && <div className="mb-4 rounded border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">{errorMsg}</div>}
 
       {showForm && (
         <form onSubmit={handleSubmit} className="mb-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-sm">
@@ -80,7 +136,7 @@ export default function DienstleisterPage() {
               <select value={form.kategorie} onChange={(e) => setForm({ ...form, kategorie: e.target.value })}
                 className="mt-1 block w-full rounded border border-[var(--border)] bg-[var(--bg-page)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Keine</option>
-                {KATEGORIEN.map((k) => <option key={k} value={k}>{k}</option>)}
+                {KATEGORIEN.map((k) => <option key={k} value={k}>{getKategorieLabel(k)}</option>)}
               </select>
             </div>
             <div>
@@ -133,7 +189,7 @@ export default function DienstleisterPage() {
               {dienstleister.map((d: any) => (
                 <tr key={d.id} className="hover:bg-[var(--bg-card-hover)]">
                   <td className="px-6 py-4 font-medium text-[var(--text-primary)]">{d.name}</td>
-                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{d.kategorie || "—"}</td>
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">{d.kategorie ? getKategorieLabel(d.kategorie) : "—"}</td>
                   <td className="px-6 py-4 text-sm text-[var(--text-secondary)]">
                     {d.telefon && <div>{d.telefon}</div>}
                     {d.email && <div className="text-blue-400">{d.email}</div>}

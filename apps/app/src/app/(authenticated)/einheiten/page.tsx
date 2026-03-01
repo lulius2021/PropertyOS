@@ -18,6 +18,11 @@ type Einheit = {
   status: string;
   objektId: string | null;
   objekt?: { bezeichnung: string } | null;
+  mietverhaeltnisse?: {
+    id: string;
+    kaltmiete: any;
+    auszugsdatum?: any;
+  }[];
 };
 
 export default function EinheitenPage() {
@@ -170,7 +175,7 @@ export default function EinheitenPage() {
                     onClick={() => toggleObjekt(objekt.id)}
                     className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
                       isSelected
-                        ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                        ? "border-blue-500 bg-blue-500/15 text-blue-400 shadow-sm"
                         : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--border)]"
                     }`}
                   >
@@ -264,18 +269,28 @@ export default function EinheitenPage() {
                     <span className="font-medium text-[var(--text-primary)]">{einheit.zimmer}</span>
                   </div>
                 )}
-                {einheit.lage && (
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Lage:</span>
-                    <span className="font-medium text-[var(--text-primary)]">{einheit.lage}</span>
-                  </div>
-                )}
-                {einheit.eurProQm && (
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">€/m²:</span>
-                    <span className="font-medium text-[var(--text-primary)]">{einheit.eurProQm}</span>
-                  </div>
-                )}
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">Lage:</span>
+                  <span className="font-medium text-[var(--text-primary)]">{einheit.lage || "–"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">€/m² (eff.):</span>
+                  <span className="font-medium text-[var(--text-primary)]">
+                    {(() => {
+                      const activeLease = einheit.mietverhaeltnisse?.find(
+                        (mv) => !mv.auszugsdatum
+                      );
+                      const flaeche = parseFloat(einheit.flaeche);
+                      if (activeLease && flaeche > 0) {
+                        const kaltmiete = typeof activeLease.kaltmiete === "string"
+                          ? parseFloat(activeLease.kaltmiete)
+                          : Number(activeLease.kaltmiete);
+                        return `${(kaltmiete / flaeche).toFixed(2)} €`;
+                      }
+                      return "–";
+                    })()}
+                  </span>
+                </div>
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--border)] flex gap-2">
                 <button className="flex-1 rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]">

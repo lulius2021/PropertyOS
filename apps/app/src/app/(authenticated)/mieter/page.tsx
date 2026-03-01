@@ -125,7 +125,7 @@ export default function MieterPage() {
                     onClick={() => toggleObjekt(objekt.id)}
                     className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
                       isSelected
-                        ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                        ? "border-blue-500 bg-blue-500/15 text-blue-400 shadow-sm"
                         : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--border)]"
                     }`}
                   >
@@ -179,7 +179,7 @@ export default function MieterPage() {
               onClick={() => setStatusFilter("aktiv")}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 statusFilter === "aktiv"
-                  ? "bg-green-50 text-green-700"
+                  ? "bg-green-500/15 text-green-400"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
@@ -199,7 +199,7 @@ export default function MieterPage() {
               onClick={() => setStatusFilter("alle")}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 statusFilter === "alle"
-                  ? "bg-blue-50 text-blue-700"
+                  ? "bg-blue-500/15 text-blue-400"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
             >
@@ -221,18 +221,12 @@ export default function MieterPage() {
               className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               onClick={() => router.push(`/mieter/${m.id}`)}
             >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-[var(--text-primary)] text-lg">{getDisplayName(m)}</h3>
-                    {m.firma && m.vorname && m.nachname && (
-                      <p className="text-sm text-[var(--text-secondary)] mt-1">
-                        Ansprechpartner: {m.vorname} {m.nachname}
-                      </p>
-                    )}
-                  </div>
+              <div className="p-4">
+                {/* Row 1: Name + Status badge */}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <h3 className="font-semibold text-[var(--text-primary)] truncate">{getDisplayName(m)}</h3>
                   <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                    className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                       isAktiv
                         ? "bg-green-500/15 text-green-400"
                         : "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]"
@@ -242,43 +236,24 @@ export default function MieterPage() {
                   </span>
                 </div>
 
-                <div className="space-y-2 text-sm">
-                  {m.email && (
-                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                      <span className="truncate">{m.email}</span>
-                    </div>
-                  )}
-
-                  {(m.telefonMobil || m.telefon) && (
-                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                      <span>{m.telefonMobil || m.telefon}</span>
-                    </div>
-                  )}
-
-                  {mv && mv.einheit && (
-                    <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-                      <svg className="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
-                      <span>{mv.einheit.objekt?.bezeichnung} - Einheit {mv.einheit.einheitNr}</span>
-                    </div>
-                  )}
-                </div>
-
+                {/* Row 2: Einheit/Objekt + Kaltmiete */}
                 {mv && (
-                  <div className="mt-4 pt-4 border-t border-[var(--border)]">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-[var(--text-secondary)]">Kaltmiete</span>
-                      <span className="font-semibold text-[var(--text-primary)]">
-                        {parseFloat(mv.kaltmiete.toString()).toFixed(2)} €
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-[var(--text-secondary)] truncate">
+                      {mv.einheit ? `${mv.einheit.objekt?.bezeichnung} - ${mv.einheit.einheitNr}` : "–"}
+                    </span>
+                    <span className="shrink-0 font-semibold text-[var(--text-primary)]">
+                      {parseFloat(mv.kaltmiete.toString()).toFixed(2)} €
+                    </span>
+                  </div>
+                )}
+
+                {/* Row 3: Contact info (compact, no SVG icons) */}
+                {(m.email || m.telefonMobil || m.telefon) && (
+                  <div className="text-xs text-[var(--text-muted)] truncate">
+                    {m.email && <span>{m.email}</span>}
+                    {m.email && (m.telefonMobil || m.telefon) && <span className="mx-1.5">·</span>}
+                    {(m.telefonMobil || m.telefon) && <span>{m.telefonMobil || m.telefon}</span>}
                   </div>
                 )}
               </div>

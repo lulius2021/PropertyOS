@@ -6,6 +6,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { NeuerVertragModal } from "@/components/vertraege/NeuerVertragModal";
+import { toast } from "sonner";
 
 export default function VertraegePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,10 +16,26 @@ export default function VertraegePage() {
   const [sortBy, setSortBy] = useState<string>("einzug");
   const [selectedObjekte, setSelectedObjekte] = useState<string[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [kuendigungDialog, setKuendigungDialog] = useState<{ id: string; auszugsdatum: string } | null>(null);
 
   const { data: vertraege, isLoading } = trpc.vertraege.list.useQuery();
   const { data: stats } = trpc.vertraege.stats.useQuery();
   const { data: objekte } = trpc.objekte.list.useQuery();
+
+  const utils = trpc.useUtils();
+  const kuendigungMutation = trpc.vertraege.kuendigung.useMutation({
+    onSuccess: () => {
+      utils.vertraege.list.invalidate();
+      utils.vertraege.stats.invalidate();
+      utils.einheiten.list.invalidate();
+      utils.einheiten.stats.invalidate();
+      setKuendigungDialog(null);
+      toast.success("Kündigung erfolgreich gespeichert");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Fehler bei der Kündigung");
+    },
+  });
 
   const filteredVertraege = vertraege
     ?.filter((v) => {
@@ -82,6 +99,7 @@ export default function VertraegePage() {
       case "VERSANDT": return "bg-purple-500/15 text-purple-400";
       case "GENERIERT": return "bg-yellow-500/15 text-yellow-400";
       case "ENTWURF": return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
+      case "GEKUENDIGT": return "bg-orange-500/15 text-orange-400";
       case "BEENDET": return "bg-red-500/15 text-red-400";
       default: return "bg-[var(--bg-card-hover)] text-[var(--text-secondary)]";
     }
@@ -94,6 +112,7 @@ export default function VertraegePage() {
       case "VERSANDT": return "Versandt";
       case "GENERIERT": return "Generiert";
       case "ENTWURF": return "Entwurf";
+      case "GEKUENDIGT": return "Gekündigt";
       case "BEENDET": return "Beendet";
       default: return status;
     }
@@ -194,7 +213,7 @@ export default function VertraegePage() {
                     onClick={() => toggleObjekt(objekt.id)}
                     className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover:shadow-md ${
                       isSelected
-                        ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                        ? "border-blue-500 bg-blue-500/15 text-blue-400 shadow-sm"
                         : "border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--border)]"
                     }`}
                   >
@@ -236,7 +255,7 @@ export default function VertraegePage() {
                 placeholder="Suche nach Mieter, Einheit oder Objekt..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full rounded-lg border border-[var(--border)] py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-primary)] py-2 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
             <select
@@ -250,6 +269,7 @@ export default function VertraegePage() {
               <option value="VERSANDT">Versandt</option>
               <option value="UNTERSCHRIEBEN">Unterschrieben</option>
               <option value="AKTIV">Aktiv</option>
+              <option value="GEKUENDIGT">Gekündigt</option>
               <option value="BEENDET">Beendet</option>
             </select>
           </div>
@@ -385,6 +405,14 @@ export default function VertraegePage() {
                   <button className="rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]">
                     Vertrag generieren
                   </button>
+                  {v.vertragStatus !== "BEENDET" && (v.vertragStatus as string) !== "GEKUENDIGT" && !v.auszugsdatum && (
+                    <button
+                      onClick={() => setKuendigungDialog({ id: v.id, auszugsdatum: "" })}
+                      className="rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-orange-400 hover:text-orange-300 hover:bg-[var(--bg-card-hover)]"
+                    >
+                      Kündigen
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -400,6 +428,48 @@ export default function VertraegePage() {
             <p className="text-sm text-[var(--text-muted)] mt-1">
               Legen Sie Ihr erstes Mietverhältnis mit dem Button oben rechts an.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Kündigung Dialog */}
+      {kuendigungDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Vertrag kündigen</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                  Auszugsdatum
+                </label>
+                <input
+                  type="date"
+                  value={kuendigungDialog.auszugsdatum}
+                  onChange={(e) => setKuendigungDialog({ ...kuendigungDialog, auszugsdatum: e.target.value })}
+                  className="w-full rounded-lg border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-primary)] px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => setKuendigungDialog(null)}
+                  className="rounded-md border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  disabled={!kuendigungDialog.auszugsdatum || kuendigungMutation.isPending}
+                  onClick={() => {
+                    kuendigungMutation.mutate({
+                      id: kuendigungDialog.id,
+                      auszugsdatum: new Date(kuendigungDialog.auszugsdatum),
+                    });
+                  }}
+                  className="rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {kuendigungMutation.isPending ? "Wird gespeichert..." : "Kündigung bestätigen"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

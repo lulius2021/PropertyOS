@@ -1443,7 +1443,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   // ───────────────────────────────────────────────────────
 
   if (type === "sollIstVerlauf") {
-    const monate = sollIstMonatlichData; const loading = sollIstMonatlichLoading;
+    const now = new Date();
+    const currentMonthIndex = now.getMonth();
+    const monate = sollIstMonatlichData?.filter((_: any, idx: number) => idx <= currentMonthIndex) ?? null;
+    const loading = sollIstMonatlichLoading;
     return (
       <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">
@@ -1485,7 +1488,10 @@ export function Widget({ type, size, data, isLoading }: WidgetProps) {
   }
 
   if (type === "cashflowVerlauf") {
-    const monate = cashflowMonatlichData; const loading = cashflowMonatlichLoading;
+    const now = new Date();
+    const currentMonthIndex = now.getMonth();
+    const monate = cashflowMonatlichData?.filter((_: any, idx: number) => idx <= currentMonthIndex) ?? null;
+    const loading = cashflowMonatlichLoading;
     return (
       <div className="h-full rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.05)_inset] hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-shadow">
         <div className="flex h-full flex-col">

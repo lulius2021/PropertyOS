@@ -34,16 +34,48 @@ export const mahnungenRouter = router({
         },
         include: {
           dokumente: true,
+          mietverhaeltnis: {
+            include: {
+              mieter: true,
+              einheit: {
+                include: {
+                  objekt: true,
+                },
+              },
+            },
+          },
         },
         orderBy: { mahnDatum: "desc" },
       });
 
-      return mahnungen.map((m) => ({
-        ...m,
-        offenerBetrag: m.offenerBetrag.toString(),
-        mahngebuehr: m.mahngebuehr.toString(),
-        verzugszinsen: m.verzugszinsen.toString(),
-      }));
+      // For each Mahnung, load the open Sollstellungen of that MV
+      const mahnungenMitSoll = await Promise.all(
+        mahnungen.map(async (m) => {
+          const offeneSollstellungen = await ctx.db.sollstellung.findMany({
+            where: {
+              tenantId: ctx.tenantId,
+              mietverhaeltnisId: m.mietverhaeltnisId,
+              status: { in: ["OFFEN", "TEILWEISE_BEZAHLT"] },
+            },
+            orderBy: { faelligkeitsdatum: "asc" },
+            select: { id: true, titel: true, betragGesamt: true, gedecktGesamt: true, faelligkeitsdatum: true, typ: true },
+          });
+
+          return {
+            ...m,
+            offenerBetrag: m.offenerBetrag.toString(),
+            mahngebuehr: m.mahngebuehr.toString(),
+            verzugszinsen: m.verzugszinsen.toString(),
+            offeneSollstellungen: offeneSollstellungen.map((s) => ({
+              ...s,
+              betragGesamt: s.betragGesamt.toString(),
+              gedecktGesamt: s.gedecktGesamt.toString(),
+            })),
+          };
+        })
+      );
+
+      return mahnungenMitSoll;
     }),
 
   /**
@@ -280,13 +312,13 @@ export const mahnungenRouter = router({
   }),
 
   /**
-   * Status auf STRITTIG oder INKASSO setzen
+   * Status ändern (alle gültigen Statusübergänge)
    */
   updateStatus: protectedProcedure
     .input(
       z.object({
         id: z.string(),
-        status: z.enum(["STRITTIG", "INKASSO"]),
+        status: z.enum(["OFFEN", "VERSENDET", "BEZAHLT", "STORNIERT", "STRITTIG", "INKASSO"]),
         notiz: z.string().optional(),
       })
     )
@@ -295,6 +327,22 @@ export const mahnungenRouter = router({
         where: { id: input.id, tenantId: ctx.tenantId },
         data: { status: input.status },
       });
+
+      // Bei Stornierung auch zugehörige Gebühren-Sollstellungen stornieren
+      if (input.status === "STORNIERT") {
+        if (mahnung.mahngebuehrPostenId) {
+          await ctx.db.sollstellung.update({
+            where: { id: mahnung.mahngebuehrPostenId },
+            data: { status: "STORNIERT" },
+          }).catch(() => { /* ignore if already storniert */ });
+        }
+        if (mahnung.verzugszinsenPostenId) {
+          await ctx.db.sollstellung.update({
+            where: { id: mahnung.verzugszinsenPostenId },
+            data: { status: "STORNIERT" },
+          }).catch(() => { /* ignore if already storniert */ });
+        }
+      }
 
       await logAudit({
         tenantId: ctx.tenantId,

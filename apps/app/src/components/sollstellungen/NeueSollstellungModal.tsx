@@ -90,7 +90,7 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
               <option value="">Ohne Zuordnung</option>
               {aktiveMV.map((mv: any) => (
                 <option key={mv.id} value={mv.id}>
-                  {mv.vertragsnummer ?? mv.id.slice(0, 6)} — {mv.mieter.nachname}{mv.mieter.vorname ? `, ${mv.mieter.vorname}` : ""}{mv.mieter.firma ? ` (${mv.mieter.firma})` : ""} — {mv.einheit.objekt?.bezeichnung} / {mv.einheit.einheitNr}
+                  {mv.vertragsnummer ?? mv.einheit.einheitNr} — {mv.mieter.nachname}{mv.mieter.vorname ? `, ${mv.mieter.vorname}` : ""}{mv.mieter.firma ? ` (${mv.mieter.firma})` : ""} — {mv.einheit.objekt?.bezeichnung}
                 </option>
               ))}
             </select>
@@ -163,8 +163,8 @@ export default function NeueSollstellungModal({ open, onClose, onSuccess }: Prop
 
           {/* Error */}
           {createMutation.error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
-              <p className="text-sm text-red-800">
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-sm text-red-400">
                 Fehler: {createMutation.error.message}
               </p>
             </div>

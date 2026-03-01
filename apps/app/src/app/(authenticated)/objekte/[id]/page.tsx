@@ -103,7 +103,7 @@ export default function ObjektDetailPage() {
 
       {/* Objektübersicht */}
       <div className="rounded-lg border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
-        <div className="border-b border-[var(--border)] bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-8">
+        <div className="border-b border-[var(--border)] bg-gradient-to-r from-blue-500/10 to-blue-500/5 px-6 py-8">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4">
               {/* Objekt-Bild */}

@@ -504,6 +504,7 @@ enum VertragStatus {
   VERSANDT
   UNTERSCHRIEBEN
   AKTIV
+  GEKUENDIGT
   BEENDET
 }
 
