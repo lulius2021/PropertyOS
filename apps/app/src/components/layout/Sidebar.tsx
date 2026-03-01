@@ -108,7 +108,7 @@ export function Sidebar({ userInitials, userName }: { userInitials?: string; use
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.45)]">
               <Image
-                src="/logo-solid.png"
+                src="/icon-512.png"
                 alt="PropGate Logo"
                 width={36}
                 height={36}
@@ -116,13 +116,13 @@ export function Sidebar({ userInitials, userName }: { userInitials?: string; use
                 priority
               />
             </div>
-            <span className="gradient-text text-base font-bold whitespace-nowrap">PropGate</span>
+            <span className="text-base font-bold whitespace-nowrap text-blue-400">PropGate</span>
           </div>
         )}
         {collapsed && (
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.45)] mx-auto">
             <Image
-              src="/logo-solid.png"
+              src="/icon-512.png"
               alt="PropGate Logo"
               width={36}
               height={36}
